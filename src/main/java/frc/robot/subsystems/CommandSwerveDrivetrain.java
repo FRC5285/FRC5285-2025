@@ -52,7 +52,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 );
                 m_hasAppliedOperatorPerspective = true;
                 // Sets forward direction and stuff like that
-                seedFieldCentric();
+                // Note: Has been moved to Robot.java, under teleopInit
+                // seedFieldCentric();
             });
         }
     }
