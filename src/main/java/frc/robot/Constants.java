@@ -4,6 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -13,7 +21,27 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
+    public static class OperatorConstants {
+        public static final int kDriverControllerPort = 0;
+    }
+
+    public static class VisionConstants {
+        // ---------------------------------------------------------------------
+        // Fill the following with camera names and offsets (from center of bot)
+        // ---------------------------------------------------------------------
+        // Update num cameras too (important!)
+        public static final int numCameras = 0;
+
+        public static final String[] cameraNames = {
+
+        };
+        public static final Transform3d[] cameraOffsets = {
+
+        };
+
+        public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    }
 }
