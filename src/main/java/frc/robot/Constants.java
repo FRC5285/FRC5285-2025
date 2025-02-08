@@ -44,4 +44,50 @@ public final class Constants {
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
+
+    public static class RobotConstantsMeters {
+        // METERS!!!
+        // Half of the robot's width, in meters
+        public static final double halfWidth = 0.433;
+        // Note: Coral intake is to the LEFT of the robot's center (from the robot's perspective)
+        public static final double coralArmOffset = 0.154;
+    }
+
+    public static class FieldConstants {
+        // Coordinates are in meters, and for the Pose2d class
+        // All distances are in meters
+
+        // Reef measurements
+        public static final double blueReefCenterX = 4.5;
+        public static final double blueReefCenterY = 4.0;
+
+        public static final double redReefCenterX = 13.06;
+        public static final double redReefCenterY = 4.0;
+
+        public static final double reefWallDistance = 0.832;
+        public static final double reefCoralOffset = 0.164;
+
+        // Coral Station
+        public static final double coralStationBlueX = 0.85;
+        public static final double coralStationRedX = 16.7;
+        
+        public static final double coralStationTopY = 7.38;
+        public static final double coralStationBottomY = 0.64;
+
+        public static final double coralStationOffset = 0.406;
+
+        // Algae Processor
+        public static final double blueProcessorX = 6.0;
+        public static final double blueProcessorY = 0.0;
+
+        public static final double redProcessorX = 11.55;
+        public static final double redProcessorY = 8.0;
+        
+        // Barge and Cages
+        public static final double bargeCenterX = 8.775;
+        public static final double bargeCenterY = 4.0;
+
+        public static final double firstCageOffsetY = 1.059;
+        public static final double cageOffsetY = 1.091;
+    }
 }
