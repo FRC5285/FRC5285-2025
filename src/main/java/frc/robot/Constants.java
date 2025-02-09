@@ -51,6 +51,13 @@ public final class Constants {
         public static final double halfWidth = 0.433;
         // Note: Coral intake is to the LEFT of the robot's center (from the robot's perspective)
         public static final double coralArmOffset = 0.154;
+
+        // Gap between robot and places to score
+        public static final double processorSafeDist = 0.1;
+
+        public static final double cageSafeDist = 0.1;
+
+        public static final double reefSafeDist = 0.05;
     }
 
     public static class FieldConstants {
@@ -89,5 +96,6 @@ public final class Constants {
 
         public static final double firstCageOffsetY = 1.059;
         public static final double cageOffsetY = 1.091;
+        public static final double cageOffsetX = 0.093; // half of width of cage
     }
 }
