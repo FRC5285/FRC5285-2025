@@ -58,6 +58,8 @@ public final class Constants {
         public static final double cageSafeDist = 0.1;
 
         public static final double reefSafeDist = 0.05;
+
+        public static final double coralStationSafeDist = 0.05;
     }
 
     public static class FieldConstants {
