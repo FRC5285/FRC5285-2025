@@ -59,7 +59,14 @@ public final class Constants {
 
         public static final double reefSafeDist = 0.05;
 
+        public static final double reefAlgaeSafeDist = 0.00; // Gets added to reefSafeDist
+
         public static final double coralStationSafeDist = 0.05;
+
+        // Gets added onto coralArmOffset
+        public static final double coralStationCorrection = 0.0;
+        
+        public static final double reefBranchCorrection = 0.0;
     }
 
     public static class FieldConstants {
