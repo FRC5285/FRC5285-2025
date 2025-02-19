@@ -44,4 +44,12 @@ public final class Constants {
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
+
+    public static class FlywheelConstants{
+        public static final int flywheelMotorID = 6;
+        public static final int intakeSensorID = 5;
+        public static final double intakeSpeed = -0.1;
+        public static final double shootSpeed = 0.1;
+        public static final double shootDuration = 0.5;
+    }
 }
