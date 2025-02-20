@@ -14,9 +14,9 @@ import frc.robot.subsystems.FlywheelSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.MathUtil;
 
 /*
  * Quite a lot of code was copied from here:
@@ -41,7 +41,6 @@ public class RobotContainer {
     private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-    .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     // Chooses auto path
@@ -69,20 +68,14 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-m_driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
-        // m_driverController.a().or(m_driverController.b().or(m_driverController.x().or(m_driverController.y()))).onFalse(
-        //     new DeferredCommand(null, null)
-        // );
-        // AutoBuilder.pathfindToPose(
-        // targetPose,
-        // constraints,
-        // 0.0, // Goal end velocity in meters/sec
-        // 0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.);
-        
+        m_driverController.a().or(m_driverController.b().or(m_driverController.x().or(m_driverController.y()))).onFalse(
+            drivetrain.depositReefBranch(flywheel, m_driverController.getHID())
+        );
 
         /* Uncomment to test flywheel
         m_driverController.a().and(flywheel.noCoral).onTrue(flywheel.intakeCoral());

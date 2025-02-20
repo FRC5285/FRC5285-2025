@@ -45,6 +45,17 @@ public final class Constants {
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
 
+    public static class AutoConstants {
+        // Used for constraints of pathfinding
+        public static final double maxVelocityMPS = 5.0; // Max robot speed, m/s
+
+        public static final double maxAccelMPS2 = 4.0; // Max robot accelerations m/s/s
+
+        public static final double maxSpinRadPS = 3.0 * (2.0 * Math.PI); // Max robot angular velocity, radians/s
+
+        public static final double maxSpinAccelRadPS2 = 2.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
+    }
+
     public static class RobotConstantsMeters {
         // METERS!!!
         // Half of the robot's width, in meters

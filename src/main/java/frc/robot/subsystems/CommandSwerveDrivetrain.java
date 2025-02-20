@@ -13,13 +13,14 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.Coords;
+import frc.robot.commands.AimbotCommands;
 
 /*
  * Reference:
@@ -37,7 +38,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    private Coords coords;
+    private AimbotCommands abcs;
 
     // for Auton
     /** Swerve request to apply during robot-centric path following */
@@ -45,8 +46,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
-        if (DriverStation.getAlliance().isPresent()) coords = new Coords(DriverStation.getAlliance().get() == Alliance.Blue);
-        else coords = new Coords(true);
+        abcs = new AimbotCommands(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == Alliance.Blue : true);
         // Configures robot settings for Auton
         configureAutoBuilder();
     }
@@ -57,7 +57,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void resetSide() {
         DriverStation.getAlliance().ifPresent(allianceColor -> {
-            coords = new Coords(allianceColor == Alliance.Blue);
+            abcs.updateSide(allianceColor == Alliance.Blue);
             setOperatorPerspectiveForward(
                 allianceColor == Alliance.Red
                     ? kRedAlliancePerspectiveRotation
@@ -124,11 +124,49 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
-    // public Command goToReefWall(Pose2d robotPose, boolean goLeft, boolean goRight) {
-    //     return new DeferredCommand(
-    //         () -> {
-                
-    //         }, Set.of(this)
-    //     );
-    // }
+    // Don't change these, change them in AimbotCommands
+    public Command depositReefBranch(FlywheelSubsystem flywheel, XboxController controller) {
+        return new DeferredCommand(
+            () -> {
+                return abcs.depositReefBranch(this.getState().Pose, controller, flywheel);
+            },
+            Set.of(this)
+        );
+    }
+
+    public Command collectCoralStation(FlywheelSubsystem flywheel, boolean goLeft, boolean goRight) {
+        return new DeferredCommand(
+            () -> {
+                return abcs.collectCoralStation(this.getState().Pose, goLeft, goRight, flywheel);
+            },
+            Set.of(this)
+        );
+    }
+
+    public Command collectAlgaeFromReef() {
+        return new DeferredCommand(
+            () -> {
+                return abcs.collectAlgaeFromReef(this.getState().Pose);
+            },
+            Set.of(this)
+        );
+    }
+
+    public Command doProcessor() {
+        return new DeferredCommand(
+            () -> {
+                return abcs.doProcessor();
+            },
+            Set.of(this)
+        );
+    }
+
+    public Command doDeepClimb() {
+        return new DeferredCommand(
+            () -> {
+                return abcs.doDeepClimb();
+            },
+            Set.of(this)
+        );
+    }
 }
