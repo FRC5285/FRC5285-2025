@@ -134,10 +134,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         );
     }
 
-    public Command collectCoralStation(FlywheelSubsystem flywheel, boolean goLeft, boolean goRight) {
+    public Command collectCoralStation(FlywheelSubsystem flywheel, XboxController controller) {
         return new DeferredCommand(
             () -> {
-                return abcs.collectCoralStation(this.getState().Pose, goLeft, goRight, flywheel);
+                return abcs.collectCoralStation(this.getState().Pose, controller, flywheel);
             },
             Set.of(this)
         );
