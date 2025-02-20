@@ -11,6 +11,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,6 +37,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final FlywheelSubsystem flywheel = new FlywheelSubsystem();
+    public final WristSubsystem wrist = new WristSubsystem();
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -80,6 +82,11 @@ public class RobotContainer {
         /* Uncomment to test flywheel
         m_driverController.a().and(flywheel.noCoral).onTrue(flywheel.intakeCoral());
         m_driverController.a().and(flywheel.hasCoral).onTrue(flywheel.shootCoral());
+
+        // Uncomment to test wrist
+        m_driverController.y().onTrue(wrist.goToIntakePosition());
+        m_driverController.b().onTrue(wrist.goToMidShootPosition());
+        m_driverController.a().onTrue(wrist.goToHighShootPosition());
         */
     }
 

@@ -126,4 +126,9 @@ public final class Constants {
         public static final double shootSpeed = 0.1;
         public static final double shootDuration = 0.5;
     }
+
+    public static class WristConstants{
+        public static final int wristMotorID = 4;
+        public static final int wristEncoderID = 9;
+    }
 }
