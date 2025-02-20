@@ -13,6 +13,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -71,6 +72,15 @@ public class RobotContainer {
                     .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+        // m_driverController.a().or(m_driverController.b().or(m_driverController.x().or(m_driverController.y()))).onFalse(
+        //     new DeferredCommand(null, null)
+        // );
+        // AutoBuilder.pathfindToPose(
+        // targetPose,
+        // constraints,
+        // 0.0, // Goal end velocity in meters/sec
+        // 0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.);
+        
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         // new Trigger(m_exampleSubsystem::exampleCondition)
         //         .onTrue(new ExampleCommand(m_exampleSubsystem));

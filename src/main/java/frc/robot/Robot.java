@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -34,6 +35,10 @@ public class Robot extends TimedRobot {
         m_robotContainer = new RobotContainer();
 
         ATCams = new AprilTagCams();
+
+        // have no idea if this goes here
+        // supposed to "warm up" the command so there is no delay when pathfinding is used later
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     /**
@@ -65,6 +70,7 @@ public class Robot extends TimedRobot {
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
+        m_robotContainer.drivetrain.resetSide();
         this.usedAuton = true;
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -90,7 +96,7 @@ public class Robot extends TimedRobot {
 
         // If auton is not used, set robot heading according to driverstation
         if (!usedAuton) {
-            m_robotContainer.drivetrain.seedFieldCentric();
+            m_robotContainer.drivetrain.resetSide();
         }
     }
 

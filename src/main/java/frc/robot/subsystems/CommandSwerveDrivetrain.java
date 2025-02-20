@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
+import java.util.Set;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -14,9 +15,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.Coords;
 
 /*
  * Reference:
@@ -34,18 +37,36 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
+    private Coords coords;
+
     // for Auton
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
+        if (DriverStation.getAlliance().isPresent()) coords = new Coords(DriverStation.getAlliance().get() == Alliance.Blue);
+        else coords = new Coords(true);
         // Configures robot settings for Auton
         configureAutoBuilder();
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
+    }
+
+    public void resetSide() {
+        DriverStation.getAlliance().ifPresent(allianceColor -> {
+            coords = new Coords(allianceColor == Alliance.Blue);
+            setOperatorPerspectiveForward(
+                allianceColor == Alliance.Red
+                    ? kRedAlliancePerspectiveRotation
+                    : kBlueAlliancePerspectiveRotation
+            );
+            m_hasAppliedOperatorPerspective = true;
+        });
+        configureAutoBuilder();
+        this.seedFieldCentric();
     }
 
     @Override
@@ -102,4 +123,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
+
+    // public Command goToReefWall(Pose2d robotPose, boolean goLeft, boolean goRight) {
+    //     return new DeferredCommand(
+    //         () -> {
+                
+    //         }, Set.of(this)
+    //     );
+    // }
 }

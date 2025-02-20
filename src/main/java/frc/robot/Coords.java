@@ -106,9 +106,9 @@ public class Coords {
         Pose2d p2d;
         for (int i = 0; i < 6; i ++) {
             p2d = this.reefSideCenterLocs[i];
-            if (dist2 > (Math.pow(robotPose.getX() - p2d.getX(), 2) + Math.pow(robotPose.getY() - p2d.getY(), 2))) {
+            if (dist2 > Math.hypot(robotPose.getX() - p2d.getX(), robotPose.getY() - p2d.getY())) {
                 rtnIndex = i;
-                dist2 = (Math.pow(robotPose.getX() - p2d.getX(), 2) + Math.pow(robotPose.getY() - p2d.getY(), 2));
+                dist2 = Math.hypot(robotPose.getX() - p2d.getX(), robotPose.getY() - p2d.getY());
             }
         }
         return rtnIndex;
