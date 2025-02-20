@@ -107,4 +107,12 @@ public final class Constants {
         public static final double cageOffsetY = 1.091;
         public static final double cageOffsetX = 0.093; // half of width of cage
     }
+
+    public static class FlywheelConstants{
+        public static final int flywheelMotorID = 6;
+        public static final int intakeSensorID = 5;
+        public static final double intakeSpeed = -0.1;
+        public static final double shootSpeed = 0.1;
+        public static final double shootDuration = 0.5;
+    }
 }
