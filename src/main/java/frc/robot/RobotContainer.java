@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.ControllerUtils;
@@ -40,6 +41,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final FlywheelSubsystem flywheel = new FlywheelSubsystem();
     public final WristSubsystem wrist = new WristSubsystem();
+    public final ElevatorSubsystem elevator = new ElevatorSubsystem();
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
