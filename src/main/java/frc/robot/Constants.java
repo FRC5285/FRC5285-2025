@@ -51,11 +51,11 @@ public final class Constants {
         // Used for constraints of pathfinding
         public static final double maxVelocityMPS = 4.73; // Max robot speed, m/s
 
-        public static final double maxAccelMPS2 = 3.0; // Max robot accelerations m/s/s
+        public static final double maxAccelMPS2 = 8.0; // Max robot accelerations m/s/s
 
         public static final double maxSpinRadPS = 3.0 * (2.0 * Math.PI); // Max robot angular velocity, radians/s
 
-        public static final double maxSpinAccelRadPS2 = 2.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
+        public static final double maxSpinAccelRadPS2 = 5.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
     }
 
     public static class RobotConstantsMeters {
