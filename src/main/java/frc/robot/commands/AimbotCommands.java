@@ -28,7 +28,7 @@ public class AimbotCommands {
     public Command depositReefBranch(Pose2d robotPose, XboxController controller, FlywheelSubsystem flywheel) {
         // Todo: Add checks to make sure elevator and wrist are in position
         return AutoBuilder.pathfindToPose(
-            this.coords.getReefBranchCoords(robotPose, controller.getLeftBumperButtonPressed(), controller.getRightBumperButtonPressed()),
+            this.coords.getReefBranchCoords(robotPose, controller.getLeftBumperButton(), controller.getRightBumperButton()),
             this.pathfindConstraints,
             0.0
         ).andThen(flywheel.shootCoral());
@@ -37,7 +37,7 @@ public class AimbotCommands {
     public Command collectCoralStation(Pose2d robotPose, XboxController controller, FlywheelSubsystem flywheel) {
         // Todo: Add checks to make sure elevator and wrist are in position
         return AutoBuilder.pathfindToPose(
-            this.coords.getCoralStationCoords(robotPose, controller.getLeftBumperButtonPressed(), controller.getRightBumperButtonPressed()),
+            this.coords.getCoralStationCoords(robotPose, controller.getLeftBumperButton(), controller.getRightBumperButton()),
             this.pathfindConstraints,
             0.0
         ).andThen(flywheel.intakeCoral());

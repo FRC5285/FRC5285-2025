@@ -12,6 +12,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.util.ControllerUtils;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -70,15 +72,26 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1) * MaxSpeed * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis()))) // Drive forward with negative Y (forward)
+                    .withVelocityY(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1) * MaxSpeed * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis()))) // Drive left with negative X (left)
+                    .withRotationalRate(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1) * MaxAngularRate * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis()))) // Drive counterclockwise with negative X (left)
             )
         );
         m_driverController.a().or(m_driverController.b().or(m_driverController.x().or(m_driverController.y()))).onFalse(
             drivetrain.depositReefBranch(flywheel, m_driverController.getHID())
         );
-
+        new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).onTrue(
+            drivetrain.collectCoralStation(flywheel, m_driverController.getHID())
+        );
+        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onTrue(
+            drivetrain.collectAlgaeFromReef()
+        );
+        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onTrue(
+            drivetrain.doProcessor()
+        );
+        new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).onTrue(
+            drivetrain.doDeepClimb()
+        );
         /* Uncomment to test flywheel
         m_driverController.a().and(flywheel.noCoral).onTrue(flywheel.intakeCoral());
         m_driverController.a().and(flywheel.hasCoral).onTrue(flywheel.shootCoral());

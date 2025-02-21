@@ -23,6 +23,8 @@ import edu.wpi.first.math.numbers.N3;
 public final class Constants {
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
+
+        public static final double maxSpeedMultiplier = 1.0; // Set this value within the range [0, 1]
     }
 
     public static class VisionConstants {
@@ -47,9 +49,9 @@ public final class Constants {
 
     public static class AutoConstants {
         // Used for constraints of pathfinding
-        public static final double maxVelocityMPS = 5.0; // Max robot speed, m/s
+        public static final double maxVelocityMPS = 4.73; // Max robot speed, m/s
 
-        public static final double maxAccelMPS2 = 4.0; // Max robot accelerations m/s/s
+        public static final double maxAccelMPS2 = 3.0; // Max robot accelerations m/s/s
 
         public static final double maxSpinRadPS = 3.0 * (2.0 * Math.PI); // Max robot angular velocity, radians/s
 
