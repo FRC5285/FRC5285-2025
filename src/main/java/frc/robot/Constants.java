@@ -133,4 +133,12 @@ public final class Constants {
         public static final int wristMotorID = 4;
         public static final int wristEncoderID = 9;
     }
+
+    public static class ElevatorConstants{
+        public static final int elevatorMotorID = 0;
+        public static final int followMotorID = 0;
+        public static final int topLimitSwitchID = 0;
+        public static final int bottomLimitSwitchID = 0;
+
+    }
 }
