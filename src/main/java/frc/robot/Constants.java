@@ -158,4 +158,12 @@ public final class Constants {
         // Elevator is at goal position if it is this close to the goal position
         public static final double goalRange = 0.1;
     }
+
+    public static class LEDConstants {
+        public static final int pwmChannel = 0; // PWM port
+
+        public static final double normalColor = 0.93; // 0.93 = White
+
+        public static final double autonColor = 0.67; // 0.67 = Gold
+    }
 }

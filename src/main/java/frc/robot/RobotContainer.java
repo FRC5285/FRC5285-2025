@@ -12,6 +12,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.ControllerUtils;
 
@@ -42,6 +43,7 @@ public class RobotContainer {
     public final FlywheelSubsystem flywheel = new FlywheelSubsystem();
     public final WristSubsystem wrist = new WristSubsystem();
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    public final LEDSubsystem ledStrip = new LEDSubsystem();
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -56,6 +58,7 @@ public class RobotContainer {
         // puts auto paths choices onto the Smart Dashboard
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+        ledStrip.toNormal().schedule();
 
         // Configure the trigger bindings
         configureBindings();
@@ -102,6 +105,7 @@ public class RobotContainer {
         );
         new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).onFalse(
             drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
+            .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Get algae from reef
@@ -110,6 +114,7 @@ public class RobotContainer {
         );
         new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onFalse(
             drivetrain.collectAlgaeFromReef(elevator)
+            .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Deposit algae into processor
@@ -118,11 +123,13 @@ public class RobotContainer {
         );
         new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onFalse(
             drivetrain.doProcessor(elevator)
+            .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Do the deep climb
         new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).onTrue(
             drivetrain.doDeepClimb()
+            .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
         /* Uncomment to test flywheel
         m_driverController.a().and(flywheel.noCoral).onTrue(flywheel.intakeCoral());
@@ -143,6 +150,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
         // return Autos.exampleAuto(m_exampleSubsystem);
-        return autoChooser.getSelected();
+        return autoChooser.getSelected().alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal());
     }
 }
