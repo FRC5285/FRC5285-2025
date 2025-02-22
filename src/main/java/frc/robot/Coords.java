@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
 import frc.robot.Constants.RobotConstantsMeters;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.FieldConstants;
 
 // I hate math. I hate math. I hate math.
@@ -16,8 +17,10 @@ public class Coords {
     public final Pose2d bottomCoralStationPose;
     public final Pose2d processorPose;
     public final Pose2d cagePose;
+    public final Pose2d startPose; // Default starting position
     public final Pose2d[] reefSideCenterLocs;
     public final Rotation2d[] reefCorrespondingAngles;
+    public final double[] reefAlgaeHeights;
 
     // Value of sin(45 deg) or cos(45 deg)
     private final double sc45 = Math.cos(Math.PI / 4.0);
@@ -53,8 +56,14 @@ public class Coords {
         this.cagePose = new Pose2d(
             FieldConstants.bargeCenterX - this.sideSign * (FieldConstants.cageOffsetX + RobotConstantsMeters.cageSafeDist + RobotConstantsMeters.halfWidth),
             FieldConstants.bargeCenterY + this.sideSign * (FieldConstants.firstCageOffsetY +  FieldConstants.cageOffsetY * (3 - this.teamStationNumber)),
-            new Rotation2d(Math.PI/2.0 - this.sideSign * (Math.PI/2.0))
+            new Rotation2d(Math.PI/2.0 + this.sideSign * (Math.PI/2.0))
         );
+
+        this.startPose = new Pose2d(
+            7.5,
+            4.0,
+            new Rotation2d(Math.PI/2.0 - this.sideSign * (Math.PI/2.0))
+        ); // Position is facing towards barge, at center of starting line
 
         coralStationX += this.sideSign * (this.sc45 * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.coralStationSafeDist));
         this.bottomCoralStationPose = new Pose2d(
@@ -70,7 +79,10 @@ public class Coords {
 
         Pose2d[] rscl = new Pose2d[6];
         Rotation2d[] rca = new Rotation2d[6];
+        double[] rah = new double[6];
         double a;
+        double centerHeight = (ElevatorConstants.L2AlgaeHeight + ElevatorConstants.L3AlgaeHeight);
+        double addHeight = Math.abs(ElevatorConstants.L2AlgaeHeight - ElevatorConstants.L3AlgaeHeight) / 2.0;
         for (int i = 0; i < 6; i++) {
             a = i * (Math.PI / 3);
             rca[i] = new Rotation2d((a + Math.PI) % (Math.PI * 2));
@@ -79,9 +91,11 @@ public class Coords {
                 reefCenterY + Math.sin(a) * (FieldConstants.reefWallDistance + RobotConstantsMeters.reefSafeDist + RobotConstantsMeters.halfWidth),
                 rca[i]
             );
+            rah[i] = centerHeight - this.sideSign * addHeight * (i % 2 == 0 ? 1.0 : -1.0);
         }
         this.reefCorrespondingAngles = rca;
         this.reefSideCenterLocs = rscl;
+        this.reefAlgaeHeights = rah;
     }
 
     // gets optimal position to receive coral
@@ -112,6 +126,10 @@ public class Coords {
             }
         }
         return rtnIndex;
+    }
+
+    public double getAlgaeHeight(Pose2d robotPose) {
+        return this.reefAlgaeHeights[this.getReefWallCenterCoordsIndex(robotPose)];
     }
 
     // returns coords of center of closest reef wall

@@ -132,6 +132,11 @@ public final class Constants {
     public static class WristConstants{
         public static final int wristMotorID = 4;
         public static final int wristEncoderID = 9;
+
+        public static final double L1Position = 0.0;
+        public static final double L23Position = 0.0;
+        public static final double L4Position = 0.0;
+        public static final double intakePosition = 0.0;
     }
 
     public static class ElevatorConstants{
@@ -140,5 +145,17 @@ public final class Constants {
         public static final int topLimitSwitchID = 0;
         public static final int bottomLimitSwitchID = 0;
 
+        public static final double L1Height = 0.0;
+        public static final double L2Height = 0.0;
+        public static final double L3Height = 0.0;
+        public static final double L4Height = 0.0;
+        
+        public static final double L2AlgaeHeight = 0.0;
+        public static final double L3AlgaeHeight = 0.0;
+
+        public static final double processorHeight = 0.0;
+
+        // Elevator is at goal position if it is this close to the goal position
+        public static final double goalRange = 0.1;
     }
 }

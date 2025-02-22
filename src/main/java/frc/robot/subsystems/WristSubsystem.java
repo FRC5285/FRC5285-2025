@@ -58,8 +58,16 @@ public class WristSubsystem extends SubsystemBase {
       .andThen(()-> wristMotor.stopMotor());
   }
 
+  public boolean isAtSetpoint() {
+    return wristPIDController.atSetpoint();
+  }
+  
   public Command goToIntakePosition(){
     return goToPosition(()-> wristState.getIntakePosition());
+  }
+  
+  public Command goToLowShootPosition() {
+    return goToPosition(() -> WristConstants.L1Position);
   }
 
   public Command goToMidShootPosition(){

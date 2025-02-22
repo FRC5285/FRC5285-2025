@@ -66,7 +66,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             m_hasAppliedOperatorPerspective = true;
         });
         configureAutoBuilder();
-        this.seedFieldCentric();
+        this.resetPose(abcs.getStartLoc()); // sets robot position to middle of starting line
     }
 
     @Override
@@ -124,38 +124,42 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
+    public double getAlgaeHeight() {
+        return abcs.getAlgaeHeight(this.getState().Pose);
+    }
+
     // Don't change these, change them in AimbotCommands
-    public Command depositReefBranch(FlywheelSubsystem flywheel, XboxController controller) {
+    public Command depositReefBranch(FlywheelSubsystem flywheel, XboxController controller, ElevatorSubsystem elevator, WristSubsystem wrist) {
         return new DeferredCommand(
             () -> {
-                return abcs.depositReefBranch(this.getState().Pose, controller, flywheel);
+                return abcs.depositReefBranch(this.getState().Pose, controller, flywheel, elevator, wrist);
             },
             Set.of(this)
         );
     }
 
-    public Command collectCoralStation(FlywheelSubsystem flywheel, XboxController controller) {
+    public Command collectCoralStation(FlywheelSubsystem flywheel, XboxController controller, ElevatorSubsystem elevator, WristSubsystem wrist) {
         return new DeferredCommand(
             () -> {
-                return abcs.collectCoralStation(this.getState().Pose, controller, flywheel);
+                return abcs.collectCoralStation(this.getState().Pose, controller, flywheel, elevator, wrist);
             },
             Set.of(this)
         );
     }
 
-    public Command collectAlgaeFromReef() {
+    public Command collectAlgaeFromReef(ElevatorSubsystem elevator) {
         return new DeferredCommand(
             () -> {
-                return abcs.collectAlgaeFromReef(this.getState().Pose);
+                return abcs.collectAlgaeFromReef(this.getState().Pose, elevator);
             },
             Set.of(this)
         );
     }
 
-    public Command doProcessor() {
+    public Command doProcessor(ElevatorSubsystem elevator) {
         return new DeferredCommand(
             () -> {
-                return abcs.doProcessor();
+                return abcs.doProcessor(elevator);
             },
             Set.of(this)
         );

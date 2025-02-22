@@ -6,8 +6,11 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 import frc.robot.Coords;
 
 public class AimbotCommands {
@@ -23,40 +26,56 @@ public class AimbotCommands {
         coords = new Coords(isBlue);
     }
 
+    public Pose2d getStartLoc() {
+        return coords.startPose;
+    }
+
+    public double getAlgaeHeight(Pose2d robotePose) {
+        return coords.getAlgaeHeight(robotePose);
+    }
+
     // All of these need a lot more work
     // just basic commands now, chain them together later
-    public Command depositReefBranch(Pose2d robotPose, XboxController controller, FlywheelSubsystem flywheel) {
+    public Command depositReefBranch(Pose2d robotPose, XboxController controller, FlywheelSubsystem flywheel, ElevatorSubsystem elevator, WristSubsystem wrist) {
         // Todo: Add checks to make sure elevator and wrist are in position
         return AutoBuilder.pathfindToPose(
             this.coords.getReefBranchCoords(robotPose, controller.getLeftBumperButton(), controller.getRightBumperButton()),
             this.pathfindConstraints,
             0.0
-        ).andThen(flywheel.shootCoral());
+        )
+        .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
+        .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
+        .andThen(flywheel.shootCoral());
     }
 
-    public Command collectCoralStation(Pose2d robotPose, XboxController controller, FlywheelSubsystem flywheel) {
+    public Command collectCoralStation(Pose2d robotPose, XboxController controller, FlywheelSubsystem flywheel, ElevatorSubsystem elevator, WristSubsystem wrist) {
         // Todo: Add checks to make sure elevator and wrist are in position
         return AutoBuilder.pathfindToPose(
             this.coords.getCoralStationCoords(robotPose, controller.getLeftBumperButton(), controller.getRightBumperButton()),
             this.pathfindConstraints,
             0.0
-        ).andThen(flywheel.intakeCoral());
+        )
+        .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
+        .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
+        .andThen(flywheel.intakeCoral());
     }
 
-    public Command collectAlgaeFromReef(Pose2d robotPose) {
+    public Command collectAlgaeFromReef(Pose2d robotPose, ElevatorSubsystem elevator) {
         return AutoBuilder.pathfindToPose(
             this.coords.getReefAlgaeCoords(robotPose),
             this.pathfindConstraints,
             0.0
-        );
+        )
+        .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()));
     }
 
-    public Command doProcessor() {
+    public Command doProcessor(ElevatorSubsystem elevator) {
         return AutoBuilder.pathfindToPose(
             this.coords.processorPose,
             this.pathfindConstraints,
             0.0
-        );
+        )
+        .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()));
     }
 
     public Command doDeepClimb() {

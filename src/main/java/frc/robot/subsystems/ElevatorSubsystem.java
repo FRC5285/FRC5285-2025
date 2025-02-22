@@ -33,6 +33,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final Trigger atBottom;
   private final Trigger atTop;
   private final ElevatorState elevatorState;
+  private double targetPos;
 
   public ElevatorSubsystem() {
     goingUpVoltage = new PositionVoltage(0).withSlot(0);
@@ -70,20 +71,28 @@ public class ElevatorSubsystem extends SubsystemBase {
     atTop.onTrue(hitTopLimit());
   }
 
-  private Command goToPosition(DoubleSupplier getTargetPosition) {
+  public Command goToPosition(DoubleSupplier getTargetPosition) {
     return runOnce(() -> {
-      double currentPosition = elevatorMotor.getPosition().getValueAsDouble(); //returns rotation
-      double targetPosition = getTargetPosition.getAsDouble() / elevatorState.getDistancePerRotation(); //converts distance to rotations
-      if (targetPosition > currentPosition) {
-        elevatorMotor.setControl(goingDownVoltage.withPosition(targetPosition));
+      double currentPos = this.currentPos(); //returns rotation
+      this.targetPos = getTargetPosition.getAsDouble() / elevatorState.getDistancePerRotation(); //converts distance to rotations
+      if (this.targetPos > currentPos) {
+        elevatorMotor.setControl(goingDownVoltage.withPosition(this.targetPos));
       }
-      else if (targetPosition < currentPosition) {
-        elevatorMotor.setControl(goingUpVoltage.withPosition(targetPosition));
+      else if (this.targetPos < currentPos) {
+        elevatorMotor.setControl(goingUpVoltage.withPosition(this.targetPos));
       }
       else {
         elevatorMotor.stopMotor();
       }
     });
+  }
+
+  private double currentPos() {
+    return elevatorMotor.getPosition().getValueAsDouble();
+  }
+
+  public boolean reachedGoal() {
+    return Math.abs(this.currentPos() - this.targetPos) < ElevatorConstants.goalRange;
   }
 
   public Command goToLevel1Position(){
@@ -104,6 +113,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public Command goToIntakePosition(){
     return goToPosition(()-> elevatorState.getIntakePosition());
+  }
+
+  public Command goToProcessorPosition() {
+    return goToPosition(() -> ElevatorConstants.processorHeight); // Put other constants into Constants file later!! Also tune this one!!!
   }
 
   public Command goToBottomPosition(){

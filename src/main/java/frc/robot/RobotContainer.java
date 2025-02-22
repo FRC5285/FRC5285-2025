@@ -79,18 +79,48 @@ public class RobotContainer {
                     .withRotationalRate(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1) * MaxAngularRate * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis()))) // Drive counterclockwise with negative X (left)
             )
         );
+        // Deposit coral
+        m_driverController.x().onTrue(
+            elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition())
+        );
+        m_driverController.a().onTrue(
+            elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition())
+        );
+        m_driverController.b().onTrue(
+            elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition())
+        );
+        m_driverController.y().onTrue(
+            elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition())
+        );
         m_driverController.a().or(m_driverController.b().or(m_driverController.x().or(m_driverController.y()))).onFalse(
-            drivetrain.depositReefBranch(flywheel, m_driverController.getHID())
+            drivetrain.depositReefBranch(flywheel, m_driverController.getHID(), elevator, wrist)
         );
+
+        // Get coral from coral station
         new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).onTrue(
-            drivetrain.collectCoralStation(flywheel, m_driverController.getHID())
+            elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
         );
+        new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).onFalse(
+            drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
+        );
+
+        // Get algae from reef
         new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onTrue(
-            drivetrain.collectAlgaeFromReef()
+            elevator.goToPosition(() -> drivetrain.getAlgaeHeight())
         );
+        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onFalse(
+            drivetrain.collectAlgaeFromReef(elevator)
+        );
+
+        // Deposit algae into processor
         new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onTrue(
-            drivetrain.doProcessor()
+            elevator.goToProcessorPosition()
         );
+        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onFalse(
+            drivetrain.doProcessor(elevator)
+        );
+
+        // Do the deep climb
         new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).onTrue(
             drivetrain.doDeepClimb()
         );
