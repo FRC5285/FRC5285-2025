@@ -82,7 +82,7 @@ public class AimbotCommands {
     }
 
     public Command doDeepClimb() {
-        return AutoBuilder.pathfindToPose(
+        return AutoBuilder.pathfindToPose( // change to pathfind and then do path
             this.coords.cagePose,
             this.pathfindConstraints,
             0.0

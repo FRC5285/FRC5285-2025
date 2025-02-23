@@ -38,7 +38,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     }
 
     public Command shootOut() {
-        return run(() -> mainMotor.set(AlgaeIntakeConstants.outSpeed))
+        return runOnce(() -> mainMotor.set(AlgaeIntakeConstants.outSpeed))
         // .until(this::noAlgae) // Algae will still be held when limit switch is not down
         .andThen(new WaitCommand(AlgaeIntakeConstants.outMotorTime))
         .andThen(() -> mainMotor.set(0));

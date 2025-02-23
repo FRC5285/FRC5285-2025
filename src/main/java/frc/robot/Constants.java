@@ -63,7 +63,7 @@ public final class Constants {
     public static class RobotConstantsMeters {
         // METERS!!!
         // Half of the robot's width, in meters
-        public static final double halfWidth = 0.433;
+        public static final double halfWidth = 0.434;
         // Note: Coral intake is to the LEFT of the robot's center (from the robot's perspective)
         public static final double coralArmOffset = 0.154;
 
@@ -124,8 +124,8 @@ public final class Constants {
     }
 
     public static class FlywheelConstants{
-        public static final int flywheelMotorID = 20;
-        public static final int intakeSensorID = 5;
+        public static final int flywheelMotorID = 19; // CAN
+        public static final int intakeSensorID = 3; // DIO
         public static final double intakeSpeed = -0.1;
         public static final double shootSpeed = 0.1;
         public static final double shootDuration = 0.5;
@@ -133,8 +133,8 @@ public final class Constants {
     }
 
     public static class WristConstants{
-        public static final int wristMotorID = 18;
-        public static final int wristEncoderID = 19;
+        public static final int wristMotorID = 18; // CAN
+        public static final int wristEncoderID = 1; // PWM
 
         public static final double L1Position = 0.0;
         public static final double L23Position = 0.0;
@@ -143,10 +143,11 @@ public final class Constants {
     }
 
     public static class ElevatorConstants{
-        public static final int elevatorMotorID = 13;
-        public static final int followMotorID = 14;
-        public static final int topLimitSwitchID = 0;
-        public static final int bottomLimitSwitchID = 0;
+        public static final int elevatorMotorID = 13; // CAN
+        public static final int followMotorID = 14; // CAN
+        public static final int topLimitSwitchID = 1; // DIO
+        public static final int bottomLimitSwitchID = 2; // DIO
+        public static final int encoderID = 2; // PWM
 
         public static final double L1Height = 0.0;
         public static final double L2Height = 0.0;
@@ -163,9 +164,9 @@ public final class Constants {
     }
 
     public static class AlgaeIntakeConstants {
-        public static final int motorID1 = 15;
-        public static final int motorID2 = 16;
-        public static final int limitSwitchID = 0;
+        public static final int motorID1 = 15; // CAN
+        public static final int motorID2 = 16; // CAN
+        public static final int limitSwitchID = 0; // DIO
 
         public static final double outSpeed = -1.0;
         public static final double inSpeed = 1.0; // left (from front perspective) is +in, right is -in
@@ -175,7 +176,11 @@ public final class Constants {
     }
 
     public static class ClimberConstants {
-        public static final int motorID = 17;
+        public static final int motorID = 17; // CAN
+
+        public static final double climbSpeed = 1.0;
+
+        public static final double climbTime = 5.0;
     }
 
     public static class LEDConstants {

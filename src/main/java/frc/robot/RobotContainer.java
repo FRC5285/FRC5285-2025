@@ -6,6 +6,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.TriggerConstants;
@@ -21,6 +22,7 @@ import frc.robot.util.ControllerUtils;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
@@ -59,6 +61,21 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        // Defines commands for Auton
+        NamedCommands.registerCommand("Wait for Elevator", new WaitUntilCommand(() -> elevator.reachedGoal()));
+        NamedCommands.registerCommand("Wait for Elevator and Wrist", new WaitUntilCommand(() -> elevator.reachedGoal() && wrist.isAtSetpoint()));
+        NamedCommands.registerCommand("Intake Coral", flywheel.intakeCoral());
+        NamedCommands.registerCommand("Shoot Coral", flywheel.shootCoral());
+        NamedCommands.registerCommand("Intake Algae", algaeIntake.doIntake());
+        NamedCommands.registerCommand("Shoot Algae", algaeIntake.shootOut());
+        NamedCommands.registerCommand("Elevator and Wrist to L1", elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition()));
+        NamedCommands.registerCommand("Elevator and Wrist to L2", elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition()));
+        NamedCommands.registerCommand("Elevator and Wrist to L3", elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition()));
+        NamedCommands.registerCommand("Elevator and Wrist to L4", elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition()));
+        NamedCommands.registerCommand("Elevator and Wrist to Intake", elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition()));
+        NamedCommands.registerCommand("Elevator to Reef Algae", elevator.goToPosition(() -> drivetrain.getAlgaeHeight()));
+        NamedCommands.registerCommand("Elevator to Processor", elevator.goToProcessorPosition());
+
         // puts auto paths choices onto the Smart Dashboard
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -135,6 +152,12 @@ public class RobotContainer {
             drivetrain.doDeepClimb()
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
+
+        // Emergency stops the aimbot (DO NOT USE UNLESS ABSOLUTELY NECESSARY)
+        m_driverController.leftStick().onTrue(
+            drivetrain.getDefaultCommand()
+        );
+
         /* Uncomment to test flywheel
         m_driverController.a().and(flywheel.noCoral).onTrue(flywheel.intakeCoral());
         m_driverController.a().and(flywheel.hasCoral).onTrue(flywheel.shootCoral());

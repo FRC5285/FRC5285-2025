@@ -11,13 +11,13 @@ public class LEDSubsystem extends SubsystemBase {
     public LEDSubsystem() {}
 
     public Command toNormal() {
-        return run(() -> {
+        return runOnce(() -> {
             this.ledDriver.set(LEDConstants.normalColor);
         });
     }
 
     public Command toAuton() {
-        return run(() -> {
+        return runOnce(() -> {
             this.ledDriver.set(LEDConstants.autonColor);
         });
     }
