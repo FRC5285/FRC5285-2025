@@ -136,10 +136,11 @@ public final class Constants {
         public static final int wristMotorID = 18; // CAN
         public static final int wristEncoderID = 1; // PWM
 
-        public static final double L1Position = 0.0;
-        public static final double L23Position = 0.0;
-        public static final double L4Position = 0.0;
-        public static final double intakePosition = 0.0;
+        public static final double intakePosition = 0.15;
+        public static final double lowShootPosition = 0.0;
+        public static final double midShootPosition = 0.312;
+        public static final double highShootPosition = 0.408;
+        public static final double encoderOffset = 0.644;
     }
 
     public static class ElevatorConstants{
@@ -149,10 +150,13 @@ public final class Constants {
         public static final int bottomLimitSwitchID = 2; // DIO
         public static final int encoderID = 2; // PWM
 
-        public static final double L1Height = 0.0;
-        public static final double L2Height = 0.0;
-        public static final double L3Height = 0.0;
-        public static final double L4Height = 0.0;
+        public static final double level1Position = 5;
+        public static final double level2Position = 10;
+        public static final double level3Position = 15;
+        public static final double level4Position = 25;
+        public static final double maxHeight = 30;
+        public static final double intakePosition = 12;
+        public static final double distancePerRotation = 0.5;
         
         public static final double L2AlgaeHeight = 0.0;
         public static final double L3AlgaeHeight = 0.0;

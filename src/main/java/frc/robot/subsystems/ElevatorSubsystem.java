@@ -143,13 +143,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public class ElevatorState implements Sendable{
 
-    private double level1Position = 5;
-    private double level2Position = 10;
-    private double level3Position = 15;
-    private double level4Position = 25;
-    private double maxHeight = 30;
-    private double intakePosition = 12;
-    private double distancePerRotation = 0.5;
+    private double level1Position = ElevatorConstants.level1Position;
+    private double level2Position = ElevatorConstants.level2Position;
+    private double level3Position = ElevatorConstants.level3Position;
+    private double level4Position = ElevatorConstants.level4Position;
+    private double maxHeight = ElevatorConstants.maxHeight;
+    private double intakePosition = ElevatorConstants.intakePosition;
+    private double distancePerRotation = ElevatorConstants.distancePerRotation;
 
     public double getDistancePerRotation() {
       return distancePerRotation;
