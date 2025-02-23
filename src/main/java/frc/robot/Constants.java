@@ -25,6 +25,8 @@ public final class Constants {
         public static final int kDriverControllerPort = 0;
 
         public static final double maxSpeedMultiplier = 1.0; // Set this value within the range [0, 1]
+
+        public static final double throttleMaxReduction = 0.9; // Most speed the throttle can take off (range [0, 1])
     }
 
     public static class VisionConstants {
@@ -122,16 +124,17 @@ public final class Constants {
     }
 
     public static class FlywheelConstants{
-        public static final int flywheelMotorID = 6;
+        public static final int flywheelMotorID = 20;
         public static final int intakeSensorID = 5;
         public static final double intakeSpeed = -0.1;
         public static final double shootSpeed = 0.1;
         public static final double shootDuration = 0.5;
+        public static final double intakeMaxTime = 10.0;
     }
 
     public static class WristConstants{
-        public static final int wristMotorID = 4;
-        public static final int wristEncoderID = 9;
+        public static final int wristMotorID = 18;
+        public static final int wristEncoderID = 19;
 
         public static final double L1Position = 0.0;
         public static final double L23Position = 0.0;
@@ -140,8 +143,8 @@ public final class Constants {
     }
 
     public static class ElevatorConstants{
-        public static final int elevatorMotorID = 0;
-        public static final int followMotorID = 0;
+        public static final int elevatorMotorID = 13;
+        public static final int followMotorID = 14;
         public static final int topLimitSwitchID = 0;
         public static final int bottomLimitSwitchID = 0;
 
@@ -159,11 +162,31 @@ public final class Constants {
         public static final double goalRange = 0.1;
     }
 
+    public static class AlgaeIntakeConstants {
+        public static final int motorID1 = 15;
+        public static final int motorID2 = 16;
+        public static final int limitSwitchID = 0;
+
+        public static final double outSpeed = -1.0;
+        public static final double inSpeed = 1.0; // left (from front perspective) is +in, right is -in
+
+        public static final double maxMotorTime = 3.0;
+        public static final double outMotorTime = 2.0;
+    }
+
+    public static class ClimberConstants {
+        public static final int motorID = 17;
+    }
+
     public static class LEDConstants {
         public static final int pwmChannel = 0; // PWM port
 
         public static final double normalColor = 0.93; // 0.93 = White
 
         public static final double autonColor = 0.67; // 0.67 = Gold
+    }
+
+    public static class TriggerConstants {
+        public static final double debounceTime = 2.0;
     }
 }

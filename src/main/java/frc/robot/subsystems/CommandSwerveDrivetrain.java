@@ -147,19 +147,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         );
     }
 
-    public Command collectAlgaeFromReef(ElevatorSubsystem elevator) {
+    public Command collectAlgaeFromReef(ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
         return new DeferredCommand(
             () -> {
-                return abcs.collectAlgaeFromReef(this.getState().Pose, elevator);
+                return abcs.collectAlgaeFromReef(this.getState().Pose, elevator, algaeIntake);
             },
             Set.of(this)
         );
     }
 
-    public Command doProcessor(ElevatorSubsystem elevator) {
+    public Command doProcessor(ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
         return new DeferredCommand(
             () -> {
-                return abcs.doProcessor(elevator);
+                return abcs.doProcessor(elevator, algaeIntake);
             },
             Set.of(this)
         );

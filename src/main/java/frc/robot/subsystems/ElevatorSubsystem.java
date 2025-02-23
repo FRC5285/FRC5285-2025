@@ -65,8 +65,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor.setPosition(0);
     elevatorState = new ElevatorState();
     
-    atBottom = new Trigger(()-> bottomLimitSwitch.get());
-    atTop = new Trigger(()-> topLimitSwitch.get());
+    atBottom = new Trigger(()-> !bottomLimitSwitch.get()); // Limit switch down is false, so must invert
+    atTop = new Trigger(()-> !topLimitSwitch.get());
     atBottom.onTrue(hitBottomLimit());
     atTop.onTrue(hitTopLimit());
   }

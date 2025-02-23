@@ -8,7 +8,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.TriggerConstants;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
 /*
  * Quite a lot of code was copied from here:
@@ -44,6 +47,7 @@ public class RobotContainer {
     public final WristSubsystem wrist = new WristSubsystem();
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
     public final LEDSubsystem ledStrip = new LEDSubsystem();
+    public final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -77,57 +81,57 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1) * MaxSpeed * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis()))) // Drive forward with negative Y (forward)
-                    .withVelocityY(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1) * MaxSpeed * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis()))) // Drive left with negative X (left)
-                    .withRotationalRate(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1) * MaxAngularRate * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis()))) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1) * MaxSpeed)) // Drive forward with negative Y (forward)
+                    .withVelocityY(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1) * MaxSpeed)) // Drive left with negative X (left)
+                    .withRotationalRate(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
             )
         );
         // Deposit coral
-        m_driverController.x().onTrue(
+        m_driverController.x().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition())
         );
-        m_driverController.a().onTrue(
+        m_driverController.a().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition())
         );
-        m_driverController.b().onTrue(
+        m_driverController.b().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition())
         );
-        m_driverController.y().onTrue(
+        m_driverController.y().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition())
         );
-        m_driverController.a().or(m_driverController.b().or(m_driverController.x().or(m_driverController.y()))).onFalse(
+        m_driverController.a().or(m_driverController.b().or(m_driverController.x().or(m_driverController.y()))).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             drivetrain.depositReefBranch(flywheel, m_driverController.getHID(), elevator, wrist)
         );
 
         // Get coral from coral station
-        new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).onTrue(
+        new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
         );
-        new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).onFalse(
+        new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Get algae from reef
-        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onTrue(
+        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             elevator.goToPosition(() -> drivetrain.getAlgaeHeight())
         );
-        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onFalse(
-            drivetrain.collectAlgaeFromReef(elevator)
+        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+            drivetrain.collectAlgaeFromReef(elevator, algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Deposit algae into processor
-        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onTrue(
+        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             elevator.goToProcessorPosition()
         );
-        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onFalse(
-            drivetrain.doProcessor(elevator)
+        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+            drivetrain.doProcessor(elevator, algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Do the deep climb
-        new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).onTrue(
+        new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             drivetrain.doDeepClimb()
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
@@ -140,6 +144,10 @@ public class RobotContainer {
         m_driverController.b().onTrue(wrist.goToMidShootPosition());
         m_driverController.a().onTrue(wrist.goToHighShootPosition());
         */
+    }
+
+    private double applyThrottle(double speedVal) {
+        return speedVal * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis() * OperatorConstants.throttleMaxReduction));
     }
 
     /**

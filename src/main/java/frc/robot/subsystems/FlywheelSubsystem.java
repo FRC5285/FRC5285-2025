@@ -41,13 +41,15 @@ public class FlywheelSubsystem extends SubsystemBase {
   public Command intakeCoral(){
     return run(()-> flywheelMotor.set(FlywheelConstants.intakeSpeed))
       .onlyIf(this::noCoral)
-     .until(this::hasCoral)
-     .andThen(()-> flywheelMotor.stopMotor());
+      .until(this::hasCoral)
+      .withTimeout(FlywheelConstants.intakeMaxTime)
+      .andThen(()-> flywheelMotor.stopMotor());
   }
 
   public Command shootCoral(){
     return run(()-> flywheelMotor.set(FlywheelConstants.shootSpeed))
       .onlyIf(this::hasCoral)
+      .until(this::noCoral)
       .withTimeout(FlywheelConstants.shootDuration)
       .andThen(()->flywheelMotor.stopMotor());
   }

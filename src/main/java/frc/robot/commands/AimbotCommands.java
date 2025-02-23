@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.WristSubsystem;
@@ -60,22 +61,24 @@ public class AimbotCommands {
         .andThen(flywheel.intakeCoral());
     }
 
-    public Command collectAlgaeFromReef(Pose2d robotPose, ElevatorSubsystem elevator) {
+    public Command collectAlgaeFromReef(Pose2d robotPose, ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
         return AutoBuilder.pathfindToPose(
             this.coords.getReefAlgaeCoords(robotPose),
             this.pathfindConstraints,
             0.0
         )
-        .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()));
+        .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
+        .andThen(algaeIntake.doIntake());
     }
 
-    public Command doProcessor(ElevatorSubsystem elevator) {
+    public Command doProcessor(ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
         return AutoBuilder.pathfindToPose(
             this.coords.processorPose,
             this.pathfindConstraints,
             0.0
         )
-        .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()));
+        .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
+        .andThen(algaeIntake.shootOut());
     }
 
     public Command doDeepClimb() {
