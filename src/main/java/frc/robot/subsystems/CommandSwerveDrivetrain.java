@@ -65,7 +65,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             );
             m_hasAppliedOperatorPerspective = true;
         });
-        configureAutoBuilder();
         this.resetPose(abcs.getStartLoc()); // sets robot position to middle of starting line
     }
 
@@ -116,7 +115,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                // If in auton, flips if necessary, otherwise does not flip
+                () -> (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) && DriverStation.isAutonomous(),
                 this // Subsystem for requirements
             );
         } catch (Exception ex) {

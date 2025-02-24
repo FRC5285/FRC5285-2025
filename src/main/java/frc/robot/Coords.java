@@ -22,8 +22,8 @@ public class Coords {
     public final Rotation2d[] reefCorrespondingAngles;
     public final double[] reefAlgaeHeights;
 
-    // Value of sin(45 deg) or cos(45 deg)
-    private final double sc45 = Math.cos(Math.PI / 4.0);
+    private final double cos36 = Math.cos(0.2 * Math.PI); // Cosine of 36 deg (coral station)
+    private final double sin36 = Math.cos(0.2 * Math.PI); // Sine of 36 deg (coral station)
 
     public Coords(boolean isBlue) {
         this.isBlue = isBlue;
@@ -65,16 +65,16 @@ public class Coords {
             new Rotation2d(Math.PI/2.0 - this.sideSign * (Math.PI/2.0))
         ); // Position is facing towards barge, at center of starting line
 
-        coralStationX += this.sideSign * (this.sc45 * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.coralStationSafeDist));
+        coralStationX += this.sideSign * (this.cos36 * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.coralStationSafeDist));
         this.bottomCoralStationPose = new Pose2d(
-            coralStationX - this.sc45 * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.coralStationCorrection),
-            FieldConstants.coralStationBottomY + (this.sc45 * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.coralStationSafeDist)) + this.sideSign * this.sc45 * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.coralStationCorrection),
-            new Rotation2d(1.5 * Math.PI - this.sideSign * (Math.PI/4.0))
+            coralStationX - this.cos36 * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.coralStationCorrection),
+            FieldConstants.coralStationBottomY + (this.sin36 * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.coralStationSafeDist)) + this.sideSign * this.sin36 * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.coralStationCorrection),
+            new Rotation2d(1.5 * Math.PI - this.sideSign * (0.2 * Math.PI))
         );
         this.topCoralStationPose = new Pose2d(
-            coralStationX + this.sc45 * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.coralStationCorrection),
-            FieldConstants.coralStationTopY - (this.sc45 * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.coralStationSafeDist)) + this.sideSign * this.sc45 * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.coralStationCorrection),
-            new Rotation2d(0.5 * Math.PI + this.sideSign * (Math.PI/4.0))
+            coralStationX + this.cos36 * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.coralStationCorrection),
+            FieldConstants.coralStationTopY - (this.sin36 * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.coralStationSafeDist)) + this.sideSign * this.sin36 * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.coralStationCorrection),
+            new Rotation2d(0.5 * Math.PI + this.sideSign * (0.2 * Math.PI))
         );
 
         Pose2d[] rscl = new Pose2d[6];
@@ -107,8 +107,8 @@ public class Coords {
         double goingLeft = goLeft ? 1.0 : -1.0;
         double goingTop = goToTop ? 1.0 : -1.0;
         return new Pose2d(
-            this.bottomCoralStationPose.getX() + goingTop * goingLeft * this.sc45 * FieldConstants.coralStationOffset,
-            this.bottomCoralStationPose.getY() + goingLeft * this.sideSign * this.sc45 * FieldConstants.coralStationOffset,
+            this.bottomCoralStationPose.getX() + goingTop * goingLeft * this.cos36 * FieldConstants.coralStationOffset,
+            this.bottomCoralStationPose.getY() + goingLeft * this.sideSign * this.sin36 * FieldConstants.coralStationOffset,
             this.bottomCoralStationPose.getRotation()
         );
     }
