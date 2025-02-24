@@ -68,18 +68,18 @@ public final class Constants {
         public static final double coralArmOffset = 0.154;
 
         // Gap between robot and places to score
-        public static final double processorSafeDist = 0.1;
+        public static final double processorSafeDist = 0.2;
 
         public static final double cageSafeDist = 0.1;
 
-        public static final double reefSafeDist = 0.05;
+        public static final double reefSafeDist = 0.1;
 
-        public static final double reefAlgaeSafeDist = 0.00; // Gets added to reefSafeDist
+        public static final double reefAlgaeSafeDist = 0.0; // Gets added to reefSafeDist
 
-        public static final double coralStationSafeDist = 0.05;
+        public static final double coralStationSafeDist = 0.1;
 
-        // Gets added onto coralArmOffset
-        public static final double coralStationCorrection = 0.0;
+        // Horizontal (from robot perspective) translations
+        public static final double coralStationCorrection = 0.0; // Gets added onto coralArmOffset
         
         public static final double reefBranchCorrection = 0.0;
     }

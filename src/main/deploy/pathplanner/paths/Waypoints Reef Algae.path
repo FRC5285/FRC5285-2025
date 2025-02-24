@@ -1,0 +1,135 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.8124545651975135,
+        "y": 4.037587583440014
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.024325540822757,
+        "y": 4.222583694160046
+      },
+      "isLocked": false,
+      "linkedName": "Reef Side 0 Algae"
+    },
+    {
+      "anchor": {
+        "x": 5.141100065151793,
+        "y": 5.177390756446598
+      },
+      "prevControl": {
+        "x": 5.5786409669000045,
+        "y": 5.031471279390982
+      },
+      "nextControl": {
+        "x": 4.750724063306056,
+        "y": 5.307580783977263
+      },
+      "isLocked": false,
+      "linkedName": "Reef Side 1 Algae"
+    },
+    {
+      "anchor": {
+        "x": 3.829433750914411,
+        "y": 5.163499279901243
+      },
+      "prevControl": {
+        "x": 4.191571987747926,
+        "y": 5.391010702346421
+      },
+      "nextControl": {
+        "x": 3.288983604037333,
+        "y": 4.82396434773876
+      },
+      "isLocked": false,
+      "linkedName": "Reef Side 2 Algae"
+    },
+    {
+      "anchor": {
+        "x": 3.168761144385516,
+        "y": 4.036735037948061
+      },
+      "prevControl": {
+        "x": 3.1429537481622853,
+        "y": 4.285399426834321
+      },
+      "nextControl": {
+        "x": 3.221642186725752,
+        "y": 3.527205445599397
+      },
+      "isLocked": false,
+      "linkedName": "Reef Side 3 Algae"
+    },
+    {
+      "anchor": {
+        "x": 3.816745868004755,
+        "y": 2.8822881423738114
+      },
+      "prevControl": {
+        "x": 3.5543359447297145,
+        "y": 3.0219245795154857
+      },
+      "nextControl": {
+        "x": 4.037444193900961,
+        "y": 2.7648477364369617
+      },
+      "isLocked": false,
+      "linkedName": "Reef Side 4 Algae"
+    },
+    {
+      "anchor": {
+        "x": 5.131421166331382,
+        "y": 2.8748158318855155
+      },
+      "prevControl": {
+        "x": 4.7201645669603565,
+        "y": 2.6693015039073464
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Reef Side 5 Algae"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -119.99999999999999
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": -59.99999999999999
+    },
+    {
+      "waypointRelativePos": 3,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 4,
+      "rotationDegrees": 59.99999999999999
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.73,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1800.0,
+    "nominalVoltage": 12.0,
+    "unlimited": true
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 119.99999999999999
+  },
+  "reversed": false,
+  "folder": "Waypoints (DO NOT USE)",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
