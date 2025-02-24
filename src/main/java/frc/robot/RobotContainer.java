@@ -12,6 +12,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.TriggerConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
@@ -50,6 +51,7 @@ public class RobotContainer {
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
     public final LEDSubsystem ledStrip = new LEDSubsystem();
     public final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
+    public final ClimberSubsystem climber = new ClimberSubsystem();
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -121,10 +123,10 @@ public class RobotContainer {
         );
 
         // Get coral from coral station
-        new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+        new Trigger(() -> ControllerUtils.dPadDown(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
         );
-        new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+        new Trigger(() -> ControllerUtils.dPadDown(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
@@ -151,6 +153,9 @@ public class RobotContainer {
         new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             drivetrain.doDeepClimb()
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
+        );
+        new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+            climber.doClimb()
         );
 
         // Emergency stops the aimbot (DO NOT USE UNLESS ABSOLUTELY NECESSARY)
