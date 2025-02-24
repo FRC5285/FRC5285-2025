@@ -57,6 +57,6 @@ public class ControllerUtils {
      * @return if the right trigger is pressed.
      */
     public static boolean rightTrigger(XboxController controller) {
-        return controller.getRightTriggerAxis() < triggerTolerance;
+        return controller.getRightTriggerAxis() > triggerTolerance;
     }
 }
