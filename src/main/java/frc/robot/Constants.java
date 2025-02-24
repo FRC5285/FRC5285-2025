@@ -166,13 +166,13 @@ public final class Constants {
     public static class AlgaeIntakeConstants {
         public static final int motorID1 = 15; // CAN
         public static final int motorID2 = 16; // CAN
-        public static final int limitSwitchID = 0; // DIO
+        public static final int algaeIntakeSensorID = 9; // DIO
 
-        public static final double outSpeed = -1.0;
-        public static final double inSpeed = 1.0; // left (from front perspective) is +in, right is -in
+        public static final double outSpeed = -0.5;
+        public static final double inSpeed = 0.5; // left (from front perspective) is +in, right is -in
 
         public static final double maxMotorTime = 3.0;
-        public static final double outMotorTime = 2.0;
+        public static final double outMotorTime = 0.5;
     }
 
     public static class ClimberConstants {

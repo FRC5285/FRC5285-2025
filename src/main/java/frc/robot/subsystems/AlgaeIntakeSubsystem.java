@@ -3,44 +3,66 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AlgaeIntakeConstants;
 
 public class AlgaeIntakeSubsystem extends SubsystemBase {
-    private final TalonFX mainMotor;
+    private final TalonFX algaeIntakeMotor;
     private final TalonFX followerMotor;
-    private final DigitalInput limitSwitch;
+    private final DigitalInput algaeIntakeSensor;
+
+    @SuppressWarnings("unused")
+    private final AlgaeIntakeState state;
 
     public AlgaeIntakeSubsystem() {
-        mainMotor = new TalonFX(AlgaeIntakeConstants.motorID1);
+        algaeIntakeMotor = new TalonFX(AlgaeIntakeConstants.motorID1);
         followerMotor = new TalonFX(AlgaeIntakeConstants.motorID2);
-        limitSwitch = new DigitalInput(AlgaeIntakeConstants.limitSwitchID);
+        algaeIntakeSensor = new DigitalInput(AlgaeIntakeConstants.algaeIntakeSensorID);
+        state = new AlgaeIntakeState();
 
-        followerMotor.setControl(new Follower(mainMotor.getDeviceID(), true));
+        followerMotor.setControl(new Follower(algaeIntakeMotor.getDeviceID(), true));
     }
 
     public boolean hasAlgae() {
-        return !limitSwitch.get(); // Limit switch down when .get() returns false
+        return !algaeIntakeSensor.get(); 
     }
 
     public boolean noAlgae() {
-        return !this.hasAlgae();
+        return !hasAlgae() && algaeIntakeMotor.get() == 0.0;
     }
 
     public Command doIntake() {
-        return run(() -> mainMotor.set(AlgaeIntakeConstants.inSpeed))
+        return run(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.inSpeed))
         .until(this::hasAlgae)
         .withTimeout(AlgaeIntakeConstants.maxMotorTime)
-        .andThen(() -> mainMotor.set(0));
+        .andThen(() -> algaeIntakeMotor.stopMotor());
     }
 
     public Command shootOut() {
-        return runOnce(() -> mainMotor.set(AlgaeIntakeConstants.outSpeed))
+        return runOnce(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.outSpeed))
         // .until(this::noAlgae) // Algae will still be held when limit switch is not down
         .andThen(new WaitCommand(AlgaeIntakeConstants.outMotorTime))
-        .andThen(() -> mainMotor.set(0));
+        .andThen(() -> algaeIntakeMotor.set(0));
+    }
+
+    public class AlgaeIntakeState implements Sendable{
+        
+        public AlgaeIntakeState(){
+        SendableRegistry.add(this, "AlgaeIntakeState");
+        SmartDashboard.putData(this);
+        }
+
+        @Override
+        public void initSendable(SendableBuilder builder){
+        builder.addDoubleProperty("AlgaeIntakeMotor", ()-> algaeIntakeMotor.get(), null);
+        builder.addBooleanProperty("Sensor", ()-> hasAlgae(), null);
+        }
     }
 }
