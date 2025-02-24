@@ -182,7 +182,7 @@ public final class Constants {
     public static class ClimberConstants {
         public static final int motorID = 17; // CAN
 
-        public static final double climbSpeed = 1.0;
+        public static final double climbSpeed = -1.0;
 
         public static final double climbTime = 5.0;
     }
