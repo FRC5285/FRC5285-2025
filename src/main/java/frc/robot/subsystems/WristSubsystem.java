@@ -67,7 +67,7 @@ public class WristSubsystem extends SubsystemBase {
   }
   
   public Command goToLowShootPosition() {
-    return goToPosition(() -> WristConstants.L1Position);
+    return goToPosition(() -> WristConstants.lowShootPosition);
   }
 
   public Command goToMidShootPosition(){
@@ -80,10 +80,11 @@ public class WristSubsystem extends SubsystemBase {
 
   public class WristState implements Sendable{ //for smartdashboard
 
-    private double intakePosition = 0.15;
-    private double midShootPosition = 0.312;
-    private double highShootPosition = 0.408;
-    private double encoderOffset = 0.644;
+    private double intakePosition = WristConstants.intakePosition;
+    private double lowShootPosition = WristConstants.lowShootPosition;
+    private double midShootPosition = WristConstants.midShootPosition;
+    private double highShootPosition = WristConstants.highShootPosition;
+    private double encoderOffset = WristConstants.encoderOffset;
     
     public WristState(){
       SendableRegistry.add(this, "Wrist State");
@@ -95,6 +96,7 @@ public class WristSubsystem extends SubsystemBase {
       builder.setSmartDashboardType("RobotPreferences");
 
       builder.addDoubleProperty("intakePosition", this::getIntakePosition, this::setIntakePosition);
+      builder.addDoubleProperty("midShootPosition", this::getLowShootPosition, this::setIntakePosition);
       builder.addDoubleProperty("midShootPosition", this::getMidShootPosition, this::setMidShootPosition);
       builder.addDoubleProperty("highShootPosition", this::getHighShootPosition, this::setHighShootPosition);
       builder.addDoubleProperty("encoderOffset", this::getEncoderOffset, this::setEncoderOffset);
@@ -130,6 +132,14 @@ public class WristSubsystem extends SubsystemBase {
 
     public void setIntakePosition(double intakePosition) {
       this.intakePosition = intakePosition;
+    }
+
+    public double getLowShootPosition() {
+      return lowShootPosition;
+    }
+
+    public void setLowShootPosition(double lowShootPosition) {
+      this.lowShootPosition = lowShootPosition;
     }
 
     public double getMidShootPosition() {
