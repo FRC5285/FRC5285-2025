@@ -96,7 +96,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public Command goToProcessorPosition() {
-    return goToPosition(() -> ElevatorConstants.processorHeight); // Put other constants into Constants file later!! Also tune this one!!!
+    return goToPosition(() -> elevatorState.getProcessorHeight()); // Put other constants into Constants file later!! Also tune this one!!!
   }
 
   public Command goToBottomPosition(){
@@ -133,6 +133,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double level4Position = ElevatorConstants.level4Position;
     private double maxHeight = ElevatorConstants.maxHeight;
     private double intakePosition = ElevatorConstants.intakePosition;
+    private double processorHeight = ElevatorConstants.processorHeight;
 
     public double getLevel1Position() {
       return level1Position;
@@ -182,6 +183,14 @@ public class ElevatorSubsystem extends SubsystemBase {
       this.intakePosition = intakePosition;
     }
 
+    public double getProcessorHeight() {
+      return processorHeight;
+    }
+
+    public void setProcessorHeight(double processorHeight) {
+      this.processorHeight = processorHeight;
+    }
+
     public ElevatorState(){
       SendableRegistry.add(this, "Elevator State");
       SmartDashboard.putData(this);
@@ -197,6 +206,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       builder.addDoubleProperty("Level 4 Position", this::getLevel4Position, this::setLevel4Position);
       builder.addDoubleProperty("Max Height Position", this::getMaxHeight, this::setMaxHeight);
       builder.addDoubleProperty("Intake Position", this::getIntakePosition, this::setIntakePosition);
+      builder.addDoubleProperty("Processor Height", this::getProcessorHeight, this::setProcessorHeight);
 
     }
   }
