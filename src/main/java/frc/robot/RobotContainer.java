@@ -19,7 +19,7 @@ import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.ControllerUtils;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -160,8 +160,12 @@ public class RobotContainer {
 
         // Emergency stops the aimbot (DO NOT USE UNLESS ABSOLUTELY NECESSARY)
         m_driverController.leftStick().onTrue(
-            drivetrain.getDefaultCommand()
+            drivetrain.getDefaultCommand().alongWith(ledStrip.toNormal())
         );
+
+        // LEDs for Auton
+        new Trigger(() -> DriverStation.isAutonomous()).onTrue(ledStrip.toAuton());
+        new Trigger(() -> DriverStation.isAutonomous()).onFalse(ledStrip.toNormal());
 
         /* Uncomment to test flywheel
         m_driverController.a().and(flywheel.noCoral).onTrue(flywheel.intakeCoral());
@@ -186,6 +190,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
         // return Autos.exampleAuto(m_exampleSubsystem);
-        return autoChooser.getSelected().alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal());
+        return autoChooser.getSelected();
     }
 }

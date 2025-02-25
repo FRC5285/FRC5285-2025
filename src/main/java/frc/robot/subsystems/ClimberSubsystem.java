@@ -17,6 +17,6 @@ public class ClimberSubsystem extends SubsystemBase {
     public Command doClimb() {
         return runOnce(() -> climbMotor.set(ClimberConstants.climbSpeed))
         .andThen(new WaitCommand(ClimberConstants.climbTime))
-        .andThen(() -> climbMotor.set(0.0));
+        .andThen(() -> climbMotor.stopMotor());
     }
 }
