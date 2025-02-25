@@ -1,21 +1,16 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Volts;
-
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.Slot1Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,41 +23,25 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final TalonFX followerMotor;
   private final DigitalInput topLimitSwitch;
   private final DigitalInput bottomLimitSwitch;
-  private final PositionVoltage goingUpVoltage;
-  private final PositionVoltage goingDownVoltage;
   private final Trigger atBottom;
   private final Trigger atTop;
   private final ElevatorState elevatorState;
-  private double targetPos;
+  private final Encoder elevatorEncoder;
+  private final PIDController elevatorPID;
+  private boolean motorOverride = false;
 
   public ElevatorSubsystem() {
-    goingUpVoltage = new PositionVoltage(0).withSlot(0);
-    goingDownVoltage = new PositionVoltage(0).withSlot(1);
-
     elevatorMotor = new TalonFX(ElevatorConstants.elevatorMotorID);
     followerMotor = new TalonFX(ElevatorConstants.followMotorID);
     topLimitSwitch = new DigitalInput(ElevatorConstants.topLimitSwitchID);
     bottomLimitSwitch = new DigitalInput(ElevatorConstants.bottomLimitSwitchID);
+    elevatorEncoder = new Encoder(ElevatorConstants.encoderA, ElevatorConstants.encoderB);
+    elevatorPID = new PIDController(ElevatorConstants.upKP, ElevatorConstants.upKI, ElevatorConstants.upKD);
+
+    elevatorPID.setTolerance(ElevatorConstants.goalRange);
     
     followerMotor.setControl(new Follower(elevatorMotor.getDeviceID(), false));
 
-    Slot0Configs goingUpConfig = new Slot0Configs()
-      .withKP(2.4)
-      .withKI(0.1)
-      .withKD(0.1);
-    Slot1Configs goingDownConfig = new Slot1Configs()
-      .withKP(2.0)
-      .withKI(0.1)
-      .withKD(0.1);
-    TalonFXConfiguration config = new TalonFXConfiguration()
-      .withSlot0(goingUpConfig)
-      .withSlot1(goingDownConfig)
-      .withVoltage(new VoltageConfigs()
-        .withPeakForwardVoltage(Volts.of(8))
-        .withPeakReverseVoltage(Volts.of(-2)) // less volts going down
-      );
-    elevatorMotor.getConfigurator().apply(config);
-    elevatorMotor.setPosition(0);
     elevatorState = new ElevatorState();
     
     atBottom = new Trigger(()-> !bottomLimitSwitch.get()); // Limit switch down is false, so must invert
@@ -73,26 +52,27 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public Command goToPosition(DoubleSupplier getTargetPosition) {
     return runOnce(() -> {
-      double currentPos = this.currentPos(); //returns rotation
-      this.targetPos = getTargetPosition.getAsDouble() / elevatorState.getDistancePerRotation(); //converts distance to rotations
-      if (this.targetPos > currentPos) {
-        elevatorMotor.setControl(goingDownVoltage.withPosition(this.targetPos));
-      }
-      else if (this.targetPos < currentPos) {
-        elevatorMotor.setControl(goingUpVoltage.withPosition(this.targetPos));
-      }
-      else {
-        elevatorMotor.stopMotor();
+      motorOverride = false;
+      elevatorPID.setSetpoint(getTargetPosition.getAsDouble());
+      if (elevatorPID.getSetpoint() > this.currentPos()) {
+        elevatorPID.setPID(ElevatorConstants.upKP, ElevatorConstants.upKI, ElevatorConstants.upKD);
+      } else if (elevatorPID.getSetpoint() < this.currentPos()) {
+        elevatorPID.setPID(ElevatorConstants.downKP, ElevatorConstants.downKI, ElevatorConstants.downKD);
       }
     });
   }
 
+  /** Run in robotPeriodic */
+  public void setMotors() {
+    if (motorOverride == false) this.elevatorMotor.set(elevatorPID.calculate(currentPos()));
+  }
+
   private double currentPos() {
-    return elevatorMotor.getPosition().getValueAsDouble();
+    return elevatorEncoder.get();
   }
 
   public boolean reachedGoal() {
-    return Math.abs(this.currentPos() - this.targetPos) < ElevatorConstants.goalRange;
+    return elevatorPID.atSetpoint();
   }
 
   public Command goToLevel1Position(){
@@ -125,20 +105,24 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private Command hitBottomLimit(){
     return runOnce(()->{
+      motorOverride = true;
+      elevatorEncoder.reset();
       elevatorMotor.stopMotor();
-      elevatorMotor.setPosition(0);
     });
   }
 
   private Command hitTopLimit(){
     return runOnce(()->{
+      motorOverride = true;
       elevatorMotor.stopMotor();
-      elevatorMotor.setPosition(elevatorState.getMaxHeight());
     });
   }
 
   public Command resetToHome(){
-    return run(()-> elevatorMotor.set(-0.1)).until(atBottom);
+    return run(()-> {
+      motorOverride = true;
+      elevatorMotor.set(-0.1);
+    }).until(atBottom);
   }
 
   public class ElevatorState implements Sendable{
@@ -149,15 +133,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double level4Position = ElevatorConstants.level4Position;
     private double maxHeight = ElevatorConstants.maxHeight;
     private double intakePosition = ElevatorConstants.intakePosition;
-    private double distancePerRotation = ElevatorConstants.distancePerRotation;
-
-    public double getDistancePerRotation() {
-      return distancePerRotation;
-    }
-
-    public void setDistancePerRotation(double distancePerRotation) {
-      this.distancePerRotation = distancePerRotation;
-    }
 
     public double getLevel1Position() {
       return level1Position;
@@ -222,7 +197,6 @@ public class ElevatorSubsystem extends SubsystemBase {
       builder.addDoubleProperty("Level 4 Position", this::getLevel4Position, this::setLevel4Position);
       builder.addDoubleProperty("Max Height Position", this::getMaxHeight, this::setMaxHeight);
       builder.addDoubleProperty("Intake Position", this::getIntakePosition, this::setIntakePosition);
-      builder.addDoubleProperty("Distance Per Rotation", this::getDistancePerRotation, this::setDistancePerRotation);
 
     }
   }

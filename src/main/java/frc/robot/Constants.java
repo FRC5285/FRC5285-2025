@@ -134,11 +134,14 @@ public final class Constants {
 
     public static class WristConstants{
         public static final int wristMotorID = 18; // CAN
-        public static final int wristEncoderID = 1; // PWM
+        public static final int wristEncoderID = 0; // DIO
 
         public static final double intakePosition = 0.15;
+        /**L1*/
         public static final double lowShootPosition = 0.0;
+        /**L2/L3*/
         public static final double midShootPosition = 0.312;
+        /**L4*/
         public static final double highShootPosition = 0.408;
         public static final double encoderOffset = 0.644;
     }
@@ -148,23 +151,31 @@ public final class Constants {
         public static final int followMotorID = 14; // CAN
         public static final int topLimitSwitchID = 1; // DIO
         public static final int bottomLimitSwitchID = 2; // DIO
-        public static final int encoderID = 2; // PWM
+        public static final int encoderA = 3; // DIO
+        public static final int encoderB = 4; // DIO
+
+        public static final double upKP = 2.4;
+        public static final double upKI = 0.1;
+        public static final double upKD = 0.1;
+        public static final double downKP = 2.2;
+        public static final double downKI = 0.1;
+        public static final double downKD = 0.1;
 
         public static final double level1Position = 5;
         public static final double level2Position = 10;
         public static final double level3Position = 15;
         public static final double level4Position = 25;
-        public static final double maxHeight = 30;
         public static final double intakePosition = 12;
-        public static final double distancePerRotation = 0.5;
         
         public static final double L2AlgaeHeight = 0.0;
         public static final double L3AlgaeHeight = 0.0;
 
+        public static final double maxHeight = 30;
+
         public static final double processorHeight = 0.0;
 
         // Elevator is at goal position if it is this close to the goal position
-        public static final double goalRange = 0.1;
+        public static final double goalRange = 0.05;
     }
 
     public static class AlgaeIntakeConstants {

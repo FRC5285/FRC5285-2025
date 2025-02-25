@@ -182,6 +182,10 @@ public class RobotContainer {
         return speedVal * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis() * OperatorConstants.throttleMaxReduction));
     }
 
+    public void updatePIDs() {
+        elevator.setMotors();
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
