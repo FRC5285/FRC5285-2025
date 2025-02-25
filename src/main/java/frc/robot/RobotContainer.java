@@ -55,6 +55,7 @@ public class RobotContainer {
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController m_secondaryController = new CommandXboxController(OperatorConstants.kSecondaryControllerPort);
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
@@ -106,45 +107,45 @@ public class RobotContainer {
             )
         );
         // Deposit coral
-        m_driverController.x().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+        m_secondaryController.x().debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition())
         );
-        m_driverController.a().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+        m_secondaryController.a().debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition())
         );
-        m_driverController.b().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+        m_secondaryController.b().debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition())
         );
-        m_driverController.y().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+        m_secondaryController.y().debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition())
         );
-        m_driverController.a().or(m_driverController.b().or(m_driverController.x().or(m_driverController.y()))).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+        m_driverController.y().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             drivetrain.depositReefBranch(flywheel, m_driverController.getHID(), elevator, wrist)
         );
 
         // Get coral from coral station
-        new Trigger(() -> ControllerUtils.dPadDown(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+        new Trigger(() -> ControllerUtils.dPadDown(m_secondaryController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
         );
-        new Trigger(() -> ControllerUtils.dPadDown(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+        m_driverController.a().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Get algae from reef
-        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+        new Trigger(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             elevator.goToPosition(() -> drivetrain.getAlgaeHeight())
         );
-        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+        m_driverController.x().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             drivetrain.collectAlgaeFromReef(elevator, algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Deposit algae into processor
-        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+        new Trigger(() -> ControllerUtils.dPadRight(m_secondaryController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
             elevator.goToProcessorPosition()
         );
-        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+        m_driverController.b().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             drivetrain.doProcessor(elevator, algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
@@ -184,6 +185,7 @@ public class RobotContainer {
 
     public void updatePIDs() {
         elevator.setMotors();
+        wrist.setMotors();
     }
 
     /**

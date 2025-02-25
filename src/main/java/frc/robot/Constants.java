@@ -24,6 +24,8 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
 
+        public static final int kSecondaryControllerPort = 1;
+
         public static final double maxSpeedMultiplier = 1.0; // Set this value within the range [0, 1]
 
         public static final double throttleMaxReduction = 0.9; // Most speed the throttle can take off (range [0, 1])

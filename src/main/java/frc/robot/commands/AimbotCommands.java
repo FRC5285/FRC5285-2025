@@ -31,14 +31,13 @@ public class AimbotCommands {
         return coords.startPose;
     }
 
-    public double getAlgaeHeight(Pose2d robotePose) {
-        return coords.getAlgaeHeight(robotePose);
+    public double getAlgaeHeight(Pose2d robotPose) {
+        return coords.getAlgaeHeight(robotPose);
     }
 
     // All of these need a lot more work
     // just basic commands now, chain them together later
     public Command depositReefBranch(Pose2d robotPose, XboxController controller, FlywheelSubsystem flywheel, ElevatorSubsystem elevator, WristSubsystem wrist) {
-        // Todo: Add checks to make sure elevator and wrist are in position
         return AutoBuilder.pathfindToPose(
             this.coords.getReefBranchCoords(robotPose, controller.getLeftBumperButton(), controller.getRightBumperButton()),
             this.pathfindConstraints,
@@ -50,12 +49,13 @@ public class AimbotCommands {
     }
 
     public Command collectCoralStation(Pose2d robotPose, XboxController controller, FlywheelSubsystem flywheel, ElevatorSubsystem elevator, WristSubsystem wrist) {
-        // Todo: Add checks to make sure elevator and wrist are in position
         return AutoBuilder.pathfindToPose(
             this.coords.getCoralStationCoords(robotPose, controller.getLeftBumperButton(), controller.getRightBumperButton()),
             this.pathfindConstraints,
             0.0
         )
+        .alongWith(elevator.goToIntakePosition()) // Failsafe
+        .alongWith(wrist.goToIntakePosition()) // Failsafe
         .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
         .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
         .andThen(flywheel.intakeCoral());
@@ -67,6 +67,7 @@ public class AimbotCommands {
             this.pathfindConstraints,
             0.0
         )
+        .alongWith(elevator.goToPosition(() -> getAlgaeHeight(robotPose))) // Failsafe
         .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
         .andThen(algaeIntake.doIntake());
     }
@@ -77,6 +78,7 @@ public class AimbotCommands {
             this.pathfindConstraints,
             0.0
         )
+        .alongWith(elevator.goToProcessorPosition()) // Failsafe
         .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
         .andThen(algaeIntake.shootOut());
     }

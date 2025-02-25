@@ -47,15 +47,14 @@ public class WristSubsystem extends SubsystemBase {
 
   private Command goToPosition(DoubleSupplier getTargetPosition){
     return runOnce(()-> {
-        wristPIDController.reset();
-        wristPIDController.setSetpoint(getTargetPosition.getAsDouble());
-      })
-      .andThen(run(()->{
-        double speed = wristPIDController.calculate(wristState.getCurrentPosition()); //how fast should we run the motor to get to the current position
-        wristMotor.set(speed);
-      }))
-      .until(()-> wristPIDController.atSetpoint())
-      .andThen(()-> wristMotor.stopMotor());
+      // wristPIDController.reset();
+      wristPIDController.setSetpoint(getTargetPosition.getAsDouble());
+    });
+  }
+
+  /** Run in robotPeriodic */
+  public void setMotors() {
+    this.wristMotor.set(wristPIDController.calculate(wristState.getCurrentPosition()));
   }
 
   public boolean isAtSetpoint() {
@@ -67,7 +66,7 @@ public class WristSubsystem extends SubsystemBase {
   }
   
   public Command goToLowShootPosition() {
-    return goToPosition(() -> WristConstants.lowShootPosition);
+    return goToPosition(() -> wristState.getLowShootPosition());
   }
 
   public Command goToMidShootPosition(){

@@ -39,6 +39,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorPID = new PIDController(ElevatorConstants.upKP, ElevatorConstants.upKI, ElevatorConstants.upKD);
 
     elevatorPID.setTolerance(ElevatorConstants.goalRange);
+    elevatorPID.setSetpoint(0);
     
     followerMotor.setControl(new Follower(elevatorMotor.getDeviceID(), false));
 
@@ -53,6 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command goToPosition(DoubleSupplier getTargetPosition) {
     return runOnce(() -> {
       motorOverride = false;
+      // elevatorPID.reset();
       elevatorPID.setSetpoint(getTargetPosition.getAsDouble());
       if (elevatorPID.getSetpoint() > this.currentPos()) {
         elevatorPID.setPID(ElevatorConstants.upKP, ElevatorConstants.upKI, ElevatorConstants.upKD);
