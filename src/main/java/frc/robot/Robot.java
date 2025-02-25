@@ -55,6 +55,8 @@ public class Robot extends TimedRobot {
         // and running subsystem periodic() methods.    This must be called from the robot's periodic
         // block in order for anything in the Command-based framework to work.
         CommandScheduler.getInstance().run();
+
+        m_robotContainer.updatePIDs();
         
         // Updates position for every camera
         ATCams.updateEstimatedPose(m_robotContainer.drivetrain);
