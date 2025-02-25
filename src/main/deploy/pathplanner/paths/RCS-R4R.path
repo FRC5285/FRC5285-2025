@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.161,
+        "y": 1.048
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.2269546757844623,
+        "y": 1.7496111165324124
+      },
+      "isLocked": false,
+      "linkedName": "Right Coral Station"
+    },
+    {
+      "anchor": {
+        "x": 4.093421955010973,
+        "y": 2.7296323495793704
+      },
+      "prevControl": {
+        "x": 2.4736028511041734,
+        "y": 2.179445450965206
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Reef Side 4 Right"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.73,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1800.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 59.99999999999999
+  },
+  "reversed": false,
+  "folder": "Coral Station to Reef paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -126.0
+  },
+  "useDefaultConstraints": true
+}
