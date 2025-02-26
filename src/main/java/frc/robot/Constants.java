@@ -205,7 +205,7 @@ public final class Constants {
 
         public static final double normalColor = 0.93; // 0.93 = White
 
-        public static final double autonColor = 0.67; // 0.67 = Gold
+        public static final double autonColor = 0.61; // 0.67 = Gold, 0.61 = Red
     }
 
     public static class TriggerConstants {
