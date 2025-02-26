@@ -41,7 +41,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorEncoder = new Encoder(ElevatorConstants.encoderA, ElevatorConstants.encoderB);
     elevatorEncoder.setDistancePerPulse(ElevatorConstants.encoderPulseDist);
     elevatorPID = new ProfiledPIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD,
-      new TrapezoidProfile.Constraints(0.3, 0.3)
+      new TrapezoidProfile.Constraints(ElevatorConstants.maxV, ElevatorConstants.maxA)
     );
     elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
 
