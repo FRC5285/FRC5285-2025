@@ -45,6 +45,17 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         .andThen(() -> algaeIntakeMotor.stopMotor());
     }
 
+    public Command groundIntake() {
+        return run(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.inSpeed))
+        .until(this::hasAlgae)
+        .withTimeout(AlgaeIntakeConstants.maxGroundPickupTime)
+        .andThen(() -> algaeIntakeMotor.stopMotor());
+    }
+
+    public Command stopIntake() {
+        return run(() -> algaeIntakeMotor.stopMotor());
+    }
+
     public Command shootOut() {
         return runOnce(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.outSpeed))
         // .until(this::noAlgae) // Algae will still be held when limit switch is not down

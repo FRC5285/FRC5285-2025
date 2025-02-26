@@ -2,6 +2,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.lang.ModuleLayer.Controller;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -130,6 +132,14 @@ public class RobotContainer {
         m_driverController.a().debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
             drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
+        );
+
+        // Get algae from ground (in progress)
+        new Trigger(() -> ControllerUtils.dPadUp(m_secondaryController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kRising).onTrue(
+            elevator.goToFloorAlgaePosition().andThen(algaeIntake.groundIntake())
+        );
+        new Trigger(() -> ControllerUtils.dPadUp(m_secondaryController.getHID())).debounce(TriggerConstants.debounceTime, DebounceType.kFalling).onFalse(
+            algaeIntake.stopIntake()
         );
 
         // Get algae from reef
