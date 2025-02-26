@@ -5,7 +5,9 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
@@ -27,7 +29,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final Trigger atTop;
   private final ElevatorState elevatorState;
   private final Encoder elevatorEncoder;
-  private final PIDController elevatorPID;
+  private final ProfiledPIDController elevatorPID;
+  private final ElevatorFeedforward elevatorFeedforward;
   private boolean motorOverride = false;
 
   public ElevatorSubsystem() {
@@ -36,10 +39,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     topLimitSwitch = new DigitalInput(ElevatorConstants.topLimitSwitchID);
     bottomLimitSwitch = new DigitalInput(ElevatorConstants.bottomLimitSwitchID);
     elevatorEncoder = new Encoder(ElevatorConstants.encoderA, ElevatorConstants.encoderB);
-    elevatorPID = new PIDController(ElevatorConstants.upKP, ElevatorConstants.upKI, ElevatorConstants.upKD);
+    elevatorEncoder.setDistancePerPulse(ElevatorConstants.encoderPulseDist);
+    elevatorPID = new ProfiledPIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD,
+      new TrapezoidProfile.Constraints(0.3, 0.3)
+    );
+    elevatorFeedforward = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG, ElevatorConstants.kV, ElevatorConstants.kA);
 
     elevatorPID.setTolerance(ElevatorConstants.goalRange);
-    elevatorPID.setSetpoint(0);
+    elevatorPID.setGoal(0);
     
     followerMotor.setControl(new Follower(elevatorMotor.getDeviceID(), false));
 
@@ -49,28 +56,22 @@ public class ElevatorSubsystem extends SubsystemBase {
     atTop = new Trigger(()-> !topLimitSwitch.get());
     atBottom.onTrue(hitBottomLimit());
     atTop.onTrue(hitTopLimit());
+    new Trigger(() -> elevatorEncoder.getDistance() >= ElevatorConstants.maxHeight).onTrue(hitTopLimit());
   }
 
   public Command goToPosition(DoubleSupplier getTargetPosition) {
     return runOnce(() -> {
       motorOverride = false;
       // elevatorPID.reset();
-      elevatorPID.setSetpoint(getTargetPosition.getAsDouble());
-      if (elevatorPID.getSetpoint() > this.currentPos()) {
-        elevatorPID.setPID(ElevatorConstants.upKP, ElevatorConstants.upKI, ElevatorConstants.upKD);
-      } else if (elevatorPID.getSetpoint() < this.currentPos()) {
-        elevatorPID.setPID(ElevatorConstants.downKP, ElevatorConstants.downKI, ElevatorConstants.downKD);
-      }
+      elevatorPID.setGoal(getTargetPosition.getAsDouble());
     });
   }
 
   /** Run in robotPeriodic */
   public void setMotors() {
-    if (motorOverride == false) this.elevatorMotor.set(elevatorPID.calculate(currentPos()));
-  }
-
-  private double currentPos() {
-    return elevatorEncoder.get();
+    if (motorOverride == false) this.elevatorMotor.set(elevatorPID.calculate(elevatorEncoder.getDistance())
+       + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity)
+    );
   }
 
   public boolean reachedGoal() {
@@ -95,6 +96,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public Command goToIntakePosition(){
     return goToPosition(()-> elevatorState.getIntakePosition());
+  }
+
+  public Command goToFloorAlgaePosition() {
+    return goToPosition(() -> elevatorState.getFloorAlgaePosition());
   }
 
   public Command goToProcessorPosition() {
@@ -136,6 +141,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double maxHeight = ElevatorConstants.maxHeight;
     private double intakePosition = ElevatorConstants.intakePosition;
     private double processorHeight = ElevatorConstants.processorHeight;
+    private double floorAlgaePosition = ElevatorConstants.floorAlgaePosition;
 
     public double getLevel1Position() {
       return level1Position;
@@ -193,6 +199,14 @@ public class ElevatorSubsystem extends SubsystemBase {
       this.processorHeight = processorHeight;
     }
 
+    public double getFloorAlgaePosition() {
+      return this.floorAlgaePosition;
+    }
+
+    public void setFloorAlgaePosition(double floorAlgaePosition) {
+      this.floorAlgaePosition = floorAlgaePosition;
+    }
+
     public ElevatorState(){
       SendableRegistry.add(this, "Elevator State");
       SmartDashboard.putData(this);
@@ -209,6 +223,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       builder.addDoubleProperty("Max Height Position", this::getMaxHeight, this::setMaxHeight);
       builder.addDoubleProperty("Intake Position", this::getIntakePosition, this::setIntakePosition);
       builder.addDoubleProperty("Processor Height", this::getProcessorHeight, this::setProcessorHeight);
+      builder.addDoubleProperty("Floor Algae Position", this::getFloorAlgaePosition, this::setFloorAlgaePosition);
 
     }
   }

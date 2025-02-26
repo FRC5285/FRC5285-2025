@@ -127,7 +127,7 @@ public final class Constants {
 
     public static class FlywheelConstants{
         public static final int flywheelMotorID = 19; // CAN
-        public static final int intakeSensorID = 3; // DIO
+        public static final int intakeSensorID = 5; // DIO
         public static final double intakeSpeed = -0.1;
         public static final double shootSpeed = 0.1;
         public static final double shootDuration = 0.5;
@@ -153,26 +153,36 @@ public final class Constants {
         public static final int followMotorID = 14; // CAN
         public static final int topLimitSwitchID = 1; // DIO
         public static final int bottomLimitSwitchID = 2; // DIO
-        public static final int encoderA = 3; // DIO
-        public static final int encoderB = 4; // DIO
+        public static final int encoderA = 3; // DIO, Blue
+        public static final int encoderB = 4; // DIO, Yellow
 
-        public static final double upKP = 2.4;
-        public static final double upKI = 0.1;
-        public static final double upKD = 0.1;
-        public static final double downKP = 2.2;
-        public static final double downKI = 0.1;
-        public static final double downKD = 0.1;
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
 
-        public static final double level1Position = 5;
-        public static final double level2Position = 10;
-        public static final double level3Position = 15;
-        public static final double level4Position = 25;
-        public static final double intakePosition = 12;
+        public static final double kS = 0.0;
+        /** If this one is too low, elevator goes slamming down. If too high, elevator goes slamming up. Get this one right. */
+        public static final double kG = 0.244; // Get this one to 3 decimal places of precision, 0.244 is STARTING POINT ONLY!!!
+        public static final double kV = 0.0;
+        public static final double kA = 0.0;
+
+        public static final double maxV = 0.3; // Max velocity
+        public static final double maxA = 0.3; // Max acceleration
+
+        public static final double elevatorGearRadius = 0.022;
+        public static final double encoderPulseDist = (2.0 * Math.PI * elevatorGearRadius) / 2048;
+
+        public static final double level1Position = 0.2;
+        public static final double level2Position = 0.6;
+        public static final double level3Position = 0.8;
+        public static final double level4Position = 1.0;
+        public static final double intakePosition = 0.5;
+        public static final double floorAlgaePosition = 0.1;
         
-        public static final double L2AlgaeHeight = 0.0;
-        public static final double L3AlgaeHeight = 0.0;
+        public static final double L2AlgaeHeight = 0.7;
+        public static final double L3AlgaeHeight = 0.9;
 
-        public static final double maxHeight = 30;
+        public static final double maxHeight = 1.6;
 
         public static final double processorHeight = 0.0;
 
@@ -189,6 +199,7 @@ public final class Constants {
         public static final double inSpeed = 0.5; // left (from front perspective) is +in, right is -in
 
         public static final double maxMotorTime = 3.0;
+        public static final double maxGroundPickupTime = 20.0;
         public static final double outMotorTime = 0.5;
     }
 
