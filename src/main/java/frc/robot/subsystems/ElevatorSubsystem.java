@@ -75,7 +75,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public boolean reachedGoal() {
-    return elevatorPID.atSetpoint();
+    return elevatorPID.atGoal();
   }
 
   public Command goToLevel1Position(){
