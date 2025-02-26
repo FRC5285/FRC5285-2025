@@ -162,7 +162,7 @@ public final class Constants {
 
         public static final double kS = 0.0;
         /** If this one is too low, elevator goes slamming down. If too high, elevator goes slamming up. Get this one right. */
-        public static final double kG = 0.244; // Get this one to 3 decimal places of precision, 0.244 is STARTING POINT ONLY!!!
+        public static final double kG = 0.129; // Get this one to 3 decimal places of precision, 0.129 is STARTING POINT ONLY!!!
         public static final double kV = 0.0;
         public static final double kA = 0.0;
 
