@@ -8,7 +8,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
@@ -36,13 +38,15 @@ public final class Constants {
         // Fill the following with camera names and offsets (from center of bot)
         // ---------------------------------------------------------------------
         // Update num cameras too (important!)
-        public static final int numCameras = 0;
+        public static final int numCameras = 2;
 
         public static final String[] cameraNames = {
-
+            "",
+            ""
         };
         public static final Transform3d[] cameraOffsets = {
-
+            new Transform3d(new Translation3d(0.1616, -0.2058, 0.5836), new Rotation3d(0.0, -Math.PI / 18.0, 0.0)), // facing front, down
+            new Transform3d(new Translation3d(0.1652, 0.2059, 0.5962), new Rotation3d(0.0, Math.PI / 9.0, 0.0)) // facing front, up
         };
 
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
