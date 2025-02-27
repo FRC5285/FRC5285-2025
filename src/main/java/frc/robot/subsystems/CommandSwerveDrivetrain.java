@@ -121,6 +121,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
+    public Command stopCurrentCommand() {
+        return runOnce(() -> {});
+    }
+
     public double getAlgaeHeight() {
         return abcs.getAlgaeHeight(this.getState().Pose);
     }

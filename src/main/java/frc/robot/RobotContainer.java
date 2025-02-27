@@ -171,7 +171,7 @@ public class RobotContainer {
 
         // Emergency stops the aimbot (DO NOT USE UNLESS ABSOLUTELY NECESSARY)
         m_driverController.leftStick().onTrue(
-            drivetrain.getDefaultCommand().alongWith(ledStrip.toNormal())
+            drivetrain.stopCurrentCommand().alongWith(ledStrip.toNormal())
         );
 
         // LEDs for Auton
