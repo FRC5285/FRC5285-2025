@@ -187,6 +187,7 @@ public final class Constants {
         public static final double L3AlgaeHeight = 0.9;
 
         public static final double maxHeight = 1.6;
+        public static final double minHeight = 0.0;
 
         public static final double processorHeight = 0.0;
 

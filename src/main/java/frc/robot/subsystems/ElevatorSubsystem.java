@@ -11,7 +11,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.DigitalInput;
+// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,10 +23,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private final TalonFX elevatorMotor;
   private final TalonFX followerMotor;
-  private final DigitalInput topLimitSwitch;
-  private final DigitalInput bottomLimitSwitch;
-  private final Trigger atBottom;
-  private final Trigger atTop;
+  // private final DigitalInput topLimitSwitch;
+  // private final DigitalInput bottomLimitSwitch;
+  // private final Trigger atBottom;
+  // private final Trigger atTop;
   private final ElevatorState elevatorState;
   private final Encoder elevatorEncoder;
   private final ProfiledPIDController elevatorPID;
@@ -36,8 +36,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorSubsystem() {
     elevatorMotor = new TalonFX(ElevatorConstants.elevatorMotorID);
     followerMotor = new TalonFX(ElevatorConstants.followMotorID);
-    topLimitSwitch = new DigitalInput(ElevatorConstants.topLimitSwitchID);
-    bottomLimitSwitch = new DigitalInput(ElevatorConstants.bottomLimitSwitchID);
+    // topLimitSwitch = new DigitalInput(ElevatorConstants.topLimitSwitchID);
+    // bottomLimitSwitch = new DigitalInput(ElevatorConstants.bottomLimitSwitchID);
     elevatorEncoder = new Encoder(ElevatorConstants.encoderA, ElevatorConstants.encoderB);
     elevatorEncoder.setDistancePerPulse(ElevatorConstants.encoderPulseDist);
     elevatorPID = new ProfiledPIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD,
@@ -52,11 +52,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     elevatorState = new ElevatorState();
     
-    atBottom = new Trigger(()-> !bottomLimitSwitch.get()); // Limit switch down is false, so must invert
-    atTop = new Trigger(()-> !topLimitSwitch.get());
-    atBottom.onTrue(hitBottomLimit());
-    atTop.onTrue(hitTopLimit());
+    // atBottom = new Trigger(()-> !bottomLimitSwitch.get()); // Limit switch down is false, so must invert
+    // atTop = new Trigger(()-> !topLimitSwitch.get());
+    // atBottom.onTrue(hitBottomLimit());
+    // atTop.onTrue(hitTopLimit());
     new Trigger(() -> elevatorEncoder.getDistance() >= ElevatorConstants.maxHeight).onTrue(hitTopLimit());
+    new Trigger(() -> elevatorEncoder.getDistance() <= ElevatorConstants.minHeight).onTrue(hitBottomLimit());
   }
 
   public Command goToPosition(DoubleSupplier getTargetPosition) {
@@ -125,12 +126,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     });
   }
 
-  public Command resetToHome(){
-    return run(()-> {
-      motorOverride = true;
-      elevatorMotor.set(-0.1);
-    }).until(atBottom);
-  }
+  // public Command resetToHome(){
+  //   return run(()-> {
+  //     motorOverride = true;
+  //     elevatorMotor.set(-0.1);
+  //   }).until(atBottom);
+  // }
 
   public class ElevatorState implements Sendable{
 
