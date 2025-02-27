@@ -222,8 +222,4 @@ public final class Constants {
 
         public static final double autonColor = 0.61; // 0.67 = Gold, 0.61 = Red
     }
-
-    public static class TriggerConstants {
-        public static final double debounceTime = 2.0;
-    }
 }
