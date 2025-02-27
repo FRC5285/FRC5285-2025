@@ -8,6 +8,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.TriggerConstants;
 import frc.robot.generated.TunerConstants;
@@ -76,7 +77,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Elevator and Wrist to L3", elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition()));
         NamedCommands.registerCommand("Elevator and Wrist to L4", elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition()));
         NamedCommands.registerCommand("Elevator and Wrist to Intake", elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition()));
-        NamedCommands.registerCommand("Elevator to Reef Algae", elevator.goToPosition(() -> drivetrain.getAlgaeHeight()));
+        NamedCommands.registerCommand("Elevator to L2 Algae", elevator.goToPosition(() -> ElevatorConstants.L2AlgaeHeight));
+        NamedCommands.registerCommand("Elevator to L3 Algae", elevator.goToPosition(() -> ElevatorConstants.L3AlgaeHeight));
         NamedCommands.registerCommand("Elevator to Processor", elevator.goToProcessorPosition());
 
         // puts auto paths choices onto the Smart Dashboard
