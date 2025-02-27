@@ -46,7 +46,7 @@ public final class Constants {
         };
         public static final Transform3d[] cameraOffsets = {
             new Transform3d(new Translation3d(0.1616, -0.2058, 0.5836), new Rotation3d(0.0, -Math.PI / 18.0, 0.0)), // facing front, down
-            new Transform3d(new Translation3d(0.1652, 0.2059, 0.5962), new Rotation3d(0.0, Math.PI / 9.0, 0.0)) // facing front, up
+            new Transform3d(new Translation3d(0.1652, 0.2631, 0.5962), new Rotation3d(0.0, Math.PI / 9.0, 0.0)) // facing front, up
         };
 
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
