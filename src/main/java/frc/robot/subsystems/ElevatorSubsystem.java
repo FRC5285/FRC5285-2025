@@ -69,7 +69,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Run in robotPeriodic */
   public void setMotors() {
-    if (motorOverride == false) this.elevatorMotor.set(elevatorPID.calculate(elevatorEncoder.getDistance())
+    if (motorOverride == false) this.elevatorMotor.setVoltage(elevatorPID.calculate(elevatorEncoder.getDistance())
        + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity)
     );
   }
