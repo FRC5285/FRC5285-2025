@@ -3,45 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.875,
-        "y": 4.345
+        "x": 7.16,
+        "y": 0.8068915165508406
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.96827399512523,
-        "y": 4.576948187820855
+        "x": 7.328738381074996,
+        "y": 1.0835436969575512
       },
       "isLocked": false,
-      "linkedName": "Reef Side 0 Left"
+      "linkedName": "Starting Point 6"
     },
     {
       "anchor": {
-        "x": 5.795554104562911,
-        "y": 5.246246342355523
+        "x": 2.2533879460515203,
+        "y": 1.8143429317989865
       },
       "prevControl": {
-        "x": 6.0304072234305455,
-        "y": 4.903870957688118
+        "x": 2.865857298146833,
+        "y": 0.12838805308496815
       },
       "nextControl": {
-        "x": 4.907479026075423,
-        "y": 6.540906801099772
+        "x": 2.0807945021940437,
+        "y": 2.2894438616823853
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.4887,
-        "y": 7.008
+        "x": 2.083390849345439,
+        "y": 2.840231405722128
       },
       "prevControl": {
-        "x": 1.2394482197853955,
-        "y": 6.988672556820663
+        "x": 2.2647693193157936,
+        "y": 2.427992416132106
+      },
+      "nextControl": {
+        "x": 1.9827093048970392,
+        "y": 3.069061531814574
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.2343317805109797,
+        "y": 3.0952849516997465
+      },
+      "prevControl": {
+        "x": 1.4898040242360464,
+        "y": 3.28871494889583
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Coral Station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -58,10 +74,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 126.0
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Reef to Coral Station Paths",
+  "folder": "Starting Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
