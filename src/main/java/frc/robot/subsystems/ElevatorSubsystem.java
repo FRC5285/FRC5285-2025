@@ -57,7 +57,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // atBottom.onTrue(hitBottomLimit());
     // atTop.onTrue(hitTopLimit());
     new Trigger(() -> elevatorEncoder.getDistance() >= ElevatorConstants.maxHeight).onTrue(hitTopLimit());
-    new Trigger(() -> elevatorEncoder.getDistance() <= ElevatorConstants.minHeight).onTrue(hitBottomLimit());
+    // new Trigger(() -> elevatorEncoder.getDistance() <= ElevatorConstants.minHeight).onTrue(hitBottomLimit());
   }
 
   public Command goToPosition(DoubleSupplier getTargetPosition) {
@@ -70,9 +70,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   /** Run in robotPeriodic */
   public void setMotors() {
-    if (motorOverride == false) this.elevatorMotor.setVoltage(elevatorPID.calculate(elevatorEncoder.getDistance())
-       + elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity)
-    );
+    double pidCalc = elevatorPID.calculate(elevatorEncoder.getDistance());
+    double ffwdCalc = elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity);
+    if (motorOverride == false) this.elevatorMotor.setVoltage(pidCalc + ffwdCalc);
   }
 
   public boolean reachedGoal() {
@@ -121,6 +121,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private Command hitTopLimit(){
     return runOnce(()->{
+      motorOverride = true;
+      elevatorMotor.stopMotor();
+    });
+  }
+
+  public Command stopElevator() {
+    return runOnce(() -> {
       motorOverride = true;
       elevatorMotor.stopMotor();
     });
@@ -217,6 +224,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void initSendable(SendableBuilder builder){
       builder.setSmartDashboardType("RobotPreferences");
 
+      builder.addDoubleProperty("Goal Height", () -> elevatorPID.getSetpoint().position, (newVal) -> {});
+      builder.addDoubleProperty("Current Height", () -> elevatorEncoder.getDistance(), (newVal) -> {});
       builder.addDoubleProperty("Level 1 Position", this::getLevel1Position, this::setLevel1Position);
       builder.addDoubleProperty("Level 2 Position", this::getLevel2Position, this::setLevel2Position);
       builder.addDoubleProperty("Level 3 Position", this::getLevel3Position, this::setLevel3Position);

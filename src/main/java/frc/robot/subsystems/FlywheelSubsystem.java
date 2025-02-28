@@ -54,6 +54,10 @@ public class FlywheelSubsystem extends SubsystemBase {
       .andThen(()->flywheelMotor.stopMotor());
   }
 
+  public Command runIntake() {
+    return runOnce(() -> flywheelMotor.set(0.1));
+  }
+
   public Command stopIntake() {
     return runOnce(() -> flywheelMotor.stopMotor());
   }

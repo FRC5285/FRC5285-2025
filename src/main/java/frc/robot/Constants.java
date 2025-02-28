@@ -74,15 +74,15 @@ public final class Constants {
         public static final double coralArmOffset = 0.154;
 
         // Gap between robot and places to score
-        public static final double processorSafeDist = 0.2;
+        public static final double processorSafeDist = 0.25;
 
         public static final double cageSafeDist = 0.1;
 
-        public static final double reefSafeDist = 0.1;
+        public static final double reefSafeDist = 0.12;
 
         public static final double reefAlgaeSafeDist = 0.0; // Gets added to reefSafeDist
 
-        public static final double coralStationSafeDist = 0.1;
+        public static final double coralStationSafeDist = 0.2;
 
         // Horizontal (from robot perspective) translations
         public static final double coralStationCorrection = 0.0; // Gets added onto coralArmOffset
@@ -95,36 +95,36 @@ public final class Constants {
         // All distances are in meters
 
         // Reef measurements
-        public static final double blueReefCenterX = 4.5;
-        public static final double blueReefCenterY = 4.0;
+        public static final double blueReefCenterX = 4.489323;
+        public static final double blueReefCenterY = 4.0259;
 
-        public static final double redReefCenterX = 13.06;
-        public static final double redReefCenterY = 4.0;
+        public static final double redReefCenterX = 13.058902;
+        public static final double redReefCenterY = 4.0259;
 
-        public static final double reefWallDistance = 0.832;
+        public static final double reefWallDistance = 0.831723;
         public static final double reefCoralOffset = 0.164;
 
         // Coral Station
-        public static final double coralStationBlueX = 0.85;
-        public static final double coralStationRedX = 16.7;
+        public static final double coralStationBlueX = 0.851154;
+        public static final double coralStationRedX = 16.697198;
         
-        public static final double coralStationTopY = 7.38;
-        public static final double coralStationBottomY = 0.64;
+        public static final double coralStationTopY = 7.39648;
+        public static final double coralStationBottomY = 0.65532;
 
         public static final double coralStationOffset = 0.406;
 
         // Algae Processor
-        public static final double blueProcessorX = 6.0;
-        public static final double blueProcessorY = 0.0;
+        public static final double blueProcessorX = 5.987542;
+        public static final double blueProcessorY = -0.00381;
 
-        public static final double redProcessorX = 11.55;
-        public static final double redProcessorY = 8.0;
+        public static final double redProcessorX = 11.560801;
+        public static final double redProcessorY = 8.05561;
         
         // Barge and Cages
         public static final double bargeCenterX = 8.775;
-        public static final double bargeCenterY = 4.0;
+        public static final double bargeCenterY = 4.0259;
 
-        public static final double firstCageOffsetY = 1.059;
+        public static final double firstCageOffsetY = 0.980;
         public static final double cageOffsetY = 1.091;
         public static final double cageOffsetX = 0.093; // half of width of cage
     }
@@ -160,21 +160,21 @@ public final class Constants {
         public static final int encoderA = 3; // DIO, Blue
         public static final int encoderB = 4; // DIO, Yellow
 
-        public static final double kP = 0.0;
+        public static final double kP = 4.0;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
         public static final double kS = 0.0;
         /** If this one is too low, elevator goes slamming down. If too high, elevator goes slamming up. Get this one right. */
-        public static final double kG = 0.129; // Get this one to 3 decimal places of precision, 0.129 is STARTING POINT ONLY!!!
-        public static final double kV = 0.0;
+        public static final double kG = 0.4225; // Get this one to 3 decimal places of precision, 0.129 is STARTING POINT ONLY!!!
+        public static final double kV = 3.6;
         public static final double kA = 0.0;
 
-        public static final double maxV = 0.3; // Max velocity
-        public static final double maxA = 0.3; // Max acceleration
+        public static final double maxV = 2.5; // Max velocity
+        public static final double maxA = 3.0; // Max acceleration
 
         public static final double elevatorGearRadius = 0.022;
-        public static final double encoderPulseDist = (2.0 * Math.PI * elevatorGearRadius) / 2048;
+        public static final double encoderPulseDist = (2.0 * Math.PI * elevatorGearRadius) / 1024;
 
         public static final double level1Position = 0.2;
         public static final double level2Position = 0.6;
@@ -211,7 +211,7 @@ public final class Constants {
     public static class ClimberConstants {
         public static final int motorID = 17; // CAN
 
-        public static final double climbSpeed = -1.0;
+        public static final double climbSpeed = 0.75;
 
         public static final double climbTime = 5.0;
     }

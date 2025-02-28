@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
@@ -25,6 +26,7 @@ public class WristSubsystem extends SubsystemBase {
   private final DutyCycleEncoder wristEncoder;
   private final PIDController wristPIDController;
   private final WristState wristState;
+  private boolean motorOverride = false;
 
   public WristSubsystem() {
     SparkMaxConfig config = new SparkMaxConfig();
@@ -54,7 +56,21 @@ public class WristSubsystem extends SubsystemBase {
 
   /** Run in robotPeriodic */
   public void setMotors() {
-    this.wristMotor.set(wristPIDController.calculate(wristState.getCurrentPosition()));
+    double calcAmt = wristPIDController.calculate(wristState.getCurrentPosition());
+    if (motorOverride == false) this.wristMotor.set(calcAmt);
+  }
+
+  public Command runSmallAmt() {
+    return runOnce(() -> {
+      this.motorOverride = true;
+      wristMotor.set(0.1);
+    });
+  }
+
+  public Command stopMotor() {
+    return runOnce(() -> {
+      wristMotor.stopMotor();
+    });
   }
 
   public boolean isAtSetpoint() {
