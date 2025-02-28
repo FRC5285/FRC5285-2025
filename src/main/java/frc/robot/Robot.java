@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
     private final RobotContainer m_robotContainer;
 
     private boolean usedAuton = false;
+    private boolean usedTeleop = false;
 
     private AprilTagCams ATCams;
 
@@ -65,7 +66,10 @@ public class Robot extends TimedRobot {
     /** This function is called once each time the robot enters Disabled mode. */
     @Override
     public void disabledInit() {
-        this.usedAuton = false;
+        if (usedTeleop) {
+            this.usedAuton = false;
+            this.usedTeleop = false;
+        }
     }
 
     @Override
@@ -90,6 +94,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        usedTeleop = true;
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
