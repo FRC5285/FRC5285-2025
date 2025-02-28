@@ -16,7 +16,9 @@ public class Coords {
     public final Pose2d topCoralStationPose;
     public final Pose2d bottomCoralStationPose;
     public final Pose2d processorPose;
+    public final Pose2d processorPoseFar;
     public final Pose2d cagePose;
+    public final Pose2d cagePoseFar;
     public final Pose2d startPose; // Default starting position
     public final Pose2d[] reefSideCenterLocs;
     public final Rotation2d[] reefCorrespondingAngles;
@@ -32,19 +34,23 @@ public class Coords {
         if (DriverStation.getLocation().isPresent()) this.teamStationNumber = DriverStation.getLocation().getAsInt();
         else this.teamStationNumber = 1;
 
-        double proX, proY, reefCenterX, reefCenterY, coralStationX;
+        double proX, proY, proFarX, proFarY, reefCenterX, reefCenterY, coralStationX;
         if (this.isBlue) {
             reefCenterX = FieldConstants.blueReefCenterX;
             reefCenterY = FieldConstants.blueReefCenterY;
             coralStationX = FieldConstants.coralStationBlueX;
             proX = FieldConstants.blueProcessorX;
             proY = FieldConstants.blueProcessorY;
+            proFarX = FieldConstants.redProcessorX;
+            proFarY = FieldConstants.redProcessorY;
         } else {
             reefCenterX = FieldConstants.redReefCenterX;
             reefCenterY = FieldConstants.redReefCenterY;
             coralStationX = FieldConstants.coralStationRedX;
             proX = FieldConstants.redProcessorX;
             proY = FieldConstants.redProcessorY;
+            proFarX = FieldConstants.blueProcessorX;
+            proFarY = FieldConstants.blueProcessorY;
         }
 
         this.processorPose = new Pose2d(
@@ -52,11 +58,21 @@ public class Coords {
             proY + this.sideSign * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.processorSafeDist),
             new Rotation2d(Math.PI + this.sideSign * (Math.PI / 2.0))
         );
+        this.processorPoseFar = new Pose2d(
+            proFarX,
+            proFarY - this.sideSign * (RobotConstantsMeters.halfWidth + RobotConstantsMeters.processorSafeDist),
+            new Rotation2d(Math.PI - this.sideSign * (Math.PI / 2.0))
+        );
 
         this.cagePose = new Pose2d(
             FieldConstants.bargeCenterX - this.sideSign * (FieldConstants.cageOffsetX + RobotConstantsMeters.cageSafeDist + RobotConstantsMeters.halfWidth),
             FieldConstants.bargeCenterY + this.sideSign * (FieldConstants.firstCageOffsetY +  FieldConstants.cageOffsetY * (3 - this.teamStationNumber)),
             new Rotation2d(Math.PI/2.0 + this.sideSign * (Math.PI/2.0))
+        );
+        this.cagePoseFar = new Pose2d(
+            FieldConstants.bargeCenterX + this.sideSign * (FieldConstants.cageOffsetX + RobotConstantsMeters.cageSafeDist + RobotConstantsMeters.halfWidth),
+            FieldConstants.bargeCenterY + this.sideSign * (FieldConstants.firstCageOffsetY +  FieldConstants.cageOffsetY * (3 - this.teamStationNumber)),
+            new Rotation2d(Math.PI/2.0 - this.sideSign * (Math.PI/2.0))
         );
 
         this.startPose = new Pose2d(
@@ -111,6 +127,22 @@ public class Coords {
             this.bottomCoralStationPose.getY() + goingLeft * this.sideSign * this.sin36 * FieldConstants.coralStationOffset,
             this.bottomCoralStationPose.getRotation()
         );
+    }
+
+    public Pose2d getClosestProcessor(Pose2d robotPose) {
+        if (this.sideSign == 1.0) {
+            return robotPose.getX() > FieldConstants.bargeCenterX ? this.processorPoseFar : this.processorPose;
+        } else {
+            return robotPose.getX() > FieldConstants.bargeCenterX ? this.processorPose : this.processorPoseFar;
+        }
+    }
+
+    public Pose2d getClosestCage(Pose2d robotPose) {
+        if (this.sideSign == 1.0) {
+            return robotPose.getX() > FieldConstants.bargeCenterX ? this.cagePoseFar : this.cagePose;
+        } else {
+            return robotPose.getX() > FieldConstants.bargeCenterX ? this.cagePose : this.cagePoseFar;
+        }
     }
 
     // returns index of coords of closest reef wall

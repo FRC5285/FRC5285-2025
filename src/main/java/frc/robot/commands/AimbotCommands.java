@@ -72,9 +72,9 @@ public class AimbotCommands {
         .andThen(algaeIntake.doIntake());
     }
 
-    public Command doProcessor(ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
+    public Command doProcessor(Pose2d robotPose, ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
         return AutoBuilder.pathfindToPose(
-            this.coords.processorPose,
+            this.coords.getClosestProcessor(robotPose),
             this.pathfindConstraints,
             0.0
         )
@@ -83,9 +83,9 @@ public class AimbotCommands {
         .andThen(algaeIntake.shootOut());
     }
 
-    public Command doDeepClimb() {
+    public Command doDeepClimb(Pose2d robotPose) {
         return AutoBuilder.pathfindToPose( // change to pathfind and then do path
-            this.coords.cagePose,
+            this.coords.getClosestCage(robotPose),
             this.pathfindConstraints,
             0.0
         );

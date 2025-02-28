@@ -63,7 +63,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command goToPosition(DoubleSupplier getTargetPosition) {
     return runOnce(() -> {
       motorOverride = false;
-      // elevatorPID.reset();
       elevatorPID.setGoal(getTargetPosition.getAsDouble());
     });
   }
@@ -111,13 +110,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     return goToPosition(()-> 0.0);
   }
 
-  private Command hitBottomLimit(){
-    return runOnce(()->{
-      motorOverride = true;
-      elevatorEncoder.reset();
-      elevatorMotor.stopMotor();
-    });
-  }
+  // private Command hitBottomLimit(){
+  //   return runOnce(()->{
+  //     motorOverride = true;
+  //     elevatorEncoder.reset();
+  //     elevatorMotor.stopMotor();
+  //   });
+  // }
 
   private Command hitTopLimit(){
     return runOnce(()->{

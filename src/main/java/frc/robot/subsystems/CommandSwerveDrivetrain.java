@@ -160,7 +160,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command doProcessor(ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
         return new DeferredCommand(
             () -> {
-                return abcs.doProcessor(elevator, algaeIntake);
+                return abcs.doProcessor(this.getState().Pose, elevator, algaeIntake);
             },
             Set.of(this)
         );
@@ -169,7 +169,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command doDeepClimb() {
         return new DeferredCommand(
             () -> {
-                return abcs.doDeepClimb();
+                return abcs.doDeepClimb(this.getState().Pose);
             },
             Set.of(this)
         );

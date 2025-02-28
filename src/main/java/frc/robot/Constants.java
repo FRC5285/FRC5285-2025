@@ -121,7 +121,7 @@ public final class Constants {
         public static final double redProcessorY = 8.05561;
         
         // Barge and Cages
-        public static final double bargeCenterX = 8.775;
+        public static final double bargeCenterX = 8.774176;
         public static final double bargeCenterY = 4.0259;
 
         public static final double firstCageOffsetY = 0.980;
@@ -186,10 +186,10 @@ public final class Constants {
         public static final double L2AlgaeHeight = 0.7;
         public static final double L3AlgaeHeight = 0.9;
 
-        public static final double maxHeight = 1.6;
+        public static final double maxHeight = 1.25;
         public static final double minHeight = 0.0;
 
-        public static final double processorHeight = 0.0;
+        public static final double processorHeight = 0.2;
 
         // Elevator is at goal position if it is this close to the goal position
         public static final double goalRange = 0.05;
@@ -213,7 +213,7 @@ public final class Constants {
 
         public static final double climbSpeed = 0.75;
 
-        public static final double climbTime = 5.0;
+        public static final double climbRotations = 3 * 45;
     }
 
     public static class LEDConstants {
