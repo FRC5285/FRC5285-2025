@@ -15,9 +15,9 @@ public class ClimberSubsystem extends SubsystemBase {
     public ClimberSubsystem() {
         climbMotor = new TalonFX(ClimberConstants.motorID);
         climbMotor.setPosition(0);
-        new Trigger(() -> Math.abs(climbMotor.getPosition().getValue().in(Rotations)) >= ClimberConstants.climbRotations).onTrue(
-            stopClimb()
-        );
+        // new Trigger(() -> Math.abs(climbMotor.getPosition().getValue().in(Rotations)) >= ClimberConstants.climbRotations).onTrue(
+        //     stopClimb()
+        // );
     }
 
     public Command doClimb() {

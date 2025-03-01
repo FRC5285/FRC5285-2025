@@ -1,8 +1,20 @@
 {
   "NetworkTables": {
     "transitory": {
+      "LiveWindow": {
+        "open": true
+      },
+      "PathPlanner": {
+        "open": true
+      },
+      "Shuffleboard": {
+        "open": true
+      },
       "SmartDashboard": {
-        "Elevator State": {
+        "FlywheelState": {
+          "open": true
+        },
+        "Wrist State": {
           "open": true
         },
         "open": true
