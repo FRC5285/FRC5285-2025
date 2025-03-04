@@ -136,8 +136,8 @@ public final class Constants {
     public static class FlywheelConstants{
         public static final int flywheelMotorID = 19; // CAN
         public static final int intakeSensorID = 5; // DIO
-        public static final double intakeSpeed = -0.1;
-        public static final double shootSpeed = 0.1;
+        public static final double intakeSpeed = -0.5;
+        public static final double shootSpeed = 0.5;
         public static final double shootDuration = 0.5;
         public static final double intakeMaxTime = 10.0;
     }
@@ -180,17 +180,17 @@ public final class Constants {
         public static final double elevatorGearRadius = 0.022;
         public static final double encoderPulseDist = (2.0 * Math.PI * elevatorGearRadius) / 1024;
 
-        public static final double level1Position = 0.2;
-        public static final double level2Position = 0.6;
-        public static final double level3Position = 0.8;
-        public static final double level4Position = 1.0;
+        public static final double level1Position = 0.4;
+        public static final double level2Position = 0.65;
+        public static final double level3Position = 1.0;
+        public static final double level4Position = 1.25;
         public static final double intakePosition = 0.5;
-        public static final double floorAlgaePosition = 0.1;
+        public static final double floorAlgaePosition = 0.0;
         
-        public static final double L2AlgaeHeight = 0.7;
-        public static final double L3AlgaeHeight = 0.9;
+        public static final double L2AlgaeHeight = 0.608;
+        public static final double L3AlgaeHeight = 0.956;
 
-        public static final double maxHeight = 1.25;
+        public static final double maxHeight = 1.28;
         public static final double minHeight = 0.0;
 
         public static final double processorHeight = 0.2;

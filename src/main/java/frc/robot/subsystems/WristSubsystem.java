@@ -53,6 +53,14 @@ public class WristSubsystem extends SubsystemBase {
     });
   }
 
+  public Command moveDown() {
+    return runOnce(() -> wristPIDController.setSetpoint(wristPIDController.getSetpoint() + 0.05));
+  }
+
+  public Command moveUp() {
+    return runOnce(() -> wristPIDController.setSetpoint(wristPIDController.getSetpoint() - 0.05));
+  }
+
   /** Run in robotPeriodic */
   public void setMotors() {
     double calcAmt = wristPIDController.calculate(wristState.getCurrentPosition());

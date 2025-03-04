@@ -53,7 +53,7 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     }
 
     public Command stopIntake() {
-        return run(() -> algaeIntakeMotor.stopMotor());
+        return runOnce(() -> algaeIntakeMotor.stopMotor());
     }
 
     public Command shootOut() {

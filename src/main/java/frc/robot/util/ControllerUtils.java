@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.XboxController;
 /** Checks Xbox controller buttons that are not included in the default stuff */
 public class ControllerUtils {
     private static final int dpadAngleTolerance = 25;
-    private static final double triggerTolerance = 0.2;
+    private static final double triggerTolerance = 0.8;
 
     // If pov (D-Pad) is not pressed, then .getPOV() returns -1.
     /**
@@ -58,5 +58,15 @@ public class ControllerUtils {
      */
     public static boolean rightTrigger(XboxController controller) {
         return controller.getRightTriggerAxis() > triggerTolerance;
+    }
+
+    /**
+     * Returns if the left trigger is pressed.
+     * 
+     * @param controller the controller
+     * @return if the left trigger is pressed.
+     */
+    public static boolean leftTrigger(XboxController controller) {
+        return controller.getLeftTriggerAxis() > triggerTolerance;
     }
 }
