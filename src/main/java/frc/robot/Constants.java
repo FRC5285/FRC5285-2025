@@ -31,6 +31,10 @@ public final class Constants {
         public static final double maxSpeedMultiplier = 1.0; // Set this value within the range [0, 1]
 
         public static final double throttleMaxReduction = 0.9; // Most speed the throttle can take off (range [0, 1])
+
+        public static final double accelLimit = 2.0; // gets to max speed in 1/accelLimit seconds
+
+        public static final double rotLimit = 2.0; // gets to max speed in 1/rotLimit seconds
     }
 
     public static class VisionConstants {
