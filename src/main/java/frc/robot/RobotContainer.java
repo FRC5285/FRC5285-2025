@@ -85,20 +85,23 @@ public class RobotContainer {
         ledStrip.toNormal().schedule();
 
         // Configure the trigger bindings
+        configureDrivetrainBinding();
         configureManualBindings();
     }
 
-    private void configureManualBindings() {
+    private void configureDrivetrainBinding() {
         // drivetrain
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1) * MaxSpeed)) // Drive forward with negative Y (forward)
-                    .withVelocityY(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1) * MaxSpeed)) // Drive left with negative X (left)
-                    .withRotationalRate(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(drivetrain.getXVal(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(drivetrain.getYVal(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(drivetrain.getRotVal(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
+    }
 
+    private void configureManualBindings() {
         // elevator
         m_secondaryController.leftBumper().and(() -> !ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
             elevator.elevatorDown()
@@ -187,14 +190,6 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1) * MaxSpeed)) // Drive forward with negative Y (forward)
-                    .withVelocityY(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1) * MaxSpeed)) // Drive left with negative X (left)
-                    .withRotationalRate(this.applyThrottle(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1) * MaxAngularRate)) // Drive counterclockwise with negative X (left)
-            )
-        );
         // // Deposit coral
         // m_secondaryController.x().onFalse(
         //     elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition())
@@ -293,10 +288,6 @@ public class RobotContainer {
         m_driverController.b().onTrue(wrist.goToMidShootPosition());
         m_driverController.a().onTrue(wrist.goToHighShootPosition());
         */
-    }
-
-    private double applyThrottle(double speedVal) {
-        return speedVal * (OperatorConstants.maxSpeedMultiplier * (1.0 - m_driverController.getLeftTriggerAxis() * OperatorConstants.throttleMaxReduction));
     }
 
     public void updatePIDs() {

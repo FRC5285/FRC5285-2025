@@ -68,16 +68,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         );
     }
 
-    public double getXLimit(double currentVal) {
-        return this.xLimiter.calculate(currentVal);
+    public double getXVal(double currentVal, double throttleVal) {
+        return this.xLimiter.calculate(this.applyThrottle(currentVal, throttleVal));
     }
 
-    public double getYLimit(double currentVal) {
-        return this.yLimiter.calculate(currentVal);
+    public double getYVal(double currentVal, double throttleVal) {
+        return this.yLimiter.calculate(this.applyThrottle(currentVal, throttleVal));
     }
 
-    public double getRotLimit(double currentVal) {
-        return this.rotLimiter.calculate(currentVal);
+    public double getRotVal(double currentVal, double throttleVal) {
+        return this.rotLimiter.calculate(this.applyThrottle(currentVal, throttleVal));
+    }
+
+    private double applyThrottle(double speedVal, double throttleVal) {
+        return speedVal * (OperatorConstants.maxSpeedMultiplier * (1.0 - throttleVal * OperatorConstants.throttleMaxReduction));
     }
 
     public void resetSide() {
