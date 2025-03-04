@@ -215,6 +215,8 @@ public final class Constants {
 
         // Elevator is at goal position if it is this close to the goal position
         public static final double goalRange = 0.05;
+        public static final double carriageMass = 5.6; // KG
+        public static final double elevatorGearing = 62.0 / 8.0;
     }
 
     public static class AlgaeIntakeConstants {

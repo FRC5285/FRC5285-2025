@@ -10,15 +10,22 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WristConstants;
+import frc.robot.Robot;
 
 public class WristSubsystem extends SubsystemBase {
   
@@ -26,6 +33,7 @@ public class WristSubsystem extends SubsystemBase {
   private final DutyCycleEncoder wristEncoder;
   private final ProfiledPIDController wristPIDController;
   private final WristState wristState;
+  private final WristSimulation wristSimulation;
   private boolean motorOverride = false;
 
   public WristSubsystem() {
@@ -45,8 +53,14 @@ public class WristSubsystem extends SubsystemBase {
     wristPIDController.setTolerance(0.01);
 
     wristState = new WristState();
+    wristSimulation = Robot.isSimulation() ? new WristSimulation() : null;
 
     wristPIDController.setGoal(this.getCurrentPosition());
+  }
+
+  @Override
+  public void simulationPeriodic() {
+      wristSimulation.updateSimulation();
   }
 
   private Command goToPosition(DoubleSupplier getTargetPosition){
@@ -103,6 +117,44 @@ public class WristSubsystem extends SubsystemBase {
   public Command goToHighShootPosition(){
     return goToPosition(()-> wristState.getHighShootPosition());
   }
+
+    public class WristSimulation {
+        // Simulation classes help us simulate what's going on, including gravity.
+        private final DCMotor simGearbox = DCMotor.getNeo550(1);
+        private final DutyCycleEncoderSim m_encoderSim = new DutyCycleEncoderSim(wristEncoder);
+        private final SingleJointedArmSim wristSim = new SingleJointedArmSim(
+            simGearbox, 
+            75.0,
+            SingleJointedArmSim.estimateMOI(0.15, Units.lbsToKilograms(2.0)),
+            0.15,
+            0.0,
+            Units.degreesToRadians(180),
+            false,
+            0.0);
+
+            public WristSimulation() {
+                if (Robot.isSimulation()) {
+                    m_encoderSim.set(wristState.getEncoderOffset());
+                }
+            }
+
+        public void updateSimulation() {
+            // In this method, we update our simulation of what our arm is doing
+            // First, we set our "inputs" (voltages)
+            wristSim.setInput(wristMotor.get() * RoboRioSim.getVInVoltage());
+        
+            // Next, we update it. The standard loop time is 20ms.
+            wristSim.update(0.02);
+        
+            // SimBattery estimates loaded battery voltages
+            // This should include all motors being simulated
+            RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(wristSim.getCurrentDrawAmps()));
+        
+            // Update any external GUI displays or values as desired
+            // For example, a Mechanism2d Arm based on the simulated arm angle
+            m_encoderSim.set((Units.radiansToDegrees(wristSim.getAngleRads()) / 360) + wristState.getEncoderOffset());
+        }
+    }
 
   public double getCurrentPosition(){
     double position = wristEncoder.get() - wristState.getEncoderOffset();

@@ -4,20 +4,27 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 // import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Robot;
 
 public class ElevatorSubsystem extends SubsystemBase {
 
@@ -31,6 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final Encoder elevatorEncoder;
   private final ProfiledPIDController elevatorPID;
   private final ElevatorFeedforward elevatorFeedforward;
+  private final ElevatorSimulation elevatorSimulation;
   private boolean motorOverride = false;
 
   public ElevatorSubsystem() {
@@ -51,6 +59,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     followerMotor.setControl(new Follower(elevatorMotor.getDeviceID(), false));
 
     elevatorState = new ElevatorState();
+    elevatorSimulation = Robot.isSimulation() ? new ElevatorSimulation() : null;
     
     // atBottom = new Trigger(()-> !bottomLimitSwitch.get()); // Limit switch down is false, so must invert
     // atTop = new Trigger(()-> !topLimitSwitch.get());
@@ -58,6 +67,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     // atTop.onTrue(hitTopLimit());
     new Trigger(() -> elevatorEncoder.getDistance() >= ElevatorConstants.maxHeight).onTrue(hitTopLimit());
     // new Trigger(() -> elevatorEncoder.getDistance() <= ElevatorConstants.minHeight).onTrue(hitBottomLimit());
+
+    SmartDashboard.putData(this);
+  }
+
+  @Override
+  public void simulationPeriodic() {
+      elevatorSimulation.updateSimulation();
   }
 
   public Command goToPosition(DoubleSupplier getTargetPosition) {
@@ -147,6 +163,40 @@ public class ElevatorSubsystem extends SubsystemBase {
   //   }).until(atBottom);
   // }
 
+    public class ElevatorSimulation {
+        // Simulation classes help us simulate what's going on, including gravity.
+        private final DCMotor m_elevatorGearbox = DCMotor.getKrakenX60(2);
+        private final ElevatorSim m_elevatorSim = new ElevatorSim(
+                m_elevatorGearbox,
+                ElevatorConstants.elevatorGearing,
+                ElevatorConstants.carriageMass,
+                ElevatorConstants.elevatorGearRadius,
+                0.0,
+                elevatorState.getLevel4Position(),
+                true,
+                0,
+                0.01,
+                0.0);
+        private final EncoderSim m_encoderSim = new EncoderSim(elevatorEncoder);
+        private final TalonFXSimState m_motorSim = elevatorMotor.getSimState();
+
+        public void updateSimulation() {
+            // In this method, we update our simulation of what our elevator is doing
+            // First, we set our "inputs" (voltages)
+            m_elevatorSim.setInput(m_motorSim.getMotorVoltage());
+
+            // Next, we update it. The standard loop time is 20ms.
+            m_elevatorSim.update(0.020);
+
+            // Finally, we set our simulated encoder's readings and simulated battery
+            // voltage
+            m_encoderSim.setDistance(m_elevatorSim.getPositionMeters());
+
+            // SimBattery estimates loaded battery voltages
+            RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSim.getCurrentDrawAmps()));
+        }
+    }
+
   public class ElevatorState implements Sendable{
 
     private double level1Position = ElevatorConstants.level1Position;
@@ -231,8 +281,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void initSendable(SendableBuilder builder){
       builder.setSmartDashboardType("RobotPreferences");
 
-      builder.addDoubleProperty("Goal Height", () -> elevatorPID.getSetpoint().position, (newVal) -> {});
+      builder.addDoubleProperty("Setpoint Height", () -> elevatorPID.getSetpoint().position, (newVal) -> {});
+      builder.addDoubleProperty("Goal Height", ()-> elevatorPID.getGoal().position, null);
       builder.addDoubleProperty("Current Height", () -> elevatorEncoder.getDistance(), (newVal) -> {});
+      builder.addBooleanProperty("Reached Goal", ()-> reachedGoal(), null);
       builder.addDoubleProperty("Level 1 Position", this::getLevel1Position, this::setLevel1Position);
       builder.addDoubleProperty("Level 2 Position", this::getLevel2Position, this::setLevel2Position);
       builder.addDoubleProperty("Level 3 Position", this::getLevel3Position, this::setLevel3Position);
@@ -241,7 +293,6 @@ public class ElevatorSubsystem extends SubsystemBase {
       builder.addDoubleProperty("Intake Position", this::getIntakePosition, this::setIntakePosition);
       builder.addDoubleProperty("Processor Height", this::getProcessorHeight, this::setProcessorHeight);
       builder.addDoubleProperty("Floor Algae Position", this::getFloorAlgaePosition, this::setFloorAlgaePosition);
-
     }
   }
 }
