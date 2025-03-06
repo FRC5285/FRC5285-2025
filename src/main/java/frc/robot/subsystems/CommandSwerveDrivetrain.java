@@ -11,6 +11,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimbotCommands;
 
 /*
@@ -40,6 +42,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private AimbotCommands abcs;
 
+    private SlewRateLimiter xLimiter = new SlewRateLimiter(OperatorConstants.accelLimit);
+    private SlewRateLimiter yLimiter = new SlewRateLimiter(OperatorConstants.accelLimit);
+    private SlewRateLimiter rotLimiter = new SlewRateLimiter(OperatorConstants.rotLimit);
+
+
     // for Auton
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
@@ -52,7 +59,29 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
+        return runOnce(() -> {
+            this.xLimiter.reset(0);
+            this.yLimiter.reset(0);
+            this.rotLimiter.reset(0);
+        }).andThen(
+            run(() -> this.setControl(requestSupplier.get()))
+        );
+    }
+
+    public double getXVal(double currentVal, double throttleVal) {
+        return this.xLimiter.calculate(this.applyThrottle(currentVal, throttleVal));
+    }
+
+    public double getYVal(double currentVal, double throttleVal) {
+        return this.yLimiter.calculate(this.applyThrottle(currentVal, throttleVal));
+    }
+
+    public double getRotVal(double currentVal, double throttleVal) {
+        return this.rotLimiter.calculate(this.applyThrottle(currentVal, throttleVal));
+    }
+
+    private double applyThrottle(double speedVal, double throttleVal) {
+        return speedVal * (OperatorConstants.maxSpeedMultiplier * (1.0 - throttleVal * OperatorConstants.throttleMaxReduction));
     }
 
     public void resetSide() {
