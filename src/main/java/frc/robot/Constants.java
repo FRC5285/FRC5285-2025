@@ -130,7 +130,7 @@ public final class Constants {
     }
 
     public static class FlywheelConstants{
-        public static final int flywheelMotorID = 19; // CAN
+        public static final int flywheelMotorID = 18; // CAN
         public static final int intakeSensorID = 5; // DIO
         public static final double intakeSpeed = -0.5;
         public static final double shootSpeed = 0.5;
@@ -139,7 +139,7 @@ public final class Constants {
     }
 
     public static class WristConstants{
-        public static final int wristMotorID = 18; // CAN
+        public static final int wristMotorID = 19; // CAN
         public static final int wristEncoderID = 0; // DIO
 
         public static final double intakePosition = 0.15;
@@ -206,6 +206,8 @@ public final class Constants {
         public static final double maxMotorTime = 3.0;
         public static final double maxGroundPickupTime = 20.0;
         public static final double outMotorTime = 0.5;
+
+        public static final double normalSpeed = 0.03;
     }
 
     public static class ClimberConstants {

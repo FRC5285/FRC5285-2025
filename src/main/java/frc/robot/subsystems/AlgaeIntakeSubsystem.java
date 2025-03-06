@@ -42,25 +42,25 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         return run(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.inSpeed))
         .until(this::hasAlgae)
         .withTimeout(AlgaeIntakeConstants.maxMotorTime)
-        .andThen(() -> algaeIntakeMotor.stopMotor());
+        .andThen(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.normalSpeed));
     }
 
     public Command groundIntake() {
         return run(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.inSpeed))
         .until(this::hasAlgae)
         .withTimeout(AlgaeIntakeConstants.maxGroundPickupTime)
-        .andThen(() -> algaeIntakeMotor.stopMotor());
+        .andThen(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.normalSpeed));
     }
 
     public Command stopIntake() {
-        return runOnce(() -> algaeIntakeMotor.stopMotor());
+        return runOnce(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.normalSpeed));
     }
 
     public Command shootOut() {
         return runOnce(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.outSpeed))
         // .until(this::noAlgae) // Algae will still be held when limit switch is not down
         .andThen(new WaitCommand(AlgaeIntakeConstants.outMotorTime))
-        .andThen(() -> algaeIntakeMotor.set(0));
+        .andThen(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.normalSpeed));
     }
 
     public class AlgaeIntakeState implements Sendable{

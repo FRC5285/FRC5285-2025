@@ -100,10 +100,10 @@ public class RobotContainer {
         );
 
         // elevator
-        m_secondaryController.leftBumper().and(() -> !ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
+        m_secondaryController.leftBumper().and(() -> !ControllerUtils.dPadRight(m_secondaryController.getHID())).onFalse(
             elevator.elevatorDown()
         );
-        m_secondaryController.rightBumper().and(() -> !ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
+        m_secondaryController.rightBumper().and(() -> !ControllerUtils.dPadRight(m_secondaryController.getHID())).onFalse(
             elevator.elevatorUp()
         );
         new Trigger(() -> ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
@@ -119,26 +119,15 @@ public class RobotContainer {
             elevator.goToProcessorPosition()
         );
 
-        // algae intake
+        // intake
         m_driverController.leftBumper().onTrue(
-            algaeIntake.groundIntake()
+            flywheel.intakeCoral().alongWith(algaeIntake.groundIntake())
         );
         m_driverController.leftBumper().onFalse(
-            algaeIntake.stopIntake()
+            flywheel.stopIntake().alongWith(algaeIntake.stopIntake())
         );
         m_driverController.rightBumper().onTrue(
-            algaeIntake.shootOut()
-        );
-
-        // coral intake
-        m_driverController.leftBumper().onTrue(
-            flywheel.intakeCoral()
-        );
-        m_driverController.leftBumper().onFalse(
-            flywheel.stopIntake()
-        );
-        m_driverController.rightBumper().onTrue(
-            flywheel.shootCoral()
+            flywheel.shootCoral().alongWith(algaeIntake.shootOut())
         );
 
         // deposit coral
@@ -161,10 +150,10 @@ public class RobotContainer {
         );
 
         // adjust intake
-        m_secondaryController.leftBumper().and(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
+        m_secondaryController.leftBumper().and(() -> ControllerUtils.dPadRight(m_secondaryController.getHID())).onFalse(
             wrist.moveDown()
         );
-        m_secondaryController.rightBumper().and(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
+        m_secondaryController.rightBumper().and(() -> ControllerUtils.dPadRight(m_secondaryController.getHID())).onFalse(
             wrist.moveUp()
         );
 
