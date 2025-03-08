@@ -133,6 +133,14 @@ public final class Constants {
         public static final double cageOffsetX = 0.093; // half of width of cage
     }
 
+    // Backup Spark Maxes:
+    //  -------------------
+    // | LABEL    | CAN ID |
+    //  -------------------
+    // | "SM 004" | 30     |
+    // | "SM 005" | 31     |
+    //  -------------------
+
     public static class FlywheelConstants{
         public static final int flywheelMotorID = 18; // CAN
         public static final int intakeSensorID = 5; // DIO
@@ -145,16 +153,23 @@ public final class Constants {
     public static class WristConstants{
         public static final int wristMotorID = 19; // CAN
         public static final int wristEncoderID = 0; // DIO
-
+    
         public static final double intakePosition = 0.15;
         /**L1*/
-        public static final double lowShootPosition = 0.0;
+        public static final double lowShootPosition = 0.2;
         /**L2/L3*/
         public static final double midShootPosition = 0.312;
         /**L4*/
         public static final double highShootPosition = 0.408;
-        public static final double encoderOffset = 0.644;
-    }
+        public static final double encoderOffset = 0.64;
+    
+        public static final double kP = 5.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        
+        public static final double maxV = 0.5;
+        public static final double maxA = 0.3;
+      }
 
     public static class ElevatorConstants{
         public static final int elevatorMotorID = 13; // CAN

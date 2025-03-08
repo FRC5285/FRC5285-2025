@@ -12,7 +12,7 @@ import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.FlywheelSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import frc.robot.Coords;
+import frc.robot.util.Coords;
 
 public class AimbotCommands {
 

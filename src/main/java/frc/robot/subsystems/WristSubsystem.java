@@ -9,7 +9,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
@@ -23,7 +24,7 @@ public class WristSubsystem extends SubsystemBase {
   
   private final SparkMax wristMotor;
   private final DutyCycleEncoder wristEncoder;
-  private final PIDController wristPIDController;
+  private final ProfiledPIDController wristPIDController;
   private final WristState wristState;
   private boolean motorOverride = false;
 
@@ -39,31 +40,33 @@ public class WristSubsystem extends SubsystemBase {
     wristEncoder = new DutyCycleEncoder(WristConstants.wristEncoderID);
     wristEncoder.setInverted(true);
 
-    wristPIDController = new PIDController(1.5, 0.3, 0.1);
+    wristPIDController = new ProfiledPIDController(WristConstants.kP, WristConstants.kI, WristConstants.kD, new TrapezoidProfile.Constraints(WristConstants.maxV, WristConstants.maxA));
     wristPIDController.enableContinuousInput(0.0, 1.0);
     wristPIDController.setTolerance(0.01);
 
     wristState = new WristState();
+
+    wristPIDController.setGoal(this.getCurrentPosition());
   }
 
   private Command goToPosition(DoubleSupplier getTargetPosition){
     return runOnce(()-> {
-      // wristPIDController.reset();
-      wristPIDController.setSetpoint(getTargetPosition.getAsDouble());
+      this.motorOverride = false;
+      wristPIDController.setGoal(getTargetPosition.getAsDouble());
     });
   }
 
   public Command moveDown() {
-    return runOnce(() -> wristPIDController.setSetpoint(wristPIDController.getSetpoint() + 0.05));
+    return runOnce(() -> wristPIDController.setGoal(wristPIDController.getSetpoint().position + 0.05));
   }
 
   public Command moveUp() {
-    return runOnce(() -> wristPIDController.setSetpoint(wristPIDController.getSetpoint() - 0.05));
+    return runOnce(() -> wristPIDController.setGoal(wristPIDController.getSetpoint().position - 0.05));
   }
 
-  /** Run in robotPeriodic */
-  public void setMotors() {
-    double calcAmt = wristPIDController.calculate(wristState.getCurrentPosition());
+  @Override
+  public void periodic() {
+    double calcAmt = wristPIDController.calculate(this.getCurrentPosition());
     if (motorOverride == false) this.wristMotor.set(calcAmt);
   }
 
@@ -76,6 +79,7 @@ public class WristSubsystem extends SubsystemBase {
 
   public Command stopMotor() {
     return runOnce(() -> {
+      this.motorOverride = true;
       wristMotor.stopMotor();
     });
   }
@@ -98,6 +102,11 @@ public class WristSubsystem extends SubsystemBase {
 
   public Command goToHighShootPosition(){
     return goToPosition(()-> wristState.getHighShootPosition());
+  }
+
+  public double getCurrentPosition(){
+    double position = wristEncoder.get() - wristState.getEncoderOffset();
+    return position < 0.0 ? position + 1.0 : position;
   }
 
   public class WristState implements Sendable{ //for smartdashboard
@@ -124,8 +133,9 @@ public class WristSubsystem extends SubsystemBase {
       builder.addDoubleProperty("encoderOffset", this::getEncoderOffset, this::setEncoderOffset);
       builder.addDoubleProperty("wristEncoder", ()-> wristEncoder.get(), null);
       builder.addDoubleProperty("currentPosition", ()-> getCurrentPosition(), null);
-      builder.addDoubleProperty("targetPosition", ()-> wristPIDController.getSetpoint(), null);
+      builder.addDoubleProperty("targetPosition", ()-> wristPIDController.getGoal().position, null);
       builder.addBooleanProperty("atSetpoint", ()-> wristPIDController.atSetpoint(), null);
+      builder.addDoubleProperty("setpoint", () -> wristPIDController.getSetpoint().position, null);
       builder.addDoubleProperty("wristMotor", ()-> wristMotor.get(), null);
 
       builder.addDoubleProperty("wristP", ()-> wristPIDController.getP(), this::setP);
@@ -141,11 +151,6 @@ public class WristSubsystem extends SubsystemBase {
     }
     public void setD(double kd){
       wristPIDController.setD(kd);
-    }
-
-    public double getCurrentPosition(){
-      double position = wristEncoder.get() - getEncoderOffset();
-      return position < 0.0 ? position + 1.0 : position;
     }
 
     public double getIntakePosition() {

@@ -67,8 +67,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     });
   }
 
-  /** Run in robotPeriodic */
-  public void setMotors() {
+  @Override
+  public void periodic() {
     double pidCalc = elevatorPID.calculate(elevatorEncoder.getDistance());
     double ffwdCalc = elevatorFeedforward.calculate(elevatorPID.getSetpoint().velocity);
     if (motorOverride == false) this.elevatorMotor.setVoltage(pidCalc + ffwdCalc);

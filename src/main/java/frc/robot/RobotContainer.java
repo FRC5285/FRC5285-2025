@@ -12,6 +12,7 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
+import frc.robot.subsystems.AprilTagCams;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -45,6 +46,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final AprilTagCams atCams = new AprilTagCams(drivetrain);
     public final FlywheelSubsystem flywheel = new FlywheelSubsystem();
     public final WristSubsystem wrist = new WristSubsystem();
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
@@ -82,6 +84,7 @@ public class RobotContainer {
         // puts auto paths choices onto the Smart Dashboard
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+
         ledStrip.toNormal().schedule();
 
         // Configure the trigger bindings
@@ -179,31 +182,31 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        // // Deposit coral
-        // m_secondaryController.x().onFalse(
-        //     elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition())
-        // );
-        // m_secondaryController.a().onFalse(
-        //     elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition())
-        // );
-        // m_secondaryController.b().onFalse(
-        //     elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition())
-        // );
-        // m_secondaryController.y().onFalse(
-        //     elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition())
-        // );
-        // m_driverController.y().onTrue(
-        //     drivetrain.depositReefBranch(flywheel, m_driverController.getHID(), elevator, wrist)
-        // );
+        // Deposit coral
+        m_secondaryController.x().onFalse(
+            elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition())
+        );
+        m_secondaryController.a().onFalse(
+            elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition())
+        );
+        m_secondaryController.b().onFalse(
+            elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition())
+        );
+        m_secondaryController.y().onFalse(
+            elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition())
+        );
+        m_driverController.y().onTrue(
+            drivetrain.depositReefBranch(flywheel, m_driverController.getHID(), elevator, wrist)
+        );
 
-        // // Get coral from coral station
-        // new Trigger(() -> ControllerUtils.dPadDown(m_secondaryController.getHID())).onFalse(
-        //     elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
-        // );
-        // m_driverController.a().onTrue(
-        //     drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
-        //     .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
-        // );
+        // Get coral from coral station
+        new Trigger(() -> ControllerUtils.dPadDown(m_secondaryController.getHID())).onFalse(
+            elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
+        );
+        m_driverController.a().onTrue(
+            drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
+            .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
+        );
 
         // Get algae from ground (in progress)
         new Trigger(() -> ControllerUtils.dPadUp(m_secondaryController.getHID())).onTrue(
@@ -265,23 +268,8 @@ public class RobotContainer {
         );
 
         // // LEDs for Auton
-        // new Trigger(() -> DriverStation.isAutonomous()).onTrue(ledStrip.toAuton());
-        // new Trigger(() -> DriverStation.isAutonomous()).onFalse(ledStrip.toNormal());
-
-        /* Uncomment to test flywheel
-        m_driverController.a().and(flywheel.noCoral).onTrue(flywheel.intakeCoral());
-        m_driverController.a().and(flywheel.hasCoral).onTrue(flywheel.shootCoral());
-
-        // Uncomment to test wrist
-        m_driverController.y().onTrue(wrist.goToIntakePosition());
-        m_driverController.b().onTrue(wrist.goToMidShootPosition());
-        m_driverController.a().onTrue(wrist.goToHighShootPosition());
-        */
-    }
-
-    public void updatePIDs() {
-        elevator.setMotors();
-        wrist.setMotors();
+        new Trigger(() -> DriverStation.isAutonomous()).onTrue(ledStrip.toAuton());
+        new Trigger(() -> DriverStation.isAutonomous()).onFalse(ledStrip.toNormal());
     }
 
     /**
