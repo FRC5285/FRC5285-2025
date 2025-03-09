@@ -141,7 +141,7 @@ public final class Constants {
     // | "SM 005" | 31     |
     //  -------------------
 
-    public static class FlywheelConstants{
+    public static class FlywheelConstants {
         public static final int flywheelMotorID = 18; // CAN
         public static final int intakeSensorID = 5; // DIO
         public static final double intakeSpeed = -0.5;
@@ -150,7 +150,7 @@ public final class Constants {
         public static final double intakeMaxTime = 10.0;
     }
 
-    public static class WristConstants{
+    public static class WristConstants {
         public static final int wristMotorID = 19; // CAN
         public static final int wristEncoderID = 0; // DIO
     
@@ -167,9 +167,9 @@ public final class Constants {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         
-        public static final double maxV = 0.5;
-        public static final double maxA = 0.3;
-      }
+        public static final double maxV = 0.75; // rotations/s/s
+        public static final double maxA = 0.5; // rotations/s
+    }
 
     public static class ElevatorConstants{
         public static final int elevatorMotorID = 13; // CAN

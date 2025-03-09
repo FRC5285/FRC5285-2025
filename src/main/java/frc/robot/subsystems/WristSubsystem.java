@@ -126,13 +126,13 @@ public class WristSubsystem extends SubsystemBase {
     public void initSendable(SendableBuilder builder){
       builder.setSmartDashboardType("RobotPreferences");
 
-      builder.addDoubleProperty("intakePosition", this::getIntakePosition, this::setIntakePosition);
-      builder.addDoubleProperty("midShootPosition", this::getLowShootPosition, this::setIntakePosition);
-      builder.addDoubleProperty("midShootPosition", this::getMidShootPosition, this::setMidShootPosition);
-      builder.addDoubleProperty("highShootPosition", this::getHighShootPosition, this::setHighShootPosition);
-      builder.addDoubleProperty("encoderOffset", this::getEncoderOffset, this::setEncoderOffset);
+      builder.addDoubleProperty("intakePosition", this::getIntakePosition, null);
+      builder.addDoubleProperty("lowShootPosition", this::getLowShootPosition, null);
+      builder.addDoubleProperty("midShootPosition", this::getMidShootPosition, null);
+      builder.addDoubleProperty("highShootPosition", this::getHighShootPosition, null);
+      builder.addDoubleProperty("encoderOffset", this::getEncoderOffset, null);
       builder.addDoubleProperty("wristEncoder", ()-> wristEncoder.get(), null);
-      builder.addDoubleProperty("currentPosition", ()-> getCurrentPosition(), null);
+      builder.addDoubleProperty("currentPosition", () -> getCurrentPosition(), null);
       builder.addDoubleProperty("targetPosition", ()-> wristPIDController.getGoal().position, null);
       builder.addBooleanProperty("atSetpoint", ()-> wristPIDController.atSetpoint(), null);
       builder.addDoubleProperty("setpoint", () -> wristPIDController.getSetpoint().position, null);
@@ -141,6 +141,11 @@ public class WristSubsystem extends SubsystemBase {
       builder.addDoubleProperty("wristP", ()-> wristPIDController.getP(), this::setP);
       builder.addDoubleProperty("wristI", ()-> wristPIDController.getI(), this::setI);
       builder.addDoubleProperty("wristD", ()-> wristPIDController.getD(), this::setD);
+    }
+
+    public double getCurrentPosition(){
+      double position = wristEncoder.get() - getEncoderOffset();
+      return position < 0.0 ? position + 1.0 : position;
     }
 
     public void setP(double kp){
