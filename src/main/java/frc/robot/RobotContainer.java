@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.AimbotCommands;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.AprilTagCams;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -21,6 +22,7 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.ControllerUtils;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +48,7 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final AimbotCommands abcs = new AimbotCommands(drivetrain, DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == Alliance.Blue : true);
     public final AprilTagCams atCams = new AprilTagCams(drivetrain);
     public final FlywheelSubsystem flywheel = new FlywheelSubsystem();
     public final WristSubsystem wrist = new WristSubsystem();
@@ -196,7 +199,7 @@ public class RobotContainer {
             elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition())
         );
         m_driverController.y().onTrue(
-            drivetrain.depositReefBranch(flywheel, m_driverController.getHID(), elevator, wrist)
+            abcs.depositReefBranch(m_driverController.getHID(), flywheel, elevator, wrist)
         );
 
         // Get coral from coral station
@@ -204,7 +207,7 @@ public class RobotContainer {
             elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
         );
         m_driverController.a().onTrue(
-            drivetrain.collectCoralStation(flywheel, m_driverController.getHID(), elevator, wrist)
+            abcs.collectCoralStation(m_driverController.getHID(), flywheel, elevator, wrist)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
@@ -227,10 +230,10 @@ public class RobotContainer {
 
         // // Get algae from reef
         new Trigger(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
-            elevator.goToPosition(() -> drivetrain.getAlgaeHeight())
+            elevator.goToPosition(() -> abcs.getAlgaeHeight())
         );
         m_driverController.x().onTrue(
-            drivetrain.collectAlgaeFromReef(elevator, algaeIntake)
+            abcs.collectAlgaeFromReef(elevator, algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
@@ -239,13 +242,13 @@ public class RobotContainer {
             elevator.goToProcessorPosition()
         );
         m_driverController.b().onTrue(
-            drivetrain.doProcessor(elevator, algaeIntake)
+            abcs.doProcessor(elevator, algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
         // Do the deep climb
         new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).onTrue(
-            drivetrain.doDeepClimb()
+            abcs.doDeepClimb()
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
         new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).onTrue(
@@ -270,6 +273,11 @@ public class RobotContainer {
         // // LEDs for Auton
         new Trigger(() -> DriverStation.isAutonomous()).onTrue(ledStrip.toAuton());
         new Trigger(() -> DriverStation.isAutonomous()).onFalse(ledStrip.toNormal());
+    }
+
+    public void resetSide() {
+        DriverStation.getAlliance().ifPresent(allianceColor -> abcs.updateSide(allianceColor == Alliance.Blue));
+        drivetrain.resetSide(abcs.getStartLoc());
     }
 
     /**

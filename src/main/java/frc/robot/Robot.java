@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
-        m_robotContainer.drivetrain.resetSide();
+        m_robotContainer.resetSide();
         this.usedAuton = true;
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
 
         // If auton is not used, set robot heading according to driverstation
         if (!usedAuton) {
-            m_robotContainer.drivetrain.resetSide();
+            m_robotContainer.resetSide();
         }
     }
 

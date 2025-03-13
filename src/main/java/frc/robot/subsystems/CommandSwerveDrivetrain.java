@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
-import java.util.Set;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -11,18 +11,19 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AimbotCommands;
 
 /*
  * Reference:
@@ -40,12 +41,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    private AimbotCommands abcs;
-
     private SlewRateLimiter xLimiter = new SlewRateLimiter(OperatorConstants.accelLimit);
     private SlewRateLimiter yLimiter = new SlewRateLimiter(OperatorConstants.accelLimit);
     private SlewRateLimiter rotLimiter = new SlewRateLimiter(OperatorConstants.rotLimit);
 
+    private final SwerveRequest.FieldCentric drivePID = new SwerveRequest.FieldCentric()
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    private ProfiledPIDController xPID = new ProfiledPIDController(10.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
+    private ProfiledPIDController yPID = new ProfiledPIDController(10.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
+    private ProfiledPIDController rPID = new ProfiledPIDController(7.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxSpinRadPS, AutoConstants.maxSpinAccelRadPS2));
 
     // for Auton
     /** Swerve request to apply during robot-centric path following */
@@ -53,7 +57,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, modules);
-        abcs = new AimbotCommands(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == Alliance.Blue : true);
         // Configures robot settings for Auton
         configureAutoBuilder();
     }
@@ -65,6 +68,28 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.rotLimiter.reset(0);
         }).andThen(
             run(() -> this.setControl(requestSupplier.get()))
+        );
+    }
+
+    public Command fineTunePID(Pose2d goHere) {
+        return runOnce(() -> {
+            this.xPID.reset(this.getState().Pose.getX());
+            this.yPID.reset(this.getState().Pose.getY());
+            this.rPID.reset(this.getState().Pose.getRotation().getRadians());
+            this.rPID.enableContinuousInput(0.0, 2 * Math.PI);
+            this.xPID.setGoal(goHere.getX());
+            this.yPID.setGoal(goHere.getY());
+            this.rPID.setGoal(goHere.getRotation().getRadians());
+        }).andThen(
+            run(() -> {
+                this.setControl(
+                    drivePID.withVelocityX(this.xPID.calculate(this.getState().Pose.getX()))
+                    .withVelocityY(this.yPID.calculate(this.getState().Pose.getY()))
+                    .withRotationalRate(this.rPID.calculate(this.getState().Pose.getRotation().getRadians()))
+                );
+            })
+            .until(() -> this.xPID.atGoal() && this.yPID.atGoal() && this.rPID.atGoal())
+            .withTimeout(2.0)
         );
     }
 
@@ -84,9 +109,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return speedVal * (OperatorConstants.maxSpeedMultiplier * (1.0 - throttleVal * OperatorConstants.throttleMaxReduction));
     }
 
-    public void resetSide() {
+    public void resetSide(Pose2d startPose) {
         DriverStation.getAlliance().ifPresent(allianceColor -> {
-            abcs.updateSide(allianceColor == Alliance.Blue);
             setOperatorPerspectiveForward(
                 allianceColor == Alliance.Red
                     ? kRedAlliancePerspectiveRotation
@@ -94,7 +118,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             );
             m_hasAppliedOperatorPerspective = true;
         });
-        this.resetPose(abcs.getStartLoc()); // sets robot position to middle of starting line
+        this.resetPose(startPose); // sets robot position to middle of starting line
     }
 
     @Override
@@ -152,55 +176,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public Command stopCurrentCommand() {
         return runOnce(() -> {});
-    }
-
-    public double getAlgaeHeight() {
-        return abcs.getAlgaeHeight(this.getState().Pose);
-    }
-
-    // Don't change these, change them in AimbotCommands
-    public Command depositReefBranch(FlywheelSubsystem flywheel, XboxController controller, ElevatorSubsystem elevator, WristSubsystem wrist) {
-        return new DeferredCommand(
-            () -> {
-                return abcs.depositReefBranch(this.getState().Pose, controller, flywheel, elevator, wrist);
-            },
-            Set.of(this)
-        );
-    }
-
-    public Command collectCoralStation(FlywheelSubsystem flywheel, XboxController controller, ElevatorSubsystem elevator, WristSubsystem wrist) {
-        return new DeferredCommand(
-            () -> {
-                return abcs.collectCoralStation(this.getState().Pose, controller, flywheel, elevator, wrist);
-            },
-            Set.of(this)
-        );
-    }
-
-    public Command collectAlgaeFromReef(ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
-        return new DeferredCommand(
-            () -> {
-                return abcs.collectAlgaeFromReef(this.getState().Pose, elevator, algaeIntake);
-            },
-            Set.of(this)
-        );
-    }
-
-    public Command doProcessor(ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
-        return new DeferredCommand(
-            () -> {
-                return abcs.doProcessor(this.getState().Pose, elevator, algaeIntake);
-            },
-            Set.of(this)
-        );
-    }
-
-    public Command doDeepClimb() {
-        return new DeferredCommand(
-            () -> {
-                return abcs.doDeepClimb(this.getState().Pose);
-            },
-            Set.of(this)
-        );
     }
 }
