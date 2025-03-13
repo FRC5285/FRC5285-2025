@@ -32,7 +32,7 @@ public class WristSubsystem extends SubsystemBase {
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(IdleMode.kBrake)
           .inverted(true)
-          .smartCurrentLimit(20);
+          .smartCurrentLimit(10);
     
     wristMotor = new SparkMax(WristConstants.wristMotorID, MotorType.kBrushless);
     wristMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);

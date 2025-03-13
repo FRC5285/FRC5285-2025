@@ -42,10 +42,10 @@ public final class Constants {
         // Fill the following with camera names and offsets (from center of bot)
         // ---------------------------------------------------------------------
         // Update num cameras too (important!)
-        public static final int numCameras = 2;
+        public static final int numCameras = 1;
 
         public static final String[] cameraNames = {
-            "",
+            "Arducam_OV9281_USB1",
             ""
         };
         public static final Transform3d[] cameraOffsets = {
