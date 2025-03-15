@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 7.16,
-        "y": 4.0
+        "y": 0.8068915165508406
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.916534204591797,
-        "y": 3.9432161425557317
+        "x": 6.301528754909895,
+        "y": 1.2235574000810154
       },
       "isLocked": false,
-      "linkedName": "Starting Point 3"
+      "linkedName": "Starting Point 6"
     },
     {
       "anchor": {
-        "x": 6.924489795918367,
-        "y": 4.0
+        "x": 3.787,
+        "y": 2.831
       },
       "prevControl": {
-        "x": 7.169449158506402,
-        "y": 4.074147507851766
+        "x": 5.2898035790425215,
+        "y": 2.006474916874504
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef Side 4 Left"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.73,
-    "maxAcceleration": 0.1,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1800.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "Starting Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 178.63236224311515
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.916534204591797,
-        "y": 3.9432161425557317
+        "x": 6.8759667114752085,
+        "y": 4.002073656872564
       },
       "isLocked": false,
       "linkedName": "Starting Point 3"
     },
     {
       "anchor": {
-        "x": 6.924489795918367,
-        "y": 4.0
+        "x": 5.875,
+        "y": 4.016
       },
       "prevControl": {
-        "x": 7.169449158506402,
-        "y": 4.074147507851766
+        "x": 6.310083159421684,
+        "y": 4.016295271142018
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef Side 0 Right"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.73,
-    "maxAcceleration": 0.1,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1800.0,
     "nominalVoltage": 12.0,
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 178.63236224311515
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
