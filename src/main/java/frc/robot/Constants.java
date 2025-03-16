@@ -68,6 +68,8 @@ public final class Constants {
         public static final double maxSpinRadPS = 3.0 * (2.0 * Math.PI); // Max robot angular velocity, radians/s
 
         public static final double maxSpinAccelRadPS2 = 5.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
+
+        public static final double fineTuneMaxTime = 2.0;
     }
 
     public static class RobotConstantsMeters {
