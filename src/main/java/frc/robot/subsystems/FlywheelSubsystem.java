@@ -43,7 +43,7 @@ public class FlywheelSubsystem extends SubsystemBase {
       .onlyIf(this::noCoral)
       .until(this::hasCoral)
       .withTimeout(FlywheelConstants.intakeMaxTime)
-      .andThen(()-> flywheelMotor.stopMotor());
+      .andThen(()-> flywheelMotor.set(-0.05));
   }
 
   public Command shootCoral(){
@@ -76,4 +76,3 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
   }
 }
-
