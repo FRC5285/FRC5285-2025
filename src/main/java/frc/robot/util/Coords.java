@@ -119,13 +119,14 @@ public class Coords {
         // y = 4 is center of field
         boolean goToTop = robotPose.getY() > 4.0;
         // if both left and right are pressed down (or none), then choose closest coral station
-        if (goLeft == goRight) return goToTop ? this.topCoralStationPose : this.bottomCoralStationPose;
+        Pose2d goToPose = goToTop ? this.topCoralStationPose : this.bottomCoralStationPose;
+        if (goLeft == goRight) return goToPose;
         double goingLeft = goLeft ? 1.0 : -1.0;
         double goingTop = goToTop ? 1.0 : -1.0;
         return new Pose2d(
-            this.bottomCoralStationPose.getX() + goingTop * goingLeft * this.cos36 * FieldConstants.coralStationOffset,
-            this.bottomCoralStationPose.getY() + goingLeft * this.sideSign * this.sin36 * FieldConstants.coralStationOffset,
-            this.bottomCoralStationPose.getRotation()
+            goToPose.getX() + goingTop * goingLeft * this.cos36 * FieldConstants.coralStationOffset,
+            goToPose.getY() + goingLeft * this.sideSign * this.sin36 * FieldConstants.coralStationOffset,
+            goToPose.getRotation()
         );
     }
 

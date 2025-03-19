@@ -85,6 +85,7 @@ public class AimbotCommands extends SubsystemBase {
                     0.0
                 )
                 .alongWith(elevator.goToPosition(() -> getAlgaeHeight())) // Failsafe
+                .andThen(this.drivetrain.fineTunePID(goToCoords))
                 .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(algaeIntake.doIntake());
             },
@@ -95,14 +96,14 @@ public class AimbotCommands extends SubsystemBase {
     public Command doProcessor(ElevatorSubsystem elevator, AlgaeIntakeSubsystem algaeIntake) {
         return new DeferredCommand(
             () -> {
-                Pose2d goToPose = this.coords.getClosestProcessor(this.drivetrain.getState().Pose);
+                Pose2d goToCoords = this.coords.getClosestProcessor(this.drivetrain.getState().Pose);
                 return AutoBuilder.pathfindToPose(
-                    goToPose,
+                    goToCoords,
                     this.pathfindConstraints,
                     0.0
                 )
                 .alongWith(elevator.goToProcessorPosition()) // Failsafe
-                .andThen(this.drivetrain.fineTunePID(goToPose))
+                .andThen(this.drivetrain.fineTunePID(goToCoords))
                 .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(algaeIntake.shootOut());
             },
@@ -112,13 +113,13 @@ public class AimbotCommands extends SubsystemBase {
 
     public Command doDeepClimb() {
         return new DeferredCommand(() -> {
-                Pose2d goToPose = this.coords.getClosestCage(this.drivetrain.getState().Pose);
+                Pose2d goToCoords = this.coords.getClosestCage(this.drivetrain.getState().Pose);
                 return AutoBuilder.pathfindToPose(
-                    goToPose,
+                    goToCoords,
                     this.pathfindConstraints,
                     0.0
                 )
-                .andThen(drivetrain.fineTunePID(goToPose));
+                .andThen(drivetrain.fineTunePID(goToCoords));
             },
             Set.of(this)
         );
