@@ -25,7 +25,7 @@ public class Coords {
     public final double[] reefAlgaeHeights;
 
     private final double cos36 = Math.cos(0.2 * Math.PI); // Cosine of 36 deg (coral station)
-    private final double sin36 = Math.cos(0.2 * Math.PI); // Sine of 36 deg (coral station)
+    private final double sin36 = Math.sin(0.2 * Math.PI); // Sine of 36 deg (coral station)
 
     public Coords(boolean isBlue) {
         this.isBlue = isBlue;
