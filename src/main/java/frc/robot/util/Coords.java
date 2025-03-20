@@ -76,7 +76,7 @@ public class Coords {
         );
 
         this.startPose = new Pose2d(
-            7.5,
+            8.75 - 1.25 * this.sideSign,
             4.0,
             new Rotation2d(Math.PI/2.0 - this.sideSign * (Math.PI/2.0))
         ); // Position is facing towards barge, at center of starting line
