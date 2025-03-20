@@ -50,6 +50,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private ProfiledPIDController xPID = new ProfiledPIDController(10.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
     private ProfiledPIDController yPID = new ProfiledPIDController(10.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
     private ProfiledPIDController rPID = new ProfiledPIDController(7.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxSpinRadPS, AutoConstants.maxSpinAccelRadPS2));
+    private double invertMult = 1.0;
 
     // for Auton
     /** Swerve request to apply during robot-centric path following */
@@ -83,8 +84,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }).andThen(
             run(() -> {
                 this.setControl(
-                    drivePID.withVelocityX(this.xPID.calculate(this.getState().Pose.getX()))
-                    .withVelocityY(this.yPID.calculate(this.getState().Pose.getY()))
+                    drivePID.withVelocityX(this.xPID.calculate(this.getState().Pose.getX()) * invertMult)
+                    .withVelocityY(this.yPID.calculate(this.getState().Pose.getY()) * invertMult)
                     .withRotationalRate(this.rPID.calculate(this.getState().Pose.getRotation().getRadians()))
                 );
             })
@@ -111,6 +112,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void resetSide(Pose2d startPose) {
         DriverStation.getAlliance().ifPresent(allianceColor -> {
+            this.invertMult = allianceColor == Alliance.Blue ? 1.0 : -1.0;
             setOperatorPerspectiveForward(
                 allianceColor == Alliance.Red
                     ? kRedAlliancePerspectiveRotation
@@ -128,6 +130,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             // If alliance color is set, then check if it is red
             // If so, orient to red setting, otherwise, orient to blue setting
             DriverStation.getAlliance().ifPresent(allianceColor -> {
+                this.invertMult = allianceColor == Alliance.Blue ? 1.0 : -1.0;
                 setOperatorPerspectiveForward(
                     allianceColor == Alliance.Red
                         ? kRedAlliancePerspectiveRotation
