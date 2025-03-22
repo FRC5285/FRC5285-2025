@@ -90,7 +90,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 );
             })
             .until(() -> this.xPID.atGoal() && this.yPID.atGoal() && this.rPID.atGoal())
-            .withTimeout(2.0)
+            .withTimeout(AutoConstants.fineTuneMaxTime)
         );
     }
 
