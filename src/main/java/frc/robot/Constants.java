@@ -46,11 +46,15 @@ public final class Constants {
 
         public static final String[] cameraNames = {
             "Arducam_OV9281_USB1",
+            "",
+            "",
             ""
         };
         public static final Transform3d[] cameraOffsets = {
-            new Transform3d(new Translation3d(0.1616, -0.2058, 0.5836), new Rotation3d(0.0, -Math.PI / 18.0, 0.0)), // facing front, down
-            new Transform3d(new Translation3d(0.1652, 0.2631, 0.5962), new Rotation3d(0.0, Math.PI / 9.0, 0.0)) // facing front, up
+            new Transform3d(new Translation3d(-0.0592, -0.30164, 0.21672), new Rotation3d(0.5 * Math.PI, -0.2 * Math.PI, 0.0)), // On the side beam, facing up 36 deg, tilted 90 deg
+            new Transform3d(new Translation3d(0.26245, 0.3026, 0.19322), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, 0.0)), // Left side, swerve, facing forward
+            new Transform3d(new Translation3d(0.24662, -0.30952, 0.19652), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, -0.25 * Math.PI)), // Right side, swerve, facing 45 deg to the right
+            new Transform3d(new Translation3d(-0.26145, -0.2887, 0.19692), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, Math.PI)) // Facing backwards
         };
 
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
