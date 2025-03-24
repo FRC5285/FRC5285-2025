@@ -150,7 +150,7 @@ public final class Constants {
 
     public static class FlywheelConstants {
         public static final int flywheelMotorID = 18; // CAN
-        public static final int intakeSensorID = 5; // DIO
+        public static final int intakeSensorID = 3; // DIO
         public static final double intakeSpeed = -0.5;
         public static final double shootSpeed = 0.5;
         public static final double shootDuration = 0.5;
@@ -181,10 +181,10 @@ public final class Constants {
     public static class ElevatorConstants{
         public static final int elevatorMotorID = 13; // CAN
         public static final int followMotorID = 14; // CAN
-        public static final int topLimitSwitchID = 1; // DIO
-        public static final int bottomLimitSwitchID = 2; // DIO
-        public static final int encoderA = 3; // DIO, Blue
-        public static final int encoderB = 4; // DIO, Yellow
+        // public static final int topLimitSwitchID = 1; // DIO
+        // public static final int bottomLimitSwitchID = 2; // DIO
+        public static final int encoderA = 1; // DIO, Blue
+        public static final int encoderB = 2; // DIO, Yellow
 
         public static final double kP = 4.0;
         public static final double kI = 0.0;
@@ -224,7 +224,7 @@ public final class Constants {
     public static class AlgaeIntakeConstants {
         public static final int motorID1 = 15; // CAN
         public static final int motorID2 = 16; // CAN
-        public static final int algaeIntakeSensorID = 9; // DIO
+        public static final int algaeIntakeSensorID = 4; // DIO
 
         public static final double outSpeed = -0.5;
         public static final double inSpeed = 0.5; // left (from front perspective) is +in, right is -in
