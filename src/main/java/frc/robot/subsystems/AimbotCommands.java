@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain.DrivetrainAligningTo;
 import frc.robot.util.Coords;
 
 public class AimbotCommands extends SubsystemBase {
@@ -46,7 +47,7 @@ public class AimbotCommands extends SubsystemBase {
                     this.pathfindConstraints,
                     0.0
                 )
-                .andThen(this.drivetrain.fineTunePID(goToCoords))
+                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF))
                 .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
                 .andThen(flywheel.shootCoral());
@@ -66,7 +67,7 @@ public class AimbotCommands extends SubsystemBase {
                 )
                 .alongWith(elevator.goToIntakePosition()) // Failsafe
                 .alongWith(wrist.goToIntakePosition()) // Failsafe
-                .andThen(this.drivetrain.fineTunePID(goToCoords))
+                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION))
                 .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
                 .andThen(flywheel.intakeCoral());
@@ -85,7 +86,7 @@ public class AimbotCommands extends SubsystemBase {
                     0.0
                 )
                 .alongWith(elevator.goToPosition(() -> getAlgaeHeight())) // Failsafe
-                .andThen(this.drivetrain.fineTunePID(goToCoords))
+                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF))
                 .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(algaeIntake.doIntake());
             },
@@ -103,7 +104,7 @@ public class AimbotCommands extends SubsystemBase {
                     0.0
                 )
                 .alongWith(elevator.goToProcessorPosition()) // Failsafe
-                .andThen(this.drivetrain.fineTunePID(goToCoords))
+                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.PROCESSOR))
                 .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(algaeIntake.shootOut());
             },
@@ -119,7 +120,7 @@ public class AimbotCommands extends SubsystemBase {
                     this.pathfindConstraints,
                     0.0
                 )
-                .andThen(drivetrain.fineTunePID(goToCoords));
+                .andThen(drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.BARGE));
             },
             Set.of(this)
         );

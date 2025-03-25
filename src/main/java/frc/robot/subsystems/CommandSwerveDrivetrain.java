@@ -52,6 +52,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private ProfiledPIDController rPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxSpinRadPS, AutoConstants.maxSpinAccelRadPS2));
     private double invertMult = 1.0;
 
+    public DrivetrainAligningTo thingAligningTo = DrivetrainAligningTo.NOTHING;
+
     // for Auton
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
@@ -67,12 +69,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.xLimiter.reset(0);
             this.yLimiter.reset(0);
             this.rotLimiter.reset(0);
+            this.thingAligningTo = DrivetrainAligningTo.NOTHING;
         }).andThen(
             run(() -> this.setControl(requestSupplier.get()))
         );
     }
 
-    public Command fineTunePID(Pose2d goHere) {
+    public Command fineTunePID(Pose2d goHere, DrivetrainAligningTo whatAligningTo) {
         return runOnce(() -> {
             this.xPID.reset(this.getState().Pose.getX());
             this.yPID.reset(this.getState().Pose.getY());
@@ -81,6 +84,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.xPID.setGoal(goHere.getX());
             this.yPID.setGoal(goHere.getY());
             this.rPID.setGoal(goHere.getRotation().getRadians());
+            this.thingAligningTo = whatAligningTo;
         }).andThen(
             run(() -> {
                 this.setControl(
@@ -179,5 +183,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public Command stopCurrentCommand() {
         return runOnce(() -> {});
+    }
+
+    public enum DrivetrainAligningTo {
+        NOTHING,
+        REEF,
+        CORALSTATION,
+        PROCESSOR,
+        BARGE;
     }
 }

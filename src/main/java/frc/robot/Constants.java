@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Set;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -42,7 +44,7 @@ public final class Constants {
         // Fill the following with camera names and offsets (from center of bot)
         // ---------------------------------------------------------------------
         // Update num cameras too (important!)
-        public static final int numCameras = 1;
+        public static final int numCameras = 4;
 
         public static final String[] cameraNames = {
             "Arducam_OV9281_USB1",
@@ -56,6 +58,11 @@ public final class Constants {
             new Transform3d(new Translation3d(0.24662, -0.30952, 0.19652), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, -0.25 * Math.PI)), // Right side, swerve, facing 45 deg to the right
             new Transform3d(new Translation3d(-0.26145, -0.2887, 0.19692), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, Math.PI)) // Facing backwards
         };
+
+        public static final Set<Integer> normalShutOffCams = Set.of(); // Indices cameras to shut off (ex: Set.of(0, 1) creates set with 0 and 1).
+        public static final Set<Integer> reefShutOffCams = Set.of(0, 3); // Indices of cameras to shut off when PID aligning to the REEF.
+        public static final Set<Integer> coralStationShutOffCams = Set.of(); // Indices of cameras to shut off when PID aligning to the CORAL STATION.
+        public static final Set<Integer> processorShutOffCams = Set.of(); // Indices of cameras to shut off when PID aligning to the PROCESSOR.
 
         public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 

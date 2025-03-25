@@ -24,11 +24,13 @@ public class Vision {
     private final PhotonCamera camera;
     private final PhotonPoseEstimator photonEstimator;
     private Matrix<N3, N1> curStdDevs;
+    public final int camInd;
 
-    public Vision(String kCameraName, Transform3d kRobotToCam) {
+    public Vision(String kCameraName, Transform3d kRobotToCam, int cameraIndex) {
         camera = new PhotonCamera(kCameraName);
         photonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        this.camInd = cameraIndex;
     }
 
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
