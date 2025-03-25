@@ -95,6 +95,11 @@ public class RobotContainer {
         configureManualBindings();
     }
 
+    private void configureTestBindings() {
+        m_driverController.a().onTrue(ledStrip.toAuton());
+        m_driverController.y().onTrue(ledStrip.toNormal());
+    }
+
     private void configureDrivetrainBinding() {
         // drivetrain
         drivetrain.setDefaultCommand(
