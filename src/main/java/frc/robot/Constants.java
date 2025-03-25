@@ -156,7 +156,7 @@ public final class Constants {
     //  -------------------
 
     public static class FlywheelConstants {
-        public static final int flywheelMotorID = 18; // CAN
+        public static final int flywheelMotorID = 30; // CAN
         public static final int intakeSensorID = 3; // DIO
         public static final double intakeSpeed = -0.5;
         public static final double shootSpeed = 0.5;
@@ -165,7 +165,7 @@ public final class Constants {
     }
 
     public static class WristConstants {
-        public static final int wristMotorID = 19; // CAN
+        public static final int wristMotorID = 31; // CAN
         public static final int wristEncoderID = 0; // DIO
     
         public static final double intakePosition = 0.15;
@@ -193,14 +193,14 @@ public final class Constants {
         public static final int encoderA = 1; // DIO, Blue
         public static final int encoderB = 2; // DIO, Yellow
 
-        public static final double kP = 4.0;
+        public static final double kP = 4.0; //4.0
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
         public static final double kS = 0.0;
         /** If this one is too low, elevator goes slamming down. If too high, elevator goes slamming up. Get this one right. */
-        public static final double kG = 0.4225; // Get this one to 3 decimal places of precision, 0.129 is STARTING POINT ONLY!!!
-        public static final double kV = 3.6;
+        public static final double kG = 0.325; // 0.4225 // Get this one to 3 decimal places of precision, 0.129 is STARTING POINT ONLY!!!
+        public static final double kV = 3.4; // 3.6
         public static final double kA = 0.0;
 
         public static final double maxV = 2.5; // Max velocity
@@ -233,14 +233,14 @@ public final class Constants {
         public static final int motorID2 = 16; // CAN
         public static final int algaeIntakeSensorID = 4; // DIO
 
-        public static final double outSpeed = -0.5;
-        public static final double inSpeed = 0.5; // left (from front perspective) is +in, right is -in
+        public static final double outSpeed = 0.5;
+        public static final double inSpeed = -0.5;
 
         public static final double maxMotorTime = 3.0;
         public static final double maxGroundPickupTime = 20.0;
         public static final double outMotorTime = 0.5;
 
-        public static final double normalSpeed = 0.03;
+        public static final double normalSpeed = -0.03;
     }
 
     public static class ClimberConstants {
