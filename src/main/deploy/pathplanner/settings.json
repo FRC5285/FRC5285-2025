@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.867,
-  "robotLength": 0.867,
+  "robotWidth": 0.864,
+  "robotLength": 0.864,
   "holonomicMode": true,
   "pathFolders": [
     "Coral Station to Reef paths",
@@ -14,8 +14,8 @@
   "defaultMaxAngVel": 720.0,
   "defaultMaxAngAccel": 1800.0,
   "defaultNominalVoltage": 12.0,
-  "robotMass": 52.163,
-  "robotMOI": 6.535,
+  "robotMass": 49.4415,
+  "robotMOI": 6.151,
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.051,
   "driveGearing": 6.746,

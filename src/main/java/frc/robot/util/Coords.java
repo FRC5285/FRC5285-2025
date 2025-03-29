@@ -97,7 +97,7 @@ public class Coords {
         Rotation2d[] rca = new Rotation2d[6];
         double[] rah = new double[6];
         double a;
-        double centerHeight = (ElevatorConstants.L2AlgaeHeight + ElevatorConstants.L3AlgaeHeight);
+        double centerHeight = (ElevatorConstants.L2AlgaeHeight + ElevatorConstants.L3AlgaeHeight) / 2.0;
         double addHeight = Math.abs(ElevatorConstants.L2AlgaeHeight - ElevatorConstants.L3AlgaeHeight) / 2.0;
         for (int i = 0; i < 6; i++) {
             a = i * (Math.PI / 3);
@@ -180,17 +180,32 @@ public class Coords {
         );
     }
 
+    /** For use before depositing coral, lets cameras adjust pose */
+    public Pose2d preDepositCoralCoords(Pose2d robotPose) {
+        Pose2d wall2d = this.getReefWallCenterCoords(robotPose);
+        return new Pose2d(
+            wall2d.getX() - wall2d.getRotation().getCos() * 0.5,
+            wall2d.getY() - wall2d.getRotation().getSin() * 0.5,
+            wall2d.getRotation()
+        );
+    }
+
     // returns optimal coral scoring position
     // note: maybe add different positions for scoring on different levels?
-    public Pose2d getReefBranchCoords(Pose2d robotPose, boolean goLeft, boolean goRight) {
+    public Pose2d getReefBranchCoords(Pose2d robotPose, double distCorrection, boolean goLeft, boolean goRight, double leftRightCorrection) {
         int wallIndex = this.getReefWallCenterCoordsIndex(robotPose);
         Pose2d wall2d = this.reefSideCenterLocs[wallIndex];
         double goingLeft = goLeft ? 1.0 : -1.0;
         // cool math that adds the coral intake offset
         // yes, the sin and cos are intentionally swapped (rotates the direction by 270 deg)
         wall2d = new Pose2d(
-            wall2d.getX() + wall2d.getRotation().getSin() * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.reefBranchCorrection),
-            wall2d.getY() - wall2d.getRotation().getCos() * (RobotConstantsMeters.coralArmOffset + RobotConstantsMeters.reefBranchCorrection),
+            wall2d.getX() + wall2d.getRotation().getSin() * (RobotConstantsMeters.coralArmOffset + leftRightCorrection),
+            wall2d.getY() - wall2d.getRotation().getCos() * (RobotConstantsMeters.coralArmOffset + leftRightCorrection),
+            wall2d.getRotation()
+        );
+        wall2d = new Pose2d( // Correction for L4
+            wall2d.getX() - wall2d.getRotation().getCos() * distCorrection,
+            wall2d.getY() - wall2d.getRotation().getSin() * distCorrection,
             wall2d.getRotation()
         );
         if (goLeft == goRight) return wall2d;

@@ -57,11 +57,11 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public Command moveDown() {
-    return runOnce(() -> wristPIDController.setGoal(wristPIDController.getSetpoint().position + 0.05));
+    return runOnce(() -> wristPIDController.setGoal(wristPIDController.getSetpoint().position + 0.01));
   }
 
   public Command moveUp() {
-    return runOnce(() -> wristPIDController.setGoal(wristPIDController.getSetpoint().position - 0.05));
+    return runOnce(() -> wristPIDController.setGoal(wristPIDController.getSetpoint().position - 0.01));
   }
 
   @Override
@@ -102,6 +102,10 @@ public class WristSubsystem extends SubsystemBase {
 
   public Command goToHighShootPosition(){
     return goToPosition(()-> wristState.getHighShootPosition());
+  }
+  
+  public Command goAllTheWayUp() {
+    return goToPosition(() -> 0.0);
   }
 
   public double getCurrentPosition(){

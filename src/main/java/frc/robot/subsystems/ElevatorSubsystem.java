@@ -34,6 +34,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final ElevatorFeedforward elevatorFeedforward;
   private boolean motorOverride = false;
 
+  public elevatorLastSelectedHeight goingToHeight = elevatorLastSelectedHeight.FOUR;
+
   public ElevatorSubsystem() {
     elevatorMotor = new TalonFX(ElevatorConstants.elevatorMotorID);
     followerMotor = new TalonFX(ElevatorConstants.followMotorID);
@@ -57,7 +59,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // atTop = new Trigger(()-> !topLimitSwitch.get());
     // atBottom.onTrue(hitBottomLimit());
     // atTop.onTrue(hitTopLimit());
-    new Trigger(() -> elevatorEncoder.getDistance() >= ElevatorConstants.maxHeight).onTrue(hitTopLimit());
+    // new Trigger(() -> elevatorEncoder.getDistance() >= ElevatorConstants.maxHeight).onTrue(hitTopLimit());
     // new Trigger(() -> elevatorEncoder.getDistance() <= ElevatorConstants.minHeight).onTrue(hitBottomLimit());
   }
 
@@ -80,19 +82,19 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public Command goToLevel1Position(){
-    return goToPosition(()-> elevatorState.getLevel1Position());
+    return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.ONE).andThen(goToPosition(()-> elevatorState.getLevel1Position()));
   }
 
   public Command goToLevel2Position(){
-    return goToPosition(()-> elevatorState.getLevel2Position());
+    return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.TWO).andThen(goToPosition(()-> elevatorState.getLevel2Position()));
   }
 
   public Command goToLevel3Position(){
-    return goToPosition(()-> elevatorState.getLevel3Position());
+    return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.THREE).andThen(goToPosition(()-> elevatorState.getLevel3Position()));
   }
 
   public Command goToLevel4Position(){
-    return goToPosition(()-> elevatorState.getLevel4Position());
+    return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.FOUR).andThen(goToPosition(()-> elevatorState.getLevel4Position()));
   }
 
   public Command goToIntakePosition(){
@@ -129,8 +131,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private Command hitTopLimit(){
     return runOnce(()->{
-      motorOverride = true;
-      elevatorMotor.stopMotor();
+      elevatorPID.setGoal(ElevatorConstants.maxHeight);
     });
   }
 
@@ -147,6 +148,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   //     elevatorMotor.set(-0.1);
   //   }).until(atBottom);
   // }
+
+  public enum elevatorLastSelectedHeight{
+    ONE,
+    TWO,
+    THREE,
+    FOUR;
+  }
 
   public class ElevatorState implements Sendable{
 

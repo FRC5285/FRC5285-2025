@@ -6,13 +6,18 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.RobotConstantsMeters;
 import frc.robot.subsystems.CommandSwerveDrivetrain.DrivetrainAligningTo;
+import frc.robot.subsystems.ElevatorSubsystem.elevatorLastSelectedHeight;
 import frc.robot.util.Coords;
 
 public class AimbotCommands extends SubsystemBase {
@@ -41,16 +46,20 @@ public class AimbotCommands extends SubsystemBase {
     public Command depositReefBranch(XboxController controller, FlywheelSubsystem flywheel, ElevatorSubsystem elevator, WristSubsystem wrist) {
         return new DeferredCommand(
             () -> {
-                Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, controller.getLeftBumperButton(), controller.getRightBumperButton());
+                Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.1048 : 0.0, controller.getLeftBumperButton(), controller.getRightBumperButton(), elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? -0.005 : RobotConstantsMeters.reefBranchCorrection);
+                double[] coordsArr = { goToCoords.getX(), goToCoords.getY(), goToCoords.getRotation().getDegrees()};
+                SmartDashboard.putNumberArray("Aimbot Target", coordsArr);
                 return AutoBuilder.pathfindToPose(
-                    goToCoords,
+                    this.coords.preDepositCoralCoords(this.drivetrain.getState().Pose),
                     this.pathfindConstraints,
                     0.0
                 )
+                .andThen(new WaitCommand(1.0))
                 .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF))
                 .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
-                .andThen(flywheel.shootCoral());
+                .andThen(new WaitCommand(0.5))
+                .andThen(flywheel.shootCoral(elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 1.0 : elevator.goingToHeight == elevatorLastSelectedHeight.ONE ? 0.2 : 0.5));
             },
             Set.of(this)
         );

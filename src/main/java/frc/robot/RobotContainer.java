@@ -92,7 +92,7 @@ public class RobotContainer {
 
         // Configure the trigger bindings
         configureDrivetrainBinding();
-        configureManualBindings();
+        configureBindings();
     }
 
     private void configureTestBindings() {
@@ -105,9 +105,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(drivetrain.getXVal(-MathUtil.applyDeadband(m_driverController.getLeftY(), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(drivetrain.getYVal(-MathUtil.applyDeadband(m_driverController.getLeftX(), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(drivetrain.getRotVal(-MathUtil.applyDeadband(m_driverController.getRightX(), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(drivetrain.getXVal(-MathUtil.applyDeadband(m_driverController.getLeftY() * Math.abs(m_driverController.getLeftY()), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(drivetrain.getYVal(-MathUtil.applyDeadband(m_driverController.getLeftX() * Math.abs(m_driverController.getLeftX()), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(drivetrain.getRotVal(-MathUtil.applyDeadband(m_driverController.getRightX() * Math.abs(m_driverController.getRightX()), 0.1), this.m_driverController.getLeftTriggerAxis()) * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
     }
@@ -121,13 +121,13 @@ public class RobotContainer {
             elevator.elevatorUp()
         );
         new Trigger(() -> ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
-            elevator.goToPosition(() -> ElevatorConstants.L2AlgaeHeight)
+            elevator.goToPosition(() -> ElevatorConstants.L2AlgaeHeight).alongWith(wrist.goAllTheWayUp())
         );
         new Trigger(() -> ControllerUtils.rightTrigger(m_secondaryController.getHID())).onFalse(
-            elevator.goToPosition(() -> ElevatorConstants.L3AlgaeHeight)
+            elevator.goToPosition(() -> ElevatorConstants.L3AlgaeHeight).alongWith(wrist.goAllTheWayUp())
         );
         new Trigger(() -> ControllerUtils.dPadDown(m_secondaryController.getHID())).onFalse(
-            elevator.goToFloorAlgaePosition()
+            elevator.goToFloorAlgaePosition().alongWith(wrist.goAllTheWayUp())
         );
         new Trigger(() -> ControllerUtils.dPadUp(m_secondaryController.getHID())).onFalse(
             elevator.goToProcessorPosition()
@@ -141,7 +141,10 @@ public class RobotContainer {
             flywheel.stopIntake().alongWith(algaeIntake.stopIntake())
         );
         m_driverController.rightBumper().onTrue(
-            flywheel.shootCoral().alongWith(algaeIntake.shootOut())
+            flywheel.shootCoral()
+        );
+        m_driverController.x().onTrue(
+            algaeIntake.shootOut()
         );
 
         // deposit coral
@@ -149,7 +152,7 @@ public class RobotContainer {
             elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition())
         );
         m_secondaryController.a().onFalse(
-            elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition())
+            elevator.goToLevel2Position().alongWith(wrist.goToLowShootPosition())
         );
         m_secondaryController.b().onFalse(
             elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition())
@@ -159,7 +162,7 @@ public class RobotContainer {
         );
 
         // Get coral from coral station
-        new Trigger(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
+        new Trigger(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onTrue(
             elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
         );
 
@@ -218,7 +221,7 @@ public class RobotContainer {
 
         // Get algae from ground (in progress)
         new Trigger(() -> ControllerUtils.dPadUp(m_secondaryController.getHID())).onTrue(
-            elevator.goToFloorAlgaePosition().andThen(algaeIntake.groundIntake())
+            elevator.goToFloorAlgaePosition().alongWith(wrist.goAllTheWayUp()).andThen(algaeIntake.groundIntake())
         );
         new Trigger(() -> ControllerUtils.dPadUp(m_secondaryController.getHID())).onFalse(
             algaeIntake.stopIntake()
@@ -235,7 +238,7 @@ public class RobotContainer {
 
         // // Get algae from reef
         new Trigger(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
-            elevator.goToPosition(() -> abcs.getAlgaeHeight())
+            elevator.goToPosition(() -> abcs.getAlgaeHeight()).alongWith(wrist.goAllTheWayUp())
         );
         m_driverController.x().onTrue(
             abcs.collectAlgaeFromReef(elevator, algaeIntake)
@@ -268,12 +271,23 @@ public class RobotContainer {
             drivetrain.stopCurrentCommand().alongWith(ledStrip.toNormal())
         );
 
-        m_secondaryController.leftBumper().onFalse(
+        m_secondaryController.leftBumper().and(() -> ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
             elevator.elevatorDown()
         );
-        m_secondaryController.rightBumper().onFalse(
+        m_secondaryController.rightBumper().and(() -> ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
             elevator.elevatorUp()
         );
+
+        m_secondaryController.leftBumper().and(() -> !ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
+            wrist.moveDown()
+        );
+        m_secondaryController.rightBumper().and(() -> !ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
+            wrist.moveUp()
+        );
+        
+
+        m_secondaryController.leftStick().onTrue(flywheel.runIntake());
+        m_secondaryController.leftStick().onFalse(flywheel.stopIntake());
 
         // // LEDs for Auton
         new Trigger(() -> DriverStation.isAutonomous()).onTrue(ledStrip.toAuton());
