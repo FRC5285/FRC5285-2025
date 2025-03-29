@@ -11,13 +11,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.DriverStation;
+// import edu.wpi.first.wpilibj.DriverStation;
 // import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+// import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -129,11 +129,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   //   });
   // }
 
-  private Command hitTopLimit(){
-    return runOnce(()->{
-      elevatorPID.setGoal(ElevatorConstants.maxHeight);
-    });
-  }
+  // private Command hitTopLimit(){
+  //   return runOnce(()->{
+  //     elevatorPID.setGoal(ElevatorConstants.maxHeight);
+  //   });
+  // }
 
   public Command stopElevator() {
     return runOnce(() -> {
