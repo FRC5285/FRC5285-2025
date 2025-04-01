@@ -66,8 +66,22 @@ public class ElevatorSubsystem extends SubsystemBase {
   public Command goToPosition(DoubleSupplier getTargetPosition) {
     return runOnce(() -> {
       motorOverride = false;
-      elevatorPID.setGoal(getTargetPosition.getAsDouble());
+      elevatorPID.setGoal(getTargetPosition.getAsDouble() - ElevatorConstants.encoderOffset);
     });
+  }
+
+  public Command goToPosition(elevatorLastSelectedHeight goToHeight) {
+    final double targetPos;
+    if (goToHeight == elevatorLastSelectedHeight.ONE) {
+      targetPos = ElevatorConstants.level1Position;
+    } else if (goToHeight == elevatorLastSelectedHeight.TWO) {
+      targetPos = ElevatorConstants.level2Position;
+    } else if (goToHeight == elevatorLastSelectedHeight.THREE) {
+      targetPos = ElevatorConstants.level3Position;
+    } else {
+      targetPos = ElevatorConstants.level4Position;
+    }
+    return this.goToPosition(() -> targetPos);
   }
 
   @Override
@@ -95,6 +109,22 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public Command goToLevel4Position(){
     return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.FOUR).andThen(goToPosition(()-> elevatorState.getLevel4Position()));
+  }
+
+  public Command setToLevel1Position() {
+    return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.ONE);
+  }
+
+  public Command setToLevel2Position() {
+    return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.TWO);
+  }
+
+  public Command setToLevel3Position() {
+    return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.THREE);
+  }
+
+  public Command setToLevel4Position() {
+    return runOnce(() -> this.goingToHeight = elevatorLastSelectedHeight.FOUR);
   }
 
   public Command goToIntakePosition(){
@@ -250,7 +280,10 @@ public class ElevatorSubsystem extends SubsystemBase {
       builder.addDoubleProperty("Intake Position", this::getIntakePosition, this::setIntakePosition);
       builder.addDoubleProperty("Processor Height", this::getProcessorHeight, this::setProcessorHeight);
       builder.addDoubleProperty("Floor Algae Position", this::getFloorAlgaePosition, this::setFloorAlgaePosition);
-
+      builder.addBooleanProperty("L1", () -> goingToHeight == elevatorLastSelectedHeight.ONE, null);
+      builder.addBooleanProperty("L2", () -> goingToHeight == elevatorLastSelectedHeight.TWO, null);
+      builder.addBooleanProperty("L3", () -> goingToHeight == elevatorLastSelectedHeight.THREE, null);
+      builder.addBooleanProperty("L4", () -> goingToHeight == elevatorLastSelectedHeight.FOUR, null);
     }
   }
 }

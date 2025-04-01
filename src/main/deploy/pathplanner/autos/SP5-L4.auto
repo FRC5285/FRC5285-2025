@@ -19,16 +19,16 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "SP1-R1R"
+                              "pathName": "SP5-R5L"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L4"
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -57,7 +57,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "R1R-LCS"
+                              "pathName": "R5L-RCS"
                             }
                           },
                           {
@@ -102,16 +102,16 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "LCS-R1L"
+                              "pathName": "RCS-R5R"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L4"
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -140,7 +140,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "R1L-LCS"
+                              "pathName": "R5R-RCS"
                             }
                           },
                           {
@@ -185,16 +185,16 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "LCS-R2L"
+                              "pathName": "RCS-R4R"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L4"
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -223,7 +223,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "R2L-LCS"
+                              "pathName": "R4R-RCS"
                             }
                           },
                           {
@@ -268,16 +268,16 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "LCS-R2R"
+                              "pathName": "RCS-R4L"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L4"
                             }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -306,7 +306,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "R2R-LCS"
+                              "pathName": "R4L-RCS"
                             }
                           },
                           {
@@ -351,7 +351,13 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "LCS-R3L"
+                              "pathName": "RCS-R3R"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L4"
                             }
                           }
                         ]
@@ -360,19 +366,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Elevator and Wrist to L4"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "Wait for Elevator and Wrist"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -395,7 +389,7 @@
                           {
                             "type": "path",
                             "data": {
-                              "pathName": "R3L-LCS"
+                              "pathName": "R3R-RCS"
                             }
                           },
                           {

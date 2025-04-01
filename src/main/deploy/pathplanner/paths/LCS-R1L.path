@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4887,
-        "y": 7.008
+        "x": 1.489,
+        "y": 7.144
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.095134645886895,
-        "y": 6.129652993176054
+        "x": 3.0042764039066236,
+        "y": 5.84371909626985
       },
       "isLocked": false,
       "linkedName": "Left Coral Station"
@@ -20,24 +20,24 @@
         "y": 5.797993724853694
       },
       "prevControl": {
-        "x": 3.6636954200684055,
-        "y": 6.3201414979875885
+        "x": 3.0475925536558863,
+        "y": 6.5567418109901165
       },
       "nextControl": {
-        "x": 4.704844043556961,
-        "y": 5.664822245423378
+        "x": 5.06528780454955,
+        "y": 5.497773317450658
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.907,
-        "y": 5.385
+        "x": 4.95,
+        "y": 5.48
       },
       "prevControl": {
-        "x": 4.280668755570076,
-        "y": 5.916522316478442
+        "x": 4.7335073702979,
+        "y": 5.628314802095683
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +50,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.73,
-    "maxAcceleration": 8.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1800.0,
     "nominalVoltage": 12.0,

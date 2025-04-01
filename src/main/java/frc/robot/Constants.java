@@ -51,11 +51,11 @@ public final class Constants {
             "Arducam_OV9281_USB2",
             "Arducam_OV9281_USB3",
             "Arducam_OV9281_USB4"
-        };
+        }; //
         public static final Transform3d[] cameraOffsets = {
             new Transform3d(new Translation3d(-0.0592, -0.30164, 0.21672), new Rotation3d(0.0, -0.2 * Math.PI, 0.0)), // On the side beam, facing up 36 deg, tilted 90 deg
             new Transform3d(new Translation3d(-0.26145, -0.2887, 0.19692), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, Math.PI)), // Facing backwards
-            new Transform3d(new Translation3d(0.24662, -0.30952, 0.19652), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, -0.25 * Math.PI)), // Right side, swerve, facing 45 deg to the right
+            new Transform3d(new Translation3d(0.28898, -0.11277, 0.18288), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, 15.0 / 180.0 * Math.PI)), // Right side, 15 deg to left
             new Transform3d(new Translation3d(0.26245, 0.3026, 0.19322), new Rotation3d(0.0, (-1.0 / 12.0) * Math.PI, 0.0)) // Left side, swerve, facing forward
         };
 
@@ -74,11 +74,11 @@ public final class Constants {
         // Used for constraints of pathfinding
         public static final double maxVelocityMPS = 2.0; // Max robot speed, m/s, 4.73
 
-        public static final double maxAccelMPS2 = 2.0; // Max robot accelerations m/s/s
+        public static final double maxAccelMPS2 = 1.5; // Max robot accelerations m/s/s
 
         public static final double maxSpinRadPS = 3.0 * (2.0 * Math.PI); // Max robot angular velocity, radians/s
 
-        public static final double maxSpinAccelRadPS2 = 5.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
+        public static final double maxSpinAccelRadPS2 = 2.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
 
         public static final double fineTuneMaxTime = 3.0;
     }
@@ -95,16 +95,16 @@ public final class Constants {
 
         public static final double cageSafeDist = 0.1;
 
-        public static final double reefSafeDist = 0.2032;
+        public static final double reefSafeDist = 0.225;
 
         public static final double reefAlgaeSafeDist = -reefSafeDist; // Gets added to reefSafeDist
 
-        public static final double coralStationSafeDist = 0.2;
+        public static final double coralStationSafeDist = 0.1775;
 
         // Horizontal (from robot perspective) translations
-        public static final double coralStationCorrection = 0.0; // Gets added onto coralArmOffset
+        public static final double coralStationCorrection = 0.0254; // Gets added onto coralArmOffset
         
-        public static final double reefBranchCorrection = -0.033; // -0.063
+        public static final double reefBranchCorrection = -0.020; // -0.063
     }
 
     public static class FieldConstants {
@@ -168,13 +168,13 @@ public final class Constants {
         public static final int wristMotorID = 31; // CAN
         public static final int wristEncoderID = 0; // DIO
     
-        public static final double intakePosition = 0.15;
+        public static final double intakePosition = 0.14;
         /**L1*/
         public static final double lowShootPosition = 0.26828;
         /**L2/L3*/
         public static final double midShootPosition = 0.2926;
         /**L4*/
-        public static final double highShootPosition = 0.237;
+        public static final double highShootPosition = 0.28;
         public static final double encoderOffset = 0.64;
     
         public static final double kP = 5.0;
@@ -203,21 +203,21 @@ public final class Constants {
         public static final double kV = 3.4; // 3.6
         public static final double kA = 0.0;
 
-        public static final double maxV = 2.5; // Max velocity
-        public static final double maxA = 2.0; // Max acceleration
+        public static final double maxV = 3.5; // Max velocity, 2.5
+        public static final double maxA = 2.5; // Max acceleration
 
         public static final double elevatorGearRadius = 0.022;
         public static final double encoderPulseDist = (2.0 * Math.PI * elevatorGearRadius) / 1024;
 
-        public static final double level1Position = 0.3;
-        public static final double level2Position = 0.4925;
-        public static final double level3Position = 0.8627;
+        public static final double level1Position = 0.15;
+        public static final double level2Position = 0.3625;
+        public static final double level3Position = 0.7827;
         public static final double level4Position = 1.335;
-        public static final double intakePosition = 0.25;
+        public static final double intakePosition = 0.182;
         public static final double floorAlgaePosition = 0.0;
         
-        public static final double L2AlgaeHeight = 0.608;
-        public static final double L3AlgaeHeight = 0.956;
+        public static final double L2AlgaeHeight = 0.55; // 0.608
+        public static final double L3AlgaeHeight = 1.0; // 0.956
 
         public static final double maxHeight = 1.335;
         public static final double minHeight = 0.0;
@@ -226,6 +226,8 @@ public final class Constants {
 
         // Elevator is at goal position if it is this close to the goal position
         public static final double goalRange = 0.025;
+
+        public static final double encoderOffset = 0.0; // Height when starting
     }
 
     public static class AlgaeIntakeConstants {
@@ -257,5 +259,13 @@ public final class Constants {
         public static final double normalColor = 0.93; // 0.93 = White
 
         public static final double autonColor = 0.61; // 0.67 = Gold, 0.61 = Red
+
+        public static final double level1Color = 0.71; // 0.71 = Lawn Green
+
+        public static final double level2Color = 0.89; // 0.89 = Blue Violet
+
+        public static final double level3Color = 0.57; // 0.57 = Hot Pink
+
+        public static final double level4Color = 0.81; // 0.81 = Aqua
     }
 }

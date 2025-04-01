@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.239,
-        "y": 1.293
+        "x": 1.199,
+        "y": 1.119
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7307180123541617,
-        "y": 1.9644927810910917
+        "x": 2.7705242127491525,
+        "y": 1.8586262158829423
       },
       "isLocked": false,
       "linkedName": "Right Coral Station"
@@ -20,24 +20,24 @@
         "y": 3.3718498536942207
       },
       "prevControl": {
-        "x": 5.4720890268446905,
-        "y": 1.7198278368730755
+        "x": 5.353484738900532,
+        "y": 2.0313754757299396
       },
       "nextControl": {
-        "x": 6.316805775349394,
-        "y": 4.249051375155917
+        "x": 6.422828142524606,
+        "y": 4.169699312647202
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.875,
-        "y": 4.345
+        "x": 5.978,
+        "y": 4.354
       },
       "prevControl": {
-        "x": 5.6410574479658235,
-        "y": 4.433152608286633
+        "x": 5.758143828072751,
+        "y": 4.4730426934147145
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +50,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.73,
-    "maxAcceleration": 8.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1800.0,
     "nominalVoltage": 12.0,

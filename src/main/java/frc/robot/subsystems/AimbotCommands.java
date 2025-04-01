@@ -45,16 +45,16 @@ public class AimbotCommands extends SubsystemBase {
     public Command depositReefBranch(XboxController controller, FlywheelSubsystem flywheel, ElevatorSubsystem elevator, WristSubsystem wrist) {
         return new DeferredCommand(
             () -> {
-                Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.1048 : 0.0, controller.getLeftBumperButton(), controller.getRightBumperButton(), elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? -0.005 : RobotConstantsMeters.reefBranchCorrection);
-                double[] coordsArr = { goToCoords.getX(), goToCoords.getY(), goToCoords.getRotation().getDegrees()};
-                SmartDashboard.putNumberArray("Aimbot Target", coordsArr);
+                Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : -0.025, controller.getLeftBumperButton(), controller.getRightBumperButton(), elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.01 : RobotConstantsMeters.reefBranchCorrection);
                 return AutoBuilder.pathfindToPose(
-                    this.coords.preDepositCoralCoords(this.drivetrain.getState().Pose),
+                    this.coords.preDepositCoralCoords(goToCoords),
                     this.pathfindConstraints,
                     0.0
                 )
-                .andThen(new WaitCommand(1.0))
+                .andThen(elevator.goToPosition(elevator.goingToHeight))
+                .andThen(new WaitCommand(0.5))
                 .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF))
+                .andThen(elevator.goToPosition(elevator.goingToHeight))
                 .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
                 .andThen(new WaitCommand(0.5))
@@ -75,10 +75,10 @@ public class AimbotCommands extends SubsystemBase {
                 )
                 .alongWith(elevator.goToIntakePosition()) // Failsafe
                 .alongWith(wrist.goToIntakePosition()) // Failsafe
-                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION))
-                .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
-                .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
-                .andThen(flywheel.intakeCoral());
+                .andThen(flywheel.intakeCoral())
+                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION));
+                // .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
+                // .andThen(new WaitUntilCommand(() -> wrist.isAtSetpoint()))
             },
             Set.of(this)
         );
@@ -93,9 +93,9 @@ public class AimbotCommands extends SubsystemBase {
                     this.pathfindConstraints,
                     0.0
                 )
-                .alongWith(elevator.goToPosition(() -> getAlgaeHeight())) // Failsafe
+                // .alongWith(elevator.goToPosition(() -> getAlgaeHeight())) // Failsafe
                 .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF))
-                .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
+                // .andThen(new WaitUntilCommand(() -> elevator.reachedGoal()))
                 .andThen(algaeIntake.doIntake());
             },
             Set.of(this)
@@ -132,5 +132,9 @@ public class AimbotCommands extends SubsystemBase {
             },
             Set.of(this)
         );
+    }
+    
+    public Command stopCurrentCommand() {
+        return runOnce(() -> {});
     }
 }

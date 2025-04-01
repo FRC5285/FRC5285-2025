@@ -173,6 +173,11 @@ public class Coords {
     // returns optimal algae scoring position
     public Pose2d getReefAlgaeCoords(Pose2d robotPose) {
         Pose2d wall2d = this.getReefWallCenterCoords(robotPose);
+        wall2d = new Pose2d( // puts an intake arm in the center
+            wall2d.getX() + wall2d.getRotation().getSin() * (RobotConstantsMeters.coralArmOffset),
+            wall2d.getY() - wall2d.getRotation().getCos() * (RobotConstantsMeters.coralArmOffset),
+            wall2d.getRotation()
+        );
         return new Pose2d(
             wall2d.getX() - wall2d.getRotation().getCos() * RobotConstantsMeters.reefAlgaeSafeDist,
             wall2d.getY() - wall2d.getRotation().getSin() * RobotConstantsMeters.reefAlgaeSafeDist,
@@ -181,12 +186,11 @@ public class Coords {
     }
 
     /** For use before depositing coral, lets cameras adjust pose */
-    public Pose2d preDepositCoralCoords(Pose2d robotPose) {
-        Pose2d wall2d = this.getReefWallCenterCoords(robotPose);
+    public Pose2d preDepositCoralCoords(Pose2d goToPose) {
         return new Pose2d(
-            wall2d.getX() - wall2d.getRotation().getCos() * 0.5,
-            wall2d.getY() - wall2d.getRotation().getSin() * 0.5,
-            wall2d.getRotation()
+            goToPose.getX() - goToPose.getRotation().getCos() * 0.4,
+            goToPose.getY() - goToPose.getRotation().getSin() * 0.4,
+            goToPose.getRotation()
         );
     }
 

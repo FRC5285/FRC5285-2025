@@ -195,19 +195,20 @@ public class RobotContainer {
     private void configureBindings() {
         // Deposit coral
         m_secondaryController.x().onFalse(
-            elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition())
+            elevator.setToLevel1Position().alongWith(wrist.goToLowShootPosition())
         );
         m_secondaryController.a().onFalse(
-            elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition())
+            elevator.setToLevel2Position().alongWith(wrist.goToMidShootPosition())
         );
         m_secondaryController.b().onFalse(
-            elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition())
+            elevator.setToLevel3Position().alongWith(wrist.goToMidShootPosition())
         );
         m_secondaryController.y().onFalse(
-            elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition())
+            elevator.setToLevel4Position().alongWith(wrist.goToHighShootPosition())
         );
         m_driverController.y().onTrue(
-            abcs.depositReefBranch(m_driverController.getHID(), flywheel, elevator, wrist)
+            flywheel.doShootCoral().andThen(abcs.depositReefBranch(m_driverController.getHID(), flywheel, elevator, wrist))
+            .alongWith(ledStrip.reefBranchColors(elevator.goingToHeight)).andThen(ledStrip.toNormal())
         );
 
         // Get coral from coral station
@@ -237,9 +238,9 @@ public class RobotContainer {
         );
 
         // // Get algae from reef
-        new Trigger(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
-            elevator.goToPosition(() -> abcs.getAlgaeHeight()).alongWith(wrist.goAllTheWayUp())
-        );
+        // new Trigger(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
+        //     elevator.goToPosition(() -> abcs.getAlgaeHeight()).alongWith(wrist.goAllTheWayUp())
+        // );
         m_driverController.x().onTrue(
             abcs.collectAlgaeFromReef(elevator, algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
@@ -268,7 +269,7 @@ public class RobotContainer {
 
         // Emergency stops the aimbot (DO NOT USE UNLESS ABSOLUTELY NECESSARY)
         m_driverController.leftStick().onTrue(
-            drivetrain.stopCurrentCommand().alongWith(ledStrip.toNormal())
+            drivetrain.stopCurrentCommand().alongWith(abcs.stopCurrentCommand()).alongWith(ledStrip.toNormal()).alongWith(flywheel.dontShootCoral())
         );
 
         m_secondaryController.leftBumper().and(() -> ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
@@ -278,11 +279,31 @@ public class RobotContainer {
             elevator.elevatorUp()
         );
 
-        m_secondaryController.leftBumper().and(() -> !ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
+        m_secondaryController.leftBumper().and(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
+            elevator.goToPosition(() -> ElevatorConstants.L2AlgaeHeight).alongWith(wrist.goAllTheWayUp())
+        );
+        m_secondaryController.rightBumper().and(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
+            elevator.goToPosition(() -> ElevatorConstants.L3AlgaeHeight).alongWith(wrist.goAllTheWayUp())
+        );
+
+        m_secondaryController.leftBumper().and(() -> !ControllerUtils.leftTrigger(m_secondaryController.getHID())).and(() -> !ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
             wrist.moveDown()
         );
-        m_secondaryController.rightBumper().and(() -> !ControllerUtils.leftTrigger(m_secondaryController.getHID())).onFalse(
+        m_secondaryController.rightBumper().and(() -> !ControllerUtils.leftTrigger(m_secondaryController.getHID())).and(() -> !ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
             wrist.moveUp()
+        );
+
+        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onTrue(
+            algaeIntake.groundIntake()
+        );
+        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onFalse(
+            algaeIntake.stopIntake()
+        );
+        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onTrue(
+            algaeIntake.shootOut()
+        );
+        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onFalse(
+            algaeIntake.stopIntake()
         );
         
 

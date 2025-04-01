@@ -21,14 +21,14 @@
                             "data": {
                               "pathName": "SP1-R1R"
                             }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L3"
+                            }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -104,14 +104,14 @@
                             "data": {
                               "pathName": "LCS-R1L"
                             }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L3"
+                            }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -187,14 +187,14 @@
                             "data": {
                               "pathName": "LCS-R2L"
                             }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L3"
+                            }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -270,14 +270,14 @@
                             "data": {
                               "pathName": "LCS-R2R"
                             }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L3"
+                            }
                           }
                         ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {
@@ -353,6 +353,12 @@
                             "data": {
                               "pathName": "LCS-R3L"
                             }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Elevator and Wrist to L3"
+                            }
                           }
                         ]
                       }
@@ -360,19 +366,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Elevator and Wrist to L4"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
                         "name": "Wait for Elevator and Wrist"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator and Wrist to L4"
                       }
                     },
                     {

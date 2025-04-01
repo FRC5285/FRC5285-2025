@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.104,
-        "y": 4.0428533055961955
+        "x": 3.001,
+        "y": 4.026
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.31652823457955,
-        "y": 4.174503408165467
+        "x": 3.2135282345795497,
+        "y": 4.157650102569272
       },
       "isLocked": false,
       "linkedName": "Reef Side 3 Left"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 1.239,
-        "y": 1.293
+        "x": 1.199,
+        "y": 1.119
       },
       "prevControl": {
-        "x": 1.453599774703033,
-        "y": 1.421245610830966
+        "x": 1.4135997747030329,
+        "y": 1.247245610830966
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +50,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.73,
-    "maxAcceleration": 8.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1800.0,
     "nominalVoltage": 12.0,

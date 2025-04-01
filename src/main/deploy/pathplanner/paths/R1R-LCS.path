@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.191,
-        "y": 5.221
+        "x": 5.234,
+        "y": 5.315
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.336416855209466,
-        "y": 4.939855502306156
+        "x": 4.3346407609338105,
+        "y": 5.9552084362525015
       },
       "isLocked": false,
       "linkedName": "Reef Side 1 Right"
     },
     {
       "anchor": {
-        "x": 4.564478414182516,
-        "y": 5.9480918811722745
+        "x": 4.6635841836734695,
+        "y": 5.644196428571428
       },
       "prevControl": {
-        "x": 4.947635621066765,
-        "y": 5.6485863581535245
+        "x": 5.1942349698656285,
+        "y": 5.445464313878844
       },
       "nextControl": {
-        "x": 3.9506523003288256,
-        "y": 6.4279061922935465
+        "x": 4.234955044611668,
+        "y": 5.804720783648454
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.4887,
-        "y": 7.008
+        "x": 1.489,
+        "y": 7.144
       },
       "prevControl": {
-        "x": 1.142761441502351,
-        "y": 7.104934634293365
+        "x": 1.6866846826948714,
+        "y": 6.990961553105672
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +50,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.73,
-    "maxAcceleration": 8.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1800.0,
     "nominalVoltage": 12.0,

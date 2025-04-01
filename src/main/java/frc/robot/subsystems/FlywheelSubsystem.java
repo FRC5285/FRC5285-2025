@@ -21,6 +21,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   public final Trigger noCoral;
   @SuppressWarnings("unused")
   private final FlywheelState state;
+  private boolean dontShoot = false;
 
   public FlywheelSubsystem() {
     flywheelMotor = new SparkMax(FlywheelConstants.flywheelMotorID, MotorType.kBrushless);
@@ -43,7 +44,7 @@ public class FlywheelSubsystem extends SubsystemBase {
       .onlyIf(this::noCoral)
       .until(this::hasCoral)
       .withTimeout(FlywheelConstants.intakeMaxTime)
-      .andThen(()-> flywheelMotor.set(-0.05));
+      .andThen(()-> flywheelMotor.set(-0.1));
   }
 
   public Command shootCoral(){
@@ -52,10 +53,18 @@ public class FlywheelSubsystem extends SubsystemBase {
   
   public Command shootCoral(double shootSpeed) {
     return run(()-> flywheelMotor.set(shootSpeed))
-      .onlyIf(this::hasCoral)
+      .onlyIf(() -> !this.dontShoot)
       .until(this::noCoral)
       .withTimeout(FlywheelConstants.shootDuration)
-      .andThen(()->flywheelMotor.stopMotor());
+      .andThen(() -> {flywheelMotor.stopMotor(); this.dontShoot = false;});
+  }
+
+  public Command dontShootCoral() {
+    return runOnce(() -> this.dontShoot = true);
+  }
+  
+  public Command doShootCoral() {
+    return runOnce(() -> this.dontShoot = false);
   }
 
   public Command runIntake() {
