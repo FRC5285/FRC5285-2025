@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.429583033779145,
-        "y": 5.292657011780217
+        "x": 3.143338300591524,
+        "y": 6.0429727989893705
       },
       "isLocked": false,
       "linkedName": "Reef Side 2 Left"
@@ -20,8 +20,8 @@
         "y": 7.144
       },
       "prevControl": {
-        "x": 1.2463721125921439,
-        "y": 7.326896178287173
+        "x": 1.194151700103758,
+        "y": 7.276926439229919
       },
       "nextControl": null,
       "isLocked": false,

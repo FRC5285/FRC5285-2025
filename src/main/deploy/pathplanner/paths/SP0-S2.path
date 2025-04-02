@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.16,
+        "y": 7.2713307973500845
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.201486906489074,
+        "y": 7.41183455836636
+      },
+      "isLocked": false,
+      "linkedName": "Starting Point 0"
+    },
+    {
+      "anchor": {
+        "x": 3.403,
+        "y": 5.58
+      },
+      "prevControl": {
+        "x": 4.4151302665355905,
+        "y": 6.13366228025567
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Side 2 Stopping Point"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.73,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1800.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "reversed": false,
+  "folder": "Starting Points to Stopping Points",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

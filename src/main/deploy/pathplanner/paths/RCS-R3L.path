@@ -61,7 +61,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Coral Station to Reef paths",
+  "folder": "Coral Station to Reef Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -126.0

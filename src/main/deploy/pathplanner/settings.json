@@ -3,12 +3,17 @@
   "robotLength": 0.864,
   "holonomicMode": true,
   "pathFolders": [
-    "Coral Station to Reef paths",
+    "Coral Station to Reef Paths",
+    "Coral Station to Stopping Point Paths",
+    "Starting Points to Stopping Points",
     "Reef to Coral Station Paths",
     "Starting Paths",
+    "Stopping Point to Branch Paths",
     "Waypoints (DO NOT USE)"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Older Autons"
+  ],
   "defaultMaxVel": 4.73,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 720.0,

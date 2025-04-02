@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.199,
+        "y": 1.119
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7391971527384809,
+        "y": 1.598143740901946
+      },
+      "isLocked": false,
+      "linkedName": "Right Coral Station"
+    },
+    {
+      "anchor": {
+        "x": 2.309896785844916,
+        "y": 1.556078405038405
+      },
+      "prevControl": {
+        "x": 1.9524588313962057,
+        "y": 1.4312840155418838
+      },
+      "nextControl": {
+        "x": 3.3487856775094986,
+        "y": 1.9187917189895198
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.687,
+        "y": 2.308
+      },
+      "prevControl": {
+        "x": 3.597069730424507,
+        "y": 2.074735029174805
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Side 4 Stopping Point"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.73,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1800.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 59.99999999999999
+  },
+  "reversed": false,
+  "folder": "Coral Station to Stopping Point Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -126.0
+  },
+  "useDefaultConstraints": true
+}

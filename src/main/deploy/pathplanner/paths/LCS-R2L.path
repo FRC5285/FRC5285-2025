@@ -20,7 +20,7 @@
         "y": 5.315
       },
       "prevControl": {
-        "x": 1.9765550022641363,
+        "x": 1.976555002264136,
         "y": 6.114698830117894
       },
       "nextControl": null,
@@ -45,7 +45,7 @@
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "Coral Station to Reef paths",
+  "folder": "Coral Station to Reef Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 126.0

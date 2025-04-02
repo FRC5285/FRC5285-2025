@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.292,
+        "y": 5.744
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.5515177860421465,
+        "y": 5.800860021986984
+      },
+      "isLocked": false,
+      "linkedName": "Side 1 Stopping Point"
+    },
+    {
+      "anchor": {
+        "x": 4.95,
+        "y": 5.48
+      },
+      "prevControl": {
+        "x": 4.681892308081956,
+        "y": 5.350022977942639
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Reef Side 1 Left"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.73,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1800.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "reversed": false,
+  "folder": "Stopping Point to Branch Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "useDefaultConstraints": true
+}
