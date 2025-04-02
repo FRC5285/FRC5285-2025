@@ -216,7 +216,7 @@ public final class Constants {
         public static final double intakePosition = 0.182;
         public static final double floorAlgaePosition = 0.0;
         
-        public static final double L2AlgaeHeight = 0.55; // 0.608
+        public static final double L2AlgaeHeight = 0.60; // 0.608
         public static final double L3AlgaeHeight = 1.0; // 0.956
 
         public static final double maxHeight = 1.335;
@@ -227,7 +227,7 @@ public final class Constants {
         // Elevator is at goal position if it is this close to the goal position
         public static final double goalRange = 0.025;
 
-        public static final double encoderOffset = 0.0; // Height when starting
+        public static final double encoderOffset = 0.053; // Height when starting
     }
 
     public static class AlgaeIntakeConstants {
@@ -250,7 +250,7 @@ public final class Constants {
 
         public static final double climbSpeed = 0.75;
 
-        public static final double climbRotations = 3 * 45;
+        public static final double climbRotations = 2.0 * 45.0;
     }
 
     public static class LEDConstants {

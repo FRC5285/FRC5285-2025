@@ -15,17 +15,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class ClimberSubsystem extends SubsystemBase {
     private final TalonFX climbMotor;
+    private final ClimberState climberstate;
 
     public ClimberSubsystem() {
         climbMotor = new TalonFX(ClimberConstants.motorID);
+        climberstate = new ClimberState(climbMotor);
         climbMotor.setPosition(0);
-        // new Trigger(() -> Math.abs(climbMotor.getPosition().getValue().in(Rotations)) >= ClimberConstants.climbRotations).onTrue(
-        //     stopClimb()
-        // );
     }
 
     public Command doClimb() {
-        return runOnce(() -> climbMotor.set(ClimberConstants.climbSpeed));
+        return run(() -> climbMotor.set(ClimberConstants.climbSpeed))
+        .until(() -> Math.abs(climbMotor.getPosition().getValue().in(Rotations)) >= ClimberConstants.climbRotations)
+        .andThen(this.stopClimb());
     }
 
     public Command stopClimb() {
@@ -33,15 +34,17 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public class ClimberState implements Sendable{
+        TalonFX theMotor;
         
-        public ClimberState() {
+        public ClimberState(TalonFX theClimbMotor) {
+            this.theMotor = theClimbMotor;
             SendableRegistry.add(this, "ClimberState");
             SmartDashboard.putData(this);
         }
 
         @Override
         public void initSendable(SendableBuilder builder){
-            builder.addDoubleProperty("Climber Amount", () -> Math.abs(climbMotor.getPosition().getValue().in(Rotations)), null);
+            builder.addDoubleProperty("Climber Amount", () -> Math.abs(theMotor.getPosition().getValue().in(Rotations)), null);
         }
     }
 }
