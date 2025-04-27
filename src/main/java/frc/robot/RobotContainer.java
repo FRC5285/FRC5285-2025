@@ -72,7 +72,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Wait for Elevator", new WaitUntilCommand(() -> elevator.reachedGoal()));
         NamedCommands.registerCommand("Wait for Elevator and Wrist", new WaitUntilCommand(() -> elevator.reachedGoal() && wrist.isAtSetpoint()));
         NamedCommands.registerCommand("Intake Coral", flywheel.intakeCoral());
-        NamedCommands.registerCommand("Shoot Coral", flywheel.shootCoral());
+        NamedCommands.registerCommand("Shoot Coral", flywheel.runIntake());
         NamedCommands.registerCommand("Intake Algae", algaeIntake.doIntake());
         NamedCommands.registerCommand("Shoot Algae", algaeIntake.shootOut());
         NamedCommands.registerCommand("Elevator and Wrist to L1", elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition()));
@@ -83,6 +83,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("Elevator to L2 Algae", elevator.goToPosition(() -> ElevatorConstants.L2AlgaeHeight));
         NamedCommands.registerCommand("Elevator to L3 Algae", elevator.goToPosition(() -> ElevatorConstants.L3AlgaeHeight));
         NamedCommands.registerCommand("Elevator to Processor", elevator.goToProcessorPosition());
+        // Note: this was so that the wrist would go up before depositing coral. However, it doesn't work.
+        // What would work instead is appending this to the "intake coral" command. (Note made 4/27/2025)
+        NamedCommands.registerCommand("Wrist Up", wrist.goAllTheWayUp());
 
         // puts auto paths choices onto the Smart Dashboard
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
@@ -193,6 +196,7 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
+        flywheel.setDefaultCommand(flywheel.keepRunning());
         // Deposit coral
         m_secondaryController.x().onFalse(
             elevator.setToLevel1Position().alongWith(wrist.goToLowShootPosition())
@@ -208,7 +212,7 @@ public class RobotContainer {
         );
         m_driverController.y().onTrue(
             flywheel.doShootCoral().andThen(abcs.depositReefBranch(m_driverController.getHID(), flywheel, elevator, wrist))
-            .alongWith(ledStrip.reefBranchColors(elevator.goingToHeight)).andThen(ledStrip.toNormal())
+            .alongWith(ledStrip.reefBranchColors(() -> elevator.goingToHeight)).andThen(ledStrip.toNormal())
         );
 
         // Get coral from coral station
@@ -231,10 +235,7 @@ public class RobotContainer {
             algaeIntake.shootOut()
         );
         new Trigger(() -> ControllerUtils.rightTrigger(m_secondaryController.getHID())).onTrue(
-            algaeIntake.groundIntake()
-        );
-        new Trigger(() -> ControllerUtils.rightTrigger(m_secondaryController.getHID())).onFalse(
-            algaeIntake.stopIntake()
+            wrist.goAllTheWayUp()
         );
 
         // // Get algae from reef

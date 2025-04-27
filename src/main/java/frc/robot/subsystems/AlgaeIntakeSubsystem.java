@@ -22,8 +22,8 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     private final AlgaeIntakeState state;
 
     public AlgaeIntakeSubsystem() {
-        algaeIntakeMotor = new TalonFX(AlgaeIntakeConstants.motorID1);
-        followerMotor = new TalonFX(AlgaeIntakeConstants.motorID2);
+        algaeIntakeMotor = new TalonFX(AlgaeIntakeConstants.motorID2);
+        followerMotor = new TalonFX(AlgaeIntakeConstants.motorID1);
         algaeIntakeSensor = new DigitalInput(AlgaeIntakeConstants.algaeIntakeSensorID);
         state = new AlgaeIntakeState();
 

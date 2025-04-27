@@ -102,7 +102,7 @@ public final class Constants {
         public static final double coralStationSafeDist = 0.1775;
 
         // Horizontal (from robot perspective) translations
-        public static final double coralStationCorrection = 0.0254; // Gets added onto coralArmOffset
+        public static final double coralStationCorrection = 0.0508; // Gets added onto coralArmOffset
         
         public static final double reefBranchCorrection = -0.020; // -0.063
     }
@@ -147,13 +147,13 @@ public final class Constants {
     }
 
     // Backup Spark Maxes:
-    //  -------------------
-    // | LABEL    | CAN ID |
-    //  -------------------
-    // | "SM 004" | 30     |
-    // | "SM 005" | 31     |
-    // | "SM 006" | 32     |
-    //  -------------------
+    //  ----------------------------
+    // | LABEL    | CAN ID | STATUS |
+    //  ----------------------------
+    // | "SM 004" | 30     |        |
+    // | "SM 005" | 31     | BROKEN |
+    // | "SM 006" | 32     | IN USE |
+    //  ----------------------------
 
     public static class FlywheelConstants {
         public static final int flywheelMotorID = 30; // CAN
@@ -165,7 +165,7 @@ public final class Constants {
     }
 
     public static class WristConstants {
-        public static final int wristMotorID = 31; // CAN
+        public static final int wristMotorID = 32; // CAN
         public static final int wristEncoderID = 0; // DIO
     
         public static final double intakePosition = 0.14;
@@ -213,7 +213,7 @@ public final class Constants {
         public static final double level2Position = 0.3625;
         public static final double level3Position = 0.7827;
         public static final double level4Position = 1.335;
-        public static final double intakePosition = 0.182;
+        public static final double intakePosition = 0.21;
         public static final double floorAlgaePosition = 0.0;
         
         public static final double L2AlgaeHeight = 0.60; // 0.608
@@ -227,7 +227,7 @@ public final class Constants {
         // Elevator is at goal position if it is this close to the goal position
         public static final double goalRange = 0.025;
 
-        public static final double encoderOffset = 0.053; // Height when starting
+        public static final double encoderOffset = 0.043; // Height when starting
     }
 
     public static class AlgaeIntakeConstants {
@@ -235,22 +235,22 @@ public final class Constants {
         public static final int motorID2 = 16; // CAN
         public static final int algaeIntakeSensorID = 4; // DIO
 
-        public static final double outSpeed = 0.5;
-        public static final double inSpeed = -0.5;
+        public static final double outSpeed = -1.0; // -
+        public static final double inSpeed = 0.5; // - 
 
         public static final double maxMotorTime = 3.0;
         public static final double maxGroundPickupTime = 20.0;
         public static final double outMotorTime = 0.5;
 
-        public static final double normalSpeed = -0.03;
+        public static final double normalSpeed = 0.03;
     }
 
     public static class ClimberConstants {
         public static final int motorID = 17; // CAN
 
-        public static final double climbSpeed = 0.75;
+        public static final double climbSpeed = 0.70;
 
-        public static final double climbRotations = 2.0 * 45.0;
+        public static final double climbRotations = 65.0;
     }
 
     public static class LEDConstants {

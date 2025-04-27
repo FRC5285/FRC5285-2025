@@ -15,6 +15,12 @@
                 }
               },
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
                 "type": "parallel",
                 "data": {
                   "commands": [
@@ -75,6 +81,12 @@
                 "data": {
                   "name": "Intake Coral"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wrist Up"
+                }
               }
             ]
           }
@@ -87,6 +99,12 @@
                 "type": "path",
                 "data": {
                   "pathName": "RCS-S4"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
                 }
               },
               {
