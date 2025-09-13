@@ -101,10 +101,17 @@ public final class Constants {
 
         public static final double coralStationSafeDist = 0.1775;
 
+        public static final double reefDistCorrectionL4 = -0.025;
+
+        // X-offset from middle of the field to middle of the robot at match start
+        public static final double startingPointOffset = 1.614176;
+
         // Horizontal (from robot perspective) translations
         public static final double coralStationCorrection = 0.0508; // Gets added onto coralArmOffset
         
         public static final double reefBranchCorrection = -0.020; // -0.063
+
+        public static final double reefBranchCorrectionL4 = 0.010;
     }
 
     public static class FieldConstants {
@@ -143,6 +150,7 @@ public final class Constants {
 
         public static final double firstCageOffsetY = 0.980;
         public static final double cageOffsetY = 1.091;
+        public static final double initialCageOffsetDifference = cageOffsetY - firstCageOffsetY;
         public static final double cageOffsetX = 0.093; // half of width of cage
     }
 

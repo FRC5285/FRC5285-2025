@@ -180,7 +180,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
                 // If in auton, flips if necessary, otherwise does not flip
-                () -> (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) && DriverStation.isAutonomous(),
+                // New: no longer flips during auton because of custom auton picker
+                () -> (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red),
                 this // Subsystem for requirements
             );
         } catch (Exception ex) {

@@ -5,15 +5,13 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AimbotCommands;
 import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.AprilTagCams;
+import frc.robot.subsystems.AutonPicker;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -23,10 +21,7 @@ import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.ControllerUtils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
@@ -48,7 +43,6 @@ public class RobotContainer {
 
     // The robot's subsystems and commands are defined here...
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public final AimbotCommands abcs = new AimbotCommands(drivetrain, DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == Alliance.Blue : true);
     public final AprilTagCams atCams = new AprilTagCams(drivetrain);
     public final FlywheelSubsystem flywheel = new FlywheelSubsystem();
     public final WristSubsystem wrist = new WristSubsystem();
@@ -56,6 +50,8 @@ public class RobotContainer {
     public final LEDSubsystem ledStrip = new LEDSubsystem();
     public final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
     public final ClimberSubsystem climber = new ClimberSubsystem();
+    public final AimbotCommands abcs = new AimbotCommands(drivetrain, DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == Alliance.Blue : true, this.flywheel, this.elevator, this.wrist, this.algaeIntake);
+    public final AutonPicker autonPicker = new AutonPicker(drivetrain, abcs);
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -64,33 +60,8 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-    // Chooses auto path
-    private final SendableChooser<Command> autoChooser;
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        // Defines commands for Auton
-        NamedCommands.registerCommand("Wait for Elevator", new WaitUntilCommand(() -> elevator.reachedGoal()));
-        NamedCommands.registerCommand("Wait for Elevator and Wrist", new WaitUntilCommand(() -> elevator.reachedGoal() && wrist.isAtSetpoint()));
-        NamedCommands.registerCommand("Intake Coral", flywheel.intakeCoral());
-        NamedCommands.registerCommand("Shoot Coral", flywheel.runIntake());
-        NamedCommands.registerCommand("Intake Algae", algaeIntake.doIntake());
-        NamedCommands.registerCommand("Shoot Algae", algaeIntake.shootOut());
-        NamedCommands.registerCommand("Elevator and Wrist to L1", elevator.goToLevel1Position().alongWith(wrist.goToLowShootPosition()));
-        NamedCommands.registerCommand("Elevator and Wrist to L2", elevator.goToLevel2Position().alongWith(wrist.goToMidShootPosition()));
-        NamedCommands.registerCommand("Elevator and Wrist to L3", elevator.goToLevel3Position().alongWith(wrist.goToMidShootPosition()));
-        NamedCommands.registerCommand("Elevator and Wrist to L4", elevator.goToLevel4Position().alongWith(wrist.goToHighShootPosition()));
-        NamedCommands.registerCommand("Elevator and Wrist to Intake", elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition()));
-        NamedCommands.registerCommand("Elevator to L2 Algae", elevator.goToPosition(() -> ElevatorConstants.L2AlgaeHeight));
-        NamedCommands.registerCommand("Elevator to L3 Algae", elevator.goToPosition(() -> ElevatorConstants.L3AlgaeHeight));
-        NamedCommands.registerCommand("Elevator to Processor", elevator.goToProcessorPosition());
-        // Note: this was so that the wrist would go up before depositing coral. However, it doesn't work.
-        // What would work instead is appending this to the "intake coral" command. (Note made 4/27/2025)
-        NamedCommands.registerCommand("Wrist Up", wrist.goAllTheWayUp());
-
-        // puts auto paths choices onto the Smart Dashboard
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
-        SmartDashboard.putData("Auto Mode", autoChooser);
-
         ledStrip.toNormal().schedule();
 
         // Configure the trigger bindings
@@ -211,7 +182,7 @@ public class RobotContainer {
             elevator.setToLevel4Position().alongWith(wrist.goToHighShootPosition())
         );
         m_driverController.y().onTrue(
-            flywheel.doShootCoral().andThen(abcs.depositReefBranch(m_driverController.getHID(), flywheel, elevator, wrist))
+            flywheel.doShootCoral().andThen(abcs.depositReefBranch(m_driverController.getHID()))
             .alongWith(ledStrip.reefBranchColors(() -> elevator.goingToHeight)).andThen(ledStrip.toNormal())
         );
 
@@ -220,7 +191,7 @@ public class RobotContainer {
             elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
         );
         m_driverController.a().onTrue(
-            abcs.collectCoralStation(m_driverController.getHID(), flywheel, elevator, wrist)
+            abcs.collectCoralStation(m_driverController.getHID())
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
@@ -243,7 +214,7 @@ public class RobotContainer {
         //     elevator.goToPosition(() -> abcs.getAlgaeHeight()).alongWith(wrist.goAllTheWayUp())
         // );
         m_driverController.x().onTrue(
-            abcs.collectAlgaeFromReef(elevator, algaeIntake)
+            abcs.collectAlgaeFromReef()
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
@@ -252,7 +223,7 @@ public class RobotContainer {
             elevator.goToProcessorPosition()
         );
         m_driverController.b().onTrue(
-            abcs.doProcessor(elevator, algaeIntake)
+            abcs.doProcessor()
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
@@ -329,6 +300,6 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
         // return Autos.exampleAuto(m_exampleSubsystem);
-        return autoChooser.getSelected();
+        return autonPicker.theAuton();
     }
 }
