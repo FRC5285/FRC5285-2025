@@ -94,7 +94,7 @@ public class Coords {
             new Rotation2d(0.5 * Math.PI + this.sideSign * (0.2 * Math.PI))
         );
 
-        Pose2d[] spTemp = new Pose2d[6];
+        Pose2d[] spTemp = new Pose2d[7];
         for (int i = 0; i <= 6; i++) {
             spTemp[i] = new Pose2d(
                 FieldConstants.bargeCenterX - this.sideSign * RobotConstantsMeters.startingPointOffset,
