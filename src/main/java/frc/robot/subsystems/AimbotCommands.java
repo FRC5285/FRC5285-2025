@@ -66,7 +66,7 @@ public class AimbotCommands extends SubsystemBase {
     public Command depositReefBranch(int goToSide, boolean goLeft) {
         return new DeferredCommand(
             () -> {
-                Pose2d goToCoords = this.coords.getReefBranchCoords(goToSide, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, goLeft, !goLeft, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
+                Pose2d goToCoords = this.coords.getReefBranchCoordsAuto(goToSide, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, goLeft, !goLeft, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
             Set.of(this.drivetrain)
