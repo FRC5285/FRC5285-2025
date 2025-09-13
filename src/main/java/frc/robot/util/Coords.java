@@ -133,7 +133,7 @@ public class Coords {
     }
 
     public Pose2d getCoralStationCoordsLeftRight(boolean goLeftStation, boolean goLeft, boolean goRight) {
-        return getCoralStationCoords(goLeftStation ^ this.sideSign == 1.0, goLeft, goRight);
+        return getCoralStationCoords(!(goLeftStation ^ this.sideSign == 1.0), goLeft, goRight);
     }
 
     public Pose2d getCoralStationCoords(boolean goToTop, boolean goLeft, boolean goRight) {

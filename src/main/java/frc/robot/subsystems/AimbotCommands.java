@@ -59,7 +59,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, controller.getLeftBumperButton(), controller.getRightBumperButton(), this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
-            Set.of(this)
+            Set.of(this.drivetrain)
         );
     }
 
@@ -69,7 +69,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getReefBranchCoords(goToSide, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, goLeft, !goLeft, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
-            Set.of(this)
+            Set.of(this.drivetrain)
         );
     }
 
@@ -96,7 +96,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getCoralStationCoords(this.drivetrain.getState().Pose, controller.getLeftBumperButton(), controller.getRightBumperButton());
                 return collectCoralStation(goToCoords);
             },
-            Set.of(this)
+            Set.of(this.drivetrain)
         );
     }
 
@@ -106,7 +106,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getCoralStationCoordsLeftRight(goLeft, moveLeft, moveRight);
                 return collectCoralStation(goToCoords);
             },
-            Set.of(this)
+            Set.of(this.drivetrain)
         );
     }
 
@@ -136,7 +136,7 @@ public class AimbotCommands extends SubsystemBase {
                 // .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
                 .andThen(this.algaeIntake.doIntake());
             },
-            Set.of(this)
+            Set.of(this.drivetrain)
         ); 
     }
 
@@ -154,7 +154,7 @@ public class AimbotCommands extends SubsystemBase {
                 .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
                 .andThen(this.algaeIntake.shootOut());
             },
-            Set.of(this)
+            Set.of(this.drivetrain)
         );
     }
 
@@ -168,7 +168,7 @@ public class AimbotCommands extends SubsystemBase {
                 )
                 .andThen(drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.BARGE));
             },
-            Set.of(this)
+            Set.of(this.drivetrain)
         );
     }
     

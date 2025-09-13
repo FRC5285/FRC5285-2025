@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class AutonPicker extends SubsystemBase {
 
-    private SendableChooser<Pose2d> startPos = new SendableChooser<>();
+    private SendableChooser<Integer> startPos = new SendableChooser<>();
     private SendableChooser<Integer> reefSide = new SendableChooser<>();
     private SendableChooser<Boolean> coralStation = new SendableChooser<>();
     private SendableChooser<Boolean> getCoral = new SendableChooser<>();
@@ -24,8 +24,8 @@ public class AutonPicker extends SubsystemBase {
     public AutonPicker(CommandSwerveDrivetrain drivetrain, AimbotCommands abcs) {
         this.drivetrain = drivetrain;
         this.abcs = abcs;
-        this.startPos.setDefaultOption("0", this.abcs.getStartPosition(0));
-        for (int i = 1; i <= 6; i ++) this.startPos.addOption("" + i, this.abcs.getStartPosition(i));
+        this.startPos.setDefaultOption("0", 0);
+        for (int i = 1; i <= 6; i ++) this.startPos.addOption("" + i, i);
         this.reefSide.setDefaultOption("0", 0);
         for (int i = 1; i <= 5; i ++) this.reefSide.addOption("" + i, i);
         this.coralStation.setDefaultOption("Left", true);
@@ -45,7 +45,7 @@ public class AutonPicker extends SubsystemBase {
      */
     public Command theAuton() {
         return runOnce(() -> {
-            this.drivetrain.resetPose(this.startPos.getSelected());
+            this.drivetrain.resetPose(this.abcs.getStartPosition(this.startPos.getSelected().intValue()));
         })
         .andThen(this.abcs.depositReefBranch(this.reefSide.getSelected().intValue(), true))
         .andThen(this.abcs.collectCoralStation(this.coralStation.getSelected().booleanValue(), false, false).onlyIf(() -> this.getCoral.getSelected().booleanValue() == true))
