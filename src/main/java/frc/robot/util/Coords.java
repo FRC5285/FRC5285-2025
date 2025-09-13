@@ -219,6 +219,10 @@ public class Coords {
         return getReefBranchCoords(this.getReefWallCenterCoordsIndex(robotPose), distCorrection, goLeft, goRight, leftRightCorrection);
     }
 
+    public Pose2d getReefBranchCoordsAuto(int reefSide, double distCorrection, boolean goLeft, boolean goRight, double leftRightCorrection) {
+        return getReefBranchCoords(sideSign == 1.0 ? reefSide : ((reefSide + 3) % 6), distCorrection, goLeft, goRight, leftRightCorrection);
+    }
+
     public Pose2d getReefBranchCoords(int wallIndex, double distCorrection, boolean goLeft, boolean goRight, double leftRightCorrection) {
         Pose2d wall2d = this.reefSideCenterLocs[wallIndex];
         double goingLeft = goLeft ? 1.0 : -1.0;
