@@ -2,12 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -22,20 +17,14 @@ import frc.robot.Constants.WristConstants;
 
 public class WristSubsystem extends SubsystemBase {
   
-  private final SparkMax wristMotor;
+  private final TalonFX wristMotor;
   private final DutyCycleEncoder wristEncoder;
   private final ProfiledPIDController wristPIDController;
   private final WristState wristState;
   private boolean motorOverride = false;
 
   public WristSubsystem() {
-    SparkMaxConfig config = new SparkMaxConfig();
-    config.idleMode(IdleMode.kBrake)
-          .inverted(true)
-          .smartCurrentLimit(10);
-    
-    wristMotor = new SparkMax(WristConstants.wristMotorID, MotorType.kBrushless);
-    wristMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    wristMotor = new TalonFX(WristConstants.wristMotorID);
 
     wristEncoder = new DutyCycleEncoder(WristConstants.wristEncoderID);
     wristEncoder.setInverted(true);

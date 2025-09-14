@@ -166,7 +166,7 @@ public final class Constants {
     }
 
     public static class WristConstants {
-        public static final int wristMotorID = 32; // CAN
+        public static final int wristMotorID = 15; // CAN
         public static final int wristEncoderID = 0; // DIO
     
         public static final double intakePosition = 0.14;
