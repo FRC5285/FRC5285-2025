@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -16,6 +19,7 @@ import frc.robot.Constants.FlywheelConstants;
 public class FlywheelSubsystem extends SubsystemBase {
 
   private final SparkMax flywheelMotor;
+  private final SparkMax followerMotor;
   private final DigitalInput intakeSensor;
   public final Trigger hasCoral;
   public final Trigger noCoral;
@@ -25,11 +29,13 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public FlywheelSubsystem() {
     flywheelMotor = new SparkMax(FlywheelConstants.flywheelMotorID, MotorType.kBrushless);
+    followerMotor = new SparkMax(FlywheelConstants.flywheelMotorFollowerID, MotorType.kBrushless);
     intakeSensor = new DigitalInput(FlywheelConstants.intakeSensorID);
     hasCoral = new Trigger(this::hasCoral);
     noCoral = new Trigger(this::noCoral);
     state = new FlywheelState();
 
+    followerMotor.configure(new SparkMaxConfig().follow(flywheelMotor, true), ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
   }
 
   private boolean hasCoral(){

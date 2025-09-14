@@ -157,6 +157,7 @@ public final class Constants {
 
     public static class FlywheelConstants {
         public static final int flywheelMotorID = 30; // CAN
+        public static final int flywheelMotorFollowerID = 32; //CAN
         public static final int intakeSensorID = 3; // DIO
         public static final double intakeSpeed = -0.5;
         public static final double shootSpeed = 0.5;
