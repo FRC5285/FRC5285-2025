@@ -9,7 +9,6 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.AimbotCommands;
-import frc.robot.subsystems.AlgaeIntakeSubsystem;
 import frc.robot.subsystems.AprilTagCams;
 import frc.robot.subsystems.AutonPicker;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -48,7 +47,6 @@ public class RobotContainer {
     public final WristSubsystem wrist = new WristSubsystem();
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
     public final LEDSubsystem ledStrip = new LEDSubsystem();
-    public final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
     public final ClimberSubsystem climber = new ClimberSubsystem();
     public final AimbotCommands abcs = new AimbotCommands(drivetrain, DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == Alliance.Blue : true, this.flywheel, this.elevator, this.wrist);
     public final AutonPicker autonPicker = new AutonPicker(drivetrain, abcs);
@@ -108,17 +106,8 @@ public class RobotContainer {
         );
 
         // intake
-        m_driverController.leftBumper().onTrue(
-            flywheel.intakeCoral().alongWith(algaeIntake.groundIntake())
-        );
-        m_driverController.leftBumper().onFalse(
-            flywheel.stopIntake().alongWith(algaeIntake.stopIntake())
-        );
         m_driverController.rightBumper().onTrue(
             flywheel.shootCoral()
-        );
-        m_driverController.x().onTrue(
-            algaeIntake.shootOut()
         );
 
         // deposit coral
@@ -195,37 +184,6 @@ public class RobotContainer {
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
-        // Get algae from ground (in progress)
-        new Trigger(() -> ControllerUtils.dPadUp(m_secondaryController.getHID())).onTrue(
-            elevator.goToFloorAlgaePosition().alongWith(wrist.goAllTheWayUp()).andThen(algaeIntake.groundIntake())
-        );
-        new Trigger(() -> ControllerUtils.dPadUp(m_secondaryController.getHID())).onFalse(
-            algaeIntake.stopIntake()
-        );
-        new Trigger(() -> ControllerUtils.dPadDown(m_driverController.getHID())).onTrue(
-            algaeIntake.shootOut()
-        );
-        new Trigger(() -> ControllerUtils.rightTrigger(m_secondaryController.getHID())).onTrue(
-            wrist.goAllTheWayUp()
-        );
-
-        // // Get algae from reef
-        // new Trigger(() -> ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
-        //     elevator.goToPosition(() -> abcs.getAlgaeHeight()).alongWith(wrist.goAllTheWayUp())
-        // );
-        m_driverController.x().onTrue(
-            abcs.collectAlgaeFromReef(this.algaeIntake)
-            .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
-        );
-
-        // Deposit algae into processor
-        new Trigger(() -> ControllerUtils.dPadRight(m_secondaryController.getHID())).onFalse(
-            elevator.goToProcessorPosition()
-        );
-        m_driverController.b().onTrue(
-            abcs.doProcessor(this.algaeIntake)
-            .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
-        );
 
         // Do the deep climb
         new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).onTrue(
@@ -265,18 +223,6 @@ public class RobotContainer {
             wrist.moveUp()
         );
 
-        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onTrue(
-            algaeIntake.groundIntake()
-        );
-        new Trigger(() -> ControllerUtils.dPadLeft(m_driverController.getHID())).onFalse(
-            algaeIntake.stopIntake()
-        );
-        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onTrue(
-            algaeIntake.shootOut()
-        );
-        new Trigger(() -> ControllerUtils.dPadRight(m_driverController.getHID())).onFalse(
-            algaeIntake.stopIntake()
-        );
         
 
         m_secondaryController.leftStick().onTrue(flywheel.runIntake());
