@@ -50,7 +50,7 @@ public class RobotContainer {
     public final LEDSubsystem ledStrip = new LEDSubsystem();
     public final AlgaeIntakeSubsystem algaeIntake = new AlgaeIntakeSubsystem();
     public final ClimberSubsystem climber = new ClimberSubsystem();
-    public final AimbotCommands abcs = new AimbotCommands(drivetrain, DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == Alliance.Blue : true, this.flywheel, this.elevator, this.wrist, this.algaeIntake);
+    public final AimbotCommands abcs = new AimbotCommands(drivetrain, DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get() == Alliance.Blue : true, this.flywheel, this.elevator, this.wrist);
     public final AutonPicker autonPicker = new AutonPicker(drivetrain, abcs);
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -214,7 +214,7 @@ public class RobotContainer {
         //     elevator.goToPosition(() -> abcs.getAlgaeHeight()).alongWith(wrist.goAllTheWayUp())
         // );
         m_driverController.x().onTrue(
-            abcs.collectAlgaeFromReef()
+            abcs.collectAlgaeFromReef(this.algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
@@ -223,7 +223,7 @@ public class RobotContainer {
             elevator.goToProcessorPosition()
         );
         m_driverController.b().onTrue(
-            abcs.doProcessor()
+            abcs.doProcessor(this.algaeIntake)
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 

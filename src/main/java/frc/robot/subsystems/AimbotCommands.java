@@ -25,16 +25,14 @@ public class AimbotCommands extends SubsystemBase {
     private FlywheelSubsystem flywheel;
     private ElevatorSubsystem elevator;
     private WristSubsystem wrist;
-    private AlgaeIntakeSubsystem algaeIntake;
     private PathConstraints pathfindConstraints = new PathConstraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2, AutoConstants.maxSpinRadPS, AutoConstants.maxSpinAccelRadPS2);
 
-    public AimbotCommands(CommandSwerveDrivetrain drivetrain, boolean isBlue, FlywheelSubsystem flywheelSubsystem, ElevatorSubsystem elevatorSubsystem, WristSubsystem wristSubsystem, AlgaeIntakeSubsystem algaeIntakeSubsystem) {
+    public AimbotCommands(CommandSwerveDrivetrain drivetrain, boolean isBlue, FlywheelSubsystem flywheelSubsystem, ElevatorSubsystem elevatorSubsystem, WristSubsystem wristSubsystem) {
         this.drivetrain = drivetrain;
         this.coords = new Coords(isBlue);
         this.flywheel = flywheelSubsystem;
         this.elevator = elevatorSubsystem;
         this.wrist = wristSubsystem;
-        this.algaeIntake = algaeIntakeSubsystem;
     }
 
     public void updateSide(boolean isBlue) {
@@ -122,7 +120,7 @@ public class AimbotCommands extends SubsystemBase {
         .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION));
     }
 
-    public Command collectAlgaeFromReef() {
+    public Command collectAlgaeFromReef(AlgaeIntakeSubsystem algaeIntake) {
         return new DeferredCommand(
             () -> {
                 Pose2d goToCoords = this.coords.getReefAlgaeCoords(this.drivetrain.getState().Pose);
@@ -134,13 +132,13 @@ public class AimbotCommands extends SubsystemBase {
                 // .alongWith(this.elevator.goToPosition(() -> getAlgaeHeight())) // Failsafe
                 .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF))
                 // .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
-                .andThen(this.algaeIntake.doIntake());
+                .andThen(algaeIntake.doIntake());
             },
             Set.of(this.drivetrain)
         ); 
     }
 
-    public Command doProcessor() {
+    public Command doProcessor(AlgaeIntakeSubsystem algaeIntake) {
         return new DeferredCommand(
             () -> {
                 Pose2d goToCoords = this.coords.getClosestProcessor(this.drivetrain.getState().Pose);
@@ -152,7 +150,7 @@ public class AimbotCommands extends SubsystemBase {
                 .alongWith(this.elevator.goToProcessorPosition()) // Failsafe
                 .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.PROCESSOR))
                 .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
-                .andThen(this.algaeIntake.shootOut());
+                .andThen(algaeIntake.shootOut());
             },
             Set.of(this.drivetrain)
         );
