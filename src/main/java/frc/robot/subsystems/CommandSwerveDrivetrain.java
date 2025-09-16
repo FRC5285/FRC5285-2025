@@ -51,6 +51,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private final SwerveRequest.FieldCentric drivePID = new SwerveRequest.FieldCentric()
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    private final SwerveRequest.SwerveDriveBrake swerveBrake = new SwerveRequest.SwerveDriveBrake();
     private ProfiledPIDController xPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
     private ProfiledPIDController yPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
     private ProfiledPIDController rPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxSpinRadPS, AutoConstants.maxSpinAccelRadPS2));
@@ -101,6 +102,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             })
             .until(() -> this.xPID.atGoal() && this.yPID.atGoal() && this.rPID.atGoal())
             .withTimeout(AutoConstants.fineTuneMaxTime)
+            .andThen(() -> {
+                this.setControl(this.swerveBrake);
+            })
         );
     }
 
@@ -180,7 +184,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 config,
                 // Assume the path needs to be flipped for Red vs Blue, this is normally the case
                 // If in auton, flips if necessary, otherwise does not flip
-                () -> (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) && DriverStation.isAutonomous(),
+                // New: no longer flips during auton because of custom auton picker
+                () -> (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red),
                 this // Subsystem for requirements
             );
         } catch (Exception ex) {

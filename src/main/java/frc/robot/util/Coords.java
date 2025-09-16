@@ -23,6 +23,7 @@ public class Coords {
     public final Pose2d[] reefSideCenterLocs;
     public final Rotation2d[] reefCorrespondingAngles;
     public final double[] reefAlgaeHeights;
+    public final Pose2d[] startingPositions;
 
     private final double cos36 = Math.cos(0.2 * Math.PI); // Cosine of 36 deg (coral station)
     private final double sin36 = Math.sin(0.2 * Math.PI); // Sine of 36 deg (coral station)
@@ -93,6 +94,16 @@ public class Coords {
             new Rotation2d(0.5 * Math.PI + this.sideSign * (0.2 * Math.PI))
         );
 
+        Pose2d[] spTemp = new Pose2d[7];
+        for (int i = 0; i <= 6; i++) {
+            spTemp[i] = new Pose2d(
+                FieldConstants.bargeCenterX - this.sideSign * RobotConstantsMeters.startingPointOffset,
+                FieldConstants.bargeCenterY + this.sideSign * ((3.0 - i) * FieldConstants.cageOffsetY - Math.signum(3.0 - i) * FieldConstants.initialCageOffsetDifference),
+                new Rotation2d(Math.PI/2.0 + this.sideSign * (Math.PI/2.0))
+            );
+        }
+        this.startingPositions = spTemp;
+
         Pose2d[] rscl = new Pose2d[6];
         Rotation2d[] rca = new Rotation2d[6];
         double[] rah = new double[6];
@@ -118,6 +129,14 @@ public class Coords {
     public Pose2d getCoralStationCoords(Pose2d robotPose, boolean goLeft, boolean goRight) {
         // y = 4 is center of field
         boolean goToTop = robotPose.getY() > 4.0;
+        return getCoralStationCoords(goToTop, goLeft, goRight);
+    }
+
+    public Pose2d getCoralStationCoordsLeftRight(boolean goLeftStation, boolean goLeft, boolean goRight) {
+        return getCoralStationCoords(!(goLeftStation ^ this.sideSign == 1.0), goLeft, goRight);
+    }
+
+    public Pose2d getCoralStationCoords(boolean goToTop, boolean goLeft, boolean goRight) {
         // if both left and right are pressed down (or none), then choose closest coral station
         Pose2d goToPose = goToTop ? this.topCoralStationPose : this.bottomCoralStationPose;
         if (goLeft == goRight) return goToPose;
@@ -197,7 +216,14 @@ public class Coords {
     // returns optimal coral scoring position
     // note: maybe add different positions for scoring on different levels?
     public Pose2d getReefBranchCoords(Pose2d robotPose, double distCorrection, boolean goLeft, boolean goRight, double leftRightCorrection) {
-        int wallIndex = this.getReefWallCenterCoordsIndex(robotPose);
+        return getReefBranchCoords(this.getReefWallCenterCoordsIndex(robotPose), distCorrection, goLeft, goRight, leftRightCorrection);
+    }
+
+    public Pose2d getReefBranchCoordsAuto(int reefSide, double distCorrection, boolean goLeft, boolean goRight, double leftRightCorrection) {
+        return getReefBranchCoords(sideSign == 1.0 ? reefSide : ((reefSide + 3) % 6), distCorrection, goLeft, goRight, leftRightCorrection);
+    }
+
+    public Pose2d getReefBranchCoords(int wallIndex, double distCorrection, boolean goLeft, boolean goRight, double leftRightCorrection) {
         Pose2d wall2d = this.reefSideCenterLocs[wallIndex];
         double goingLeft = goLeft ? 1.0 : -1.0;
         // cool math that adds the coral intake offset
