@@ -10,12 +10,19 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.revrobotics.Rev2mDistanceSensor;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+import com.revrobotics.Rev2mDistanceSensor.RangeProfile;
+import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -26,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.RobotConstantsMeters;
 
 /*
  * Reference:
@@ -35,7 +43,7 @@ import frc.robot.Constants.OperatorConstants;
  * Especially add the AutoBuilder stuff
  */
 
-public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem, Sendable {
     private final Field2d field2D = new Field2d();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -45,6 +53,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
+    private Rev2mDistanceSensor lidarSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
+
     private SlewRateLimiter xLimiter = new SlewRateLimiter(OperatorConstants.accelLimit);
     private SlewRateLimiter yLimiter = new SlewRateLimiter(OperatorConstants.accelLimit);
     private SlewRateLimiter rotLimiter = new SlewRateLimiter(OperatorConstants.rotLimit);
@@ -52,10 +62,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.FieldCentric drivePID = new SwerveRequest.FieldCentric()
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.SwerveDriveBrake swerveBrake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.RobotCentric lidarDrive = new SwerveRequest.RobotCentric();
     private ProfiledPIDController xPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
     private ProfiledPIDController yPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
     private ProfiledPIDController rPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxSpinRadPS, AutoConstants.maxSpinAccelRadPS2));
     private double invertMult = 1.0;
+
+    private ProfiledPIDController lidarPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
 
     public DrivetrainAligningTo thingAligningTo = DrivetrainAligningTo.NOTHING;
 
@@ -67,7 +80,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super(drivetrainConstants, modules);
         // Configures robot settings for Auton
         configureAutoBuilder();
+        this.xPID.setTolerance(AutoConstants.pidDistanceTolerance);
+        this.yPID.setTolerance(AutoConstants.pidDistanceTolerance);
+        this.lidarPID.setTolerance(AutoConstants.lidarDistanceTolerance);
 
+        SendableRegistry.add(this, "Drivetrain");
+        SmartDashboard.putData(this);
         SmartDashboard.putData("Field", field2D);
     }
 
@@ -82,17 +100,28 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         );
     }
 
-    public Command fineTunePID(Pose2d goHere, DrivetrainAligningTo whatAligningTo) {
+    /**
+     * Fine tunes the robot alignment using PID
+     * 
+     * @param goHere where to go to
+     * @param whatAligningTo what to go to
+     * @param distFromObject distance from bumper to object (set as -1 if not using lidar)
+     * @return the command to fine tune with PID
+     */
+    public Command fineTunePID(Pose2d goHere, DrivetrainAligningTo whatAligningTo, double distFromObject) {
         return runOnce(() -> {
             this.xPID.reset(this.getState().Pose.getX());
             this.yPID.reset(this.getState().Pose.getY());
             this.rPID.reset(this.getState().Pose.getRotation().getRadians());
+            this.lidarPID.reset(this.getLidarMeters());
             this.rPID.enableContinuousInput(0.0, 2 * Math.PI);
             this.xPID.setGoal(goHere.getX());
             this.yPID.setGoal(goHere.getY());
             this.rPID.setGoal(goHere.getRotation().getRadians());
+            this.lidarPID.setGoal(distFromObject + RobotConstantsMeters.lidarBumperDistance);
             this.thingAligningTo = whatAligningTo;
-        }).andThen(
+        })
+        .andThen(
             run(() -> {
                 this.setControl(
                     drivePID.withVelocityX(this.xPID.calculate(this.getState().Pose.getX()) * invertMult)
@@ -102,10 +131,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             })
             .until(() -> this.xPID.atGoal() && this.yPID.atGoal() && this.rPID.atGoal())
             .withTimeout(AutoConstants.fineTuneMaxTime)
-            .andThen(() -> {
-                this.setControl(this.swerveBrake);
+        )
+        .andThen(
+            run(() -> {
+                this.setControl(
+                    lidarDrive.withVelocityX(this.lidarPID.calculate(this.getLidarMeters()))
+                    .withVelocityY(0.0)
+                    .withRotationalRate(0.0)
+                );
             })
-        );
+            .onlyIf(() -> distFromObject >= 0.0 && this.getLidarMeters() >= RobotConstantsMeters.lidarBumperDistance)
+            .until(() -> this.getLidarMeters() < RobotConstantsMeters.lidarBumperDistance || this.lidarPID.atGoal())
+            .withTimeout(AutoConstants.lidarFineTuneMaxTime)
+        )
+        .andThen(() -> {
+            this.setControl(this.swerveBrake);
+        });
+    }
+
+    public double getLidarMeters() {
+        return lidarSensor.getRange() / 1000.0;
     }
 
     public double getXVal(double currentVal, double throttleVal) {
@@ -203,5 +248,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         CORALSTATION,
         PROCESSOR,
         BARGE;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Lidar Distance", () -> this.getLidarMeters(), null);
     }
 }

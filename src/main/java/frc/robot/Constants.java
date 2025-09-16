@@ -81,6 +81,12 @@ public final class Constants {
         public static final double maxSpinAccelRadPS2 = 2.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
 
         public static final double fineTuneMaxTime = 5.0;
+
+        public static final double lidarFineTuneMaxTime = 2.0;
+
+        public static final double pidDistanceTolerance = 0.03;
+
+        public static final double lidarDistanceTolerance = 0.01;
     }
 
     public static class RobotConstantsMeters {
@@ -89,6 +95,9 @@ public final class Constants {
         public static final double halfWidth = 0.432;
         // Note: Coral intake is to the LEFT of the robot's center (from the robot's perspective)
         public static final double coralArmOffset = 0.154;
+
+        // Distance between front of bumper and lidar
+        public static final double lidarBumperDistance = 0.08;
 
         // Gap between robot and places to score
         public static final double processorSafeDist = 0.25;

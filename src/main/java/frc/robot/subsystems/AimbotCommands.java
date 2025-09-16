@@ -79,7 +79,7 @@ public class AimbotCommands extends SubsystemBase {
         )
         .andThen(this.elevator.goToPosition(this.elevator.goingToHeight))
         .andThen(new WaitCommand(0.5))
-        .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF))
+        .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefSafeDist + RobotConstantsMeters.reefDistCorrectionL4 : RobotConstantsMeters.reefSafeDist))
         .andThen(this.elevator.goToPosition(this.elevator.goingToHeight))
         .andThen(this.wrist.goToHighShootPosition().onlyIf(() -> this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR))
         .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
@@ -117,7 +117,7 @@ public class AimbotCommands extends SubsystemBase {
         .alongWith(elevator.goToIntakePosition()) // Failsafe
         .alongWith(wrist.goToIntakePosition()) // Failsafe
         .andThen(this.flywheel.intakeCoral())
-        .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION));
+        .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION, RobotConstantsMeters.coralStationSafeDist));
     }
 
     public Command collectAlgaeFromReef(AlgaeIntakeSubsystem algaeIntake) {
@@ -130,7 +130,7 @@ public class AimbotCommands extends SubsystemBase {
                     0.0
                 )
                 // .alongWith(this.elevator.goToPosition(() -> getAlgaeHeight())) // Failsafe
-                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF))
+                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF, RobotConstantsMeters.reefAlgaeSafeDist))
                 // .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
                 .andThen(algaeIntake.doIntake());
             },
@@ -148,7 +148,7 @@ public class AimbotCommands extends SubsystemBase {
                     0.0
                 )
                 .alongWith(this.elevator.goToProcessorPosition()) // Failsafe
-                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.PROCESSOR))
+                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.PROCESSOR, -1.0))
                 .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
                 .andThen(algaeIntake.shootOut());
             },
@@ -164,7 +164,7 @@ public class AimbotCommands extends SubsystemBase {
                     this.pathfindConstraints,
                     0.0
                 )
-                .andThen(drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.BARGE));
+                .andThen(drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.BARGE, -1.0));
             },
             Set.of(this.drivetrain)
         );
