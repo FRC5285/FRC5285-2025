@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -18,16 +17,14 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
     private final TalonFX followerMotor;
     private final DigitalInput algaeIntakeSensor;
 
-    @SuppressWarnings("unused")
-    private final AlgaeIntakeState state;
-
     public AlgaeIntakeSubsystem() {
         algaeIntakeMotor = new TalonFX(AlgaeIntakeConstants.motorID2);
         followerMotor = new TalonFX(AlgaeIntakeConstants.motorID1);
         algaeIntakeSensor = new DigitalInput(AlgaeIntakeConstants.algaeIntakeSensorID);
-        state = new AlgaeIntakeState();
-
         followerMotor.setControl(new Follower(algaeIntakeMotor.getDeviceID(), true));
+        
+        SendableRegistry.add(this, "Algae Intake");
+        SmartDashboard.putData(this);
     }
 
     public boolean hasAlgae() {
@@ -63,17 +60,9 @@ public class AlgaeIntakeSubsystem extends SubsystemBase {
         .andThen(() -> algaeIntakeMotor.set(AlgaeIntakeConstants.normalSpeed));
     }
 
-    public class AlgaeIntakeState implements Sendable{
-        
-        public AlgaeIntakeState(){
-        SendableRegistry.add(this, "AlgaeIntakeState");
-        SmartDashboard.putData(this);
-        }
-
-        @Override
-        public void initSendable(SendableBuilder builder){
+    @Override
+    public void initSendable(SendableBuilder builder){
         builder.addDoubleProperty("AlgaeIntakeMotor", ()-> algaeIntakeMotor.get(), null);
         builder.addBooleanProperty("Sensor", ()-> hasAlgae(), null);
-        }
     }
 }
