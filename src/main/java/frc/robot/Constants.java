@@ -167,8 +167,8 @@ public final class Constants {
         public static final int flywheelMotorID = 30; // CAN
         public static final int flywheelMotorFollowerID = 32; //CAN
         public static final int intakeSensorID = 3; // DIO
-        public static final double intakeSpeed = -0.5;
-        public static final double shootSpeed = 0.5;
+        public static final double intakeSpeed = 0.5;
+        public static final double shootSpeed = -0.5;
         public static final double shootDuration = 0.5;
         public static final double intakeMaxTime = 10.0;
     }
@@ -184,11 +184,11 @@ public final class Constants {
         public static final double midShootPosition = 0.2926;
         /**L4*/
         public static final double highShootPosition = 0.28;
-        public static final double encoderOffset = 0.64;
+        public static final double encoderOffset = 0.09;
     
         public static final double kP = 5.0;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kI = 0.1;
+        public static final double kD = 0.1;
         
         public static final double maxV = 0.75; // rotations/s/s
         public static final double maxA = 0.5; // rotations/s
@@ -203,8 +203,8 @@ public final class Constants {
         public static final int encoderB = 2; // DIO, Yellow
 
         public static final double kP = 6.0; //4.0
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
+        public static final double kI = 0.1;
+        public static final double kD = 0.1;
 
         public static final double kS = 0.0;
         /** If this one is too low, elevator goes slamming down. If too high, elevator goes slamming up. Get this one right. */

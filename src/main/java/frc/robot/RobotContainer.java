@@ -109,6 +109,9 @@ public class RobotContainer {
         m_driverController.rightBumper().onTrue(
             flywheel.shootCoral()
         );
+        m_driverController.leftBumper().onTrue(
+            flywheel.intakeCoral()
+        );
 
         // deposit coral
         m_secondaryController.x().onFalse(

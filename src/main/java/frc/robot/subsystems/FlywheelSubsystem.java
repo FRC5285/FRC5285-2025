@@ -50,7 +50,7 @@ public class FlywheelSubsystem extends SubsystemBase {
       .onlyIf(this::noCoral)
       .until(this::hasCoral)
       .withTimeout(FlywheelConstants.intakeMaxTime)
-      .andThen(()-> flywheelMotor.set(-0.1));
+      .andThen(()-> flywheelMotor.set(0.1));
   }
 
   public Command shootCoral(){
@@ -82,7 +82,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
   
   public Command keepRunning() {
-    return run(() -> flywheelMotor.set(-0.1));
+    return run(() -> flywheelMotor.set(0.1));
   }
 
   public class FlywheelState implements Sendable {
