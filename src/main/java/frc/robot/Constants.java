@@ -80,7 +80,7 @@ public final class Constants {
 
         public static final double maxSpinAccelRadPS2 = 2.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
 
-        public static final double fineTuneMaxTime = 5.0;
+        public static final double fineTuneMaxTime = 3.0;
 
         public static final double lidarFineTuneMaxTime = 2.0;
 
@@ -199,8 +199,8 @@ public final class Constants {
         public static final double kI = 0.1;
         public static final double kD = 0.1;
         
-        public static final double maxV = 0.75; // rotations/s/s
-        public static final double maxA = 0.5; // rotations/s
+        public static final double maxV = 2.0; // rotations/s/s
+        public static final double maxA = 1.0; // rotations/s
     }
 
     public static class ElevatorConstants{
@@ -245,7 +245,7 @@ public final class Constants {
         // Elevator is at goal position if it is this close to the goal position
         public static final double goalRange = 0.025;
 
-        public static final double encoderOffset = 0.043; // Height when starting
+        public static final double encoderOffset = 0.049; // Height when starting
     }
 
     public static class AlgaeIntakeConstants {

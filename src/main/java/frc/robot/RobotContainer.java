@@ -161,7 +161,7 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureBindings() {
-        flywheel.setDefaultCommand(flywheel.keepRunning());
+        // flywheel.setDefaultCommand(flywheel.keepRunning());
         // Deposit coral
         m_secondaryController.x().onFalse(
             elevator.setToLevel1Position().alongWith(wrist.goToLowShootPosition())

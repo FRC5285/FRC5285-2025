@@ -72,7 +72,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public Command runIntake() {
-    return run(() -> flywheelMotor.set(1.0)).withTimeout(0.5);
+    return run(() -> flywheelMotor.set(-1.0)).withTimeout(0.5);
   }
 
   public Command stopIntake() {

@@ -57,7 +57,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, controller.getLeftBumperButton(), controller.getRightBumperButton(), this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
-            Set.of(this.drivetrain)
+            Set.of(this.drivetrain, this.flywheel)
         );
     }
 
@@ -67,7 +67,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getReefBranchCoordsAuto(goToSide, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, goLeft, !goLeft, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
-            Set.of(this.drivetrain)
+            Set.of(this.drivetrain, this.flywheel)
         );
     }
 
@@ -78,10 +78,10 @@ public class AimbotCommands extends SubsystemBase {
             0.0
         )
         .andThen(this.elevator.goToPosition(this.elevator.goingToHeight))
+        .andThen(this.wrist.goToHighShootPosition().onlyIf(() -> this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR))
         .andThen(new WaitCommand(0.5))
         .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefSafeDist + RobotConstantsMeters.reefDistCorrectionL4 : RobotConstantsMeters.reefSafeDist))
         .andThen(this.elevator.goToPosition(this.elevator.goingToHeight))
-        .andThen(this.wrist.goToHighShootPosition().onlyIf(() -> this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR))
         .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
         .andThen(new WaitUntilCommand(() -> this.wrist.isAtSetpoint()))
         .andThen(new WaitCommand(0.5))
@@ -94,7 +94,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getCoralStationCoords(this.drivetrain.getState().Pose, controller.getLeftBumperButton(), controller.getRightBumperButton());
                 return collectCoralStation(goToCoords);
             },
-            Set.of(this.drivetrain)
+            Set.of(this.drivetrain, this.flywheel)
         );
     }
 
@@ -104,7 +104,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getCoralStationCoordsLeftRight(goLeft, moveLeft, moveRight);
                 return collectCoralStation(goToCoords);
             },
-            Set.of(this.drivetrain)
+            Set.of(this.drivetrain, this.flywheel)
         );
     }
 
