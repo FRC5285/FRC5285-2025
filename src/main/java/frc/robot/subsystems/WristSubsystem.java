@@ -27,7 +27,6 @@ public class WristSubsystem extends SubsystemBase {
     wristMotor = new TalonFX(WristConstants.wristMotorID);
 
     wristEncoder = new DutyCycleEncoder(WristConstants.wristEncoderID);
-    wristEncoder.setInverted(true);
 
     wristPIDController = new ProfiledPIDController(WristConstants.kP, WristConstants.kI, WristConstants.kD, new TrapezoidProfile.Constraints(WristConstants.maxV, WristConstants.maxA));
     wristPIDController.enableContinuousInput(0.0, 1.0);

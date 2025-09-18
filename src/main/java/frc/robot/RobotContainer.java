@@ -67,6 +67,7 @@ public class RobotContainer {
         configureBindings();
     }
 
+    @SuppressWarnings("unused")
     private void configureTestBindings() {
         m_driverController.a().onTrue(ledStrip.toAuton());
         m_driverController.y().onTrue(ledStrip.toNormal());
@@ -84,6 +85,7 @@ public class RobotContainer {
         );
     }
 
+    @SuppressWarnings("unused")
     private void configureManualBindings() {
         // elevator
         m_secondaryController.leftBumper().and(() -> !ControllerUtils.dPadRight(m_secondaryController.getHID())).onFalse(
@@ -108,6 +110,9 @@ public class RobotContainer {
         // intake
         m_driverController.rightBumper().onTrue(
             flywheel.shootCoral()
+        );
+        m_driverController.leftBumper().onTrue(
+            flywheel.intakeCoral()
         );
 
         // deposit coral

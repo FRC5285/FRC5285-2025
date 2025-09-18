@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -23,8 +22,6 @@ public class FlywheelSubsystem extends SubsystemBase {
   private final DigitalInput intakeSensor;
   public final Trigger hasCoral;
   public final Trigger noCoral;
-  @SuppressWarnings("unused")
-  private final FlywheelState state;
   private boolean dontShoot = false;
 
   public FlywheelSubsystem() {
@@ -33,9 +30,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     intakeSensor = new DigitalInput(FlywheelConstants.intakeSensorID);
     hasCoral = new Trigger(this::hasCoral);
     noCoral = new Trigger(this::noCoral);
-    state = new FlywheelState();
-
     followerMotor.configure(new SparkMaxConfig().follow(flywheelMotor, true), ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+
+    SendableRegistry.add(this, "Flywheel");
+    SmartDashboard.putData(this);
   }
 
   private boolean hasCoral(){
@@ -50,7 +48,7 @@ public class FlywheelSubsystem extends SubsystemBase {
       .onlyIf(this::noCoral)
       .until(this::hasCoral)
       .withTimeout(FlywheelConstants.intakeMaxTime)
-      .andThen(()-> flywheelMotor.set(-0.1));
+      .andThen(()-> flywheelMotor.set(0.1));
   }
 
   public Command shootCoral(){
@@ -82,20 +80,12 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
   
   public Command keepRunning() {
-    return run(() -> flywheelMotor.set(-0.1));
+    return run(() -> flywheelMotor.set(0.1));
   }
 
-  public class FlywheelState implements Sendable {
-
-    public FlywheelState(){
-      SendableRegistry.add(this, "FlywheelState");
-      SmartDashboard.putData(this);
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder){
-      builder.addDoubleProperty("Flywheel Motor", ()-> flywheelMotor.get(), null);
-      builder.addBooleanProperty("Sensor", ()-> hasCoral(), null);
-    }
+  @Override
+  public void initSendable(SendableBuilder builder){
+    builder.addDoubleProperty("Flywheel Motor", ()-> this.flywheelMotor.get(), null);
+    builder.addBooleanProperty("Sensor", ()-> this.hasCoral(), null);
   }
 }
