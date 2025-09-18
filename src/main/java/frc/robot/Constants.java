@@ -97,7 +97,7 @@ public final class Constants {
         public static final double coralArmOffset = 0.154;
 
         // Distance between front of bumper and lidar
-        public static final double lidarBumperDistance = 0.08;
+        public static final double lidarBumperDistance = 0.085;
 
         // Gap between robot and places to score
         public static final double processorSafeDist = 0.25;
