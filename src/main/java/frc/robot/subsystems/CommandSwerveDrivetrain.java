@@ -84,6 +84,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         this.yPID.setTolerance(AutoConstants.pidDistanceTolerance);
         this.lidarPID.setTolerance(AutoConstants.lidarDistanceTolerance);
 
+        this.lidarSensor.setAutomaticMode(true);
+
         SendableRegistry.add(this, "Drivetrain");
         SmartDashboard.putData(this);
         SmartDashboard.putData("Field", field2D);
