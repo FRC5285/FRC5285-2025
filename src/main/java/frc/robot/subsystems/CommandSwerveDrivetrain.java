@@ -54,6 +54,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private boolean m_hasAppliedOperatorPerspective = false;
 
     private Rev2mDistanceSensor lidarSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
+    private double lidarGoal = 0.0;
+    private boolean lidarOn = false;
 
     private SlewRateLimiter xLimiter = new SlewRateLimiter(OperatorConstants.accelLimit);
     private SlewRateLimiter yLimiter = new SlewRateLimiter(OperatorConstants.accelLimit);
@@ -68,7 +70,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private ProfiledPIDController rPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxSpinRadPS, AutoConstants.maxSpinAccelRadPS2));
     private double invertMult = 1.0;
 
-    private ProfiledPIDController lidarPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
+    private ProfiledPIDController lidarPID = new ProfiledPIDController(8.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.lidarMaxVelocityMPS, AutoConstants.lidarMaxAccelMPS2));
 
     public DrivetrainAligningTo thingAligningTo = DrivetrainAligningTo.NOTHING;
 
@@ -115,12 +117,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.xPID.reset(this.getState().Pose.getX());
             this.yPID.reset(this.getState().Pose.getY());
             this.rPID.reset(this.getState().Pose.getRotation().getRadians());
-            this.lidarPID.reset(this.getLidarMeters());
             this.rPID.enableContinuousInput(0.0, 2 * Math.PI);
             this.xPID.setGoal(goHere.getX());
             this.yPID.setGoal(goHere.getY());
             this.rPID.setGoal(goHere.getRotation().getRadians());
-            this.lidarPID.setGoal(distFromObject + RobotConstantsMeters.lidarBumperDistance);
             this.thingAligningTo = whatAligningTo;
         })
         .andThen(
@@ -135,9 +135,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withTimeout(AutoConstants.fineTuneMaxTime)
         )
         .andThen(
+            runOnce(() -> {
+                this.lidarPID.reset(this.getLidarMeters());
+                this.lidarPID.setGoal(distFromObject + RobotConstantsMeters.lidarBumperDistance);
+                this.lidarGoal = distFromObject + RobotConstantsMeters.lidarBumperDistance;
+                this.lidarOn = true;
+            })
+        )
+        .andThen(
             run(() -> {
                 this.setControl(
-                    lidarDrive.withVelocityX(this.lidarPID.calculate(this.getLidarMeters()))
+                    lidarDrive.withVelocityX(-this.lidarPID.calculate(this.getLidarMeters()))
                     .withVelocityY(0.0)
                     .withRotationalRate(0.0)
                 );
@@ -147,12 +155,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withTimeout(AutoConstants.lidarFineTuneMaxTime)
         )
         .andThen(() -> {
-            this.setControl(this.swerveBrake);
+            // this.setControl(this.swerveBrake);
+            this.setControl(lidarDrive.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
+            this.lidarOn = false;
         });
     }
 
     public double getLidarMeters() {
-        return lidarSensor.getRange() / 1000.0;
+        return lidarSensor.getRange() / 1000.0 - AutoConstants.lidarOffset;
     }
 
     public double getXVal(double currentVal, double throttleVal) {
@@ -255,5 +265,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Lidar Distance", () -> this.getLidarMeters(), null);
+        builder.addDoubleProperty("Lidar Goal", () -> this.lidarGoal, null);
+        builder.addBooleanProperty("Lidar On", () -> this.lidarOn, null);
     }
 }

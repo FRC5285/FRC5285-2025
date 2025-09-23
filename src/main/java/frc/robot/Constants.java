@@ -86,7 +86,13 @@ public final class Constants {
 
         public static final double pidDistanceTolerance = 0.03;
 
-        public static final double lidarDistanceTolerance = 0.01;
+        public static final double lidarDistanceTolerance = 0.001;
+
+        public static final double lidarOffset = 0.025; // Distance of lidar measurement - real measurement
+
+        public static final double lidarMaxVelocityMPS = 3.0;
+
+        public static final double lidarMaxAccelMPS2 = 2.0;
     }
 
     public static class RobotConstantsMeters {
@@ -108,7 +114,7 @@ public final class Constants {
 
         public static final double reefAlgaeSafeDist = -reefSafeDist; // Gets added to reefSafeDist
 
-        public static final double coralStationSafeDist = 0.1775;
+        public static final double coralStationSafeDist = 0.12; // 0.1775
 
         public static final double reefDistCorrectionL4 = -0.025;
 
@@ -212,8 +218,8 @@ public final class Constants {
         public static final int encoderB = 2; // DIO, Yellow
 
         public static final double kP = 6.0; //4.0
-        public static final double kI = 0.1;
-        public static final double kD = 0.1;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
 
         public static final double kS = 0.0;
         /** If this one is too low, elevator goes slamming down. If too high, elevator goes slamming up. Get this one right. */
@@ -231,7 +237,7 @@ public final class Constants {
         public static final double level2Position = 0.3625;
         public static final double level3Position = 0.7827;
         public static final double level4Position = 1.335;
-        public static final double intakePosition = 0.21;
+        public static final double intakePosition = 0.14; // 0.21
         public static final double floorAlgaePosition = 0.0;
         
         public static final double L2AlgaeHeight = 0.60; // 0.608

@@ -6,9 +6,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -33,6 +37,8 @@ public class AimbotCommands extends SubsystemBase {
         this.flywheel = flywheelSubsystem;
         this.elevator = elevatorSubsystem;
         this.wrist = wristSubsystem;
+        SendableRegistry.add(this, "Aimbot");
+        SmartDashboard.putData(this);
     }
 
     public void updateSide(boolean isBlue) {
@@ -57,7 +63,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, controller.getLeftBumperButton(), controller.getRightBumperButton(), this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
-            Set.of(this.drivetrain, this.flywheel)
+            Set.of(this, this.drivetrain, this.elevator, this.wrist, this.flywheel)
         );
     }
 
@@ -67,11 +73,11 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getReefBranchCoordsAuto(goToSide, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, goLeft, !goLeft, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
-            Set.of(this.drivetrain, this.flywheel)
+            Set.of(this, this.drivetrain, this.elevator, this.wrist, this.flywheel)
         );
     }
 
-    public Command depositReefBranch(Pose2d goToCoords) {
+    public SequentialCommandGroup depositReefBranch(Pose2d goToCoords) {
         return AutoBuilder.pathfindToPose(
             this.coords.preDepositCoralCoords(goToCoords),
             this.pathfindConstraints,
@@ -85,7 +91,8 @@ public class AimbotCommands extends SubsystemBase {
         .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
         .andThen(new WaitUntilCommand(() -> this.wrist.isAtSetpoint()))
         .andThen(new WaitCommand(0.5))
-        .andThen(this.flywheel.shootCoral(this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 1.0 : this.elevator.goingToHeight == elevatorLastSelectedHeight.ONE ? 0.2 : 0.5));
+        .andThen(this.flywheel.shootCoral(this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? -1.0 : this.elevator.goingToHeight == elevatorLastSelectedHeight.ONE ? -0.2 : -0.5))
+        .andThen(runOnce(() -> {this.getCurrentCommand().cancel();}));
     }
 
     public Command collectCoralStation(XboxController controller) {
@@ -94,7 +101,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getCoralStationCoords(this.drivetrain.getState().Pose, controller.getLeftBumperButton(), controller.getRightBumperButton());
                 return collectCoralStation(goToCoords);
             },
-            Set.of(this.drivetrain, this.flywheel)
+            Set.of(this, this.drivetrain, this.elevator, this.wrist, this.flywheel)
         );
     }
 
@@ -104,20 +111,21 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getCoralStationCoordsLeftRight(goLeft, moveLeft, moveRight);
                 return collectCoralStation(goToCoords);
             },
-            Set.of(this.drivetrain, this.flywheel)
+            Set.of(this, this.drivetrain, this.elevator, this.wrist, this.flywheel)
         );
     }
 
-    public Command collectCoralStation(Pose2d goToCoords) {
+    public SequentialCommandGroup collectCoralStation(Pose2d goToCoords) {
         return AutoBuilder.pathfindToPose(
-            goToCoords,
+            this.coords.preDepositCoralCoords(goToCoords),
             this.pathfindConstraints,
             0.0
         )
         .alongWith(elevator.goToIntakePosition()) // Failsafe
         .alongWith(wrist.goToIntakePosition()) // Failsafe
-        .andThen(this.flywheel.intakeCoral())
-        .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION, RobotConstantsMeters.coralStationSafeDist));
+        .andThen(this.flywheel.intakeCoral()
+            .alongWith(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION, RobotConstantsMeters.coralStationSafeDist)))
+        .andThen(runOnce(() -> {this.getCurrentCommand().cancel();}));
     }
 
     public Command collectAlgaeFromReef(AlgaeIntakeSubsystem algaeIntake) {
@@ -134,7 +142,7 @@ public class AimbotCommands extends SubsystemBase {
                 // .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
                 .andThen(algaeIntake.doIntake());
             },
-            Set.of(this.drivetrain)
+            Set.of(this, this.drivetrain)
         ); 
     }
 
@@ -152,7 +160,7 @@ public class AimbotCommands extends SubsystemBase {
                 .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
                 .andThen(algaeIntake.shootOut());
             },
-            Set.of(this.drivetrain)
+            Set.of(this, this.drivetrain)
         );
     }
 
@@ -166,11 +174,19 @@ public class AimbotCommands extends SubsystemBase {
                 )
                 .andThen(drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.BARGE, -1.0));
             },
-            Set.of(this.drivetrain)
+            Set.of(this, this.drivetrain)
         );
     }
     
     public Command stopCurrentCommand() {
         return runOnce(() -> {});
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addBooleanProperty("Command Finished", () -> {
+            if (this.getCurrentCommand() != null) return this.getCurrentCommand().isFinished();
+            return true;
+        }, null);
     }
 }

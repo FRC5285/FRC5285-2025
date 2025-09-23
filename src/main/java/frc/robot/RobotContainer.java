@@ -182,7 +182,7 @@ public class RobotContainer {
 
         // Get coral from coral station
         new Trigger(() -> ControllerUtils.dPadDown(m_secondaryController.getHID())).onFalse(
-            elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
+            elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition()).andThen(ledStrip.toNormal())
         );
         m_driverController.a().onTrue(
             abcs.collectCoralStation(m_driverController.getHID())
