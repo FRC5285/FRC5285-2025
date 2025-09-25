@@ -63,7 +63,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, controller.getLeftBumperButton(), controller.getRightBumperButton(), this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
-            Set.of(this, this.drivetrain, this.elevator, this.wrist, this.flywheel)
+            Set.of(this, this.drivetrain, this.wrist, this.flywheel)
         );
     }
 
@@ -73,7 +73,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getReefBranchCoordsAuto(goToSide, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, goLeft, !goLeft, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
                 return depositReefBranch(goToCoords);
             },
-            Set.of(this, this.drivetrain, this.elevator, this.wrist, this.flywheel)
+            Set.of(this, this.drivetrain, this.wrist, this.flywheel)
         );
     }
 
@@ -101,7 +101,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getCoralStationCoords(this.drivetrain.getState().Pose, controller.getLeftBumperButton(), controller.getRightBumperButton());
                 return collectCoralStation(goToCoords);
             },
-            Set.of(this, this.drivetrain, this.elevator, this.wrist, this.flywheel)
+            Set.of(this, this.drivetrain, this.wrist, this.flywheel)
         );
     }
 
@@ -111,7 +111,7 @@ public class AimbotCommands extends SubsystemBase {
                 Pose2d goToCoords = this.coords.getCoralStationCoordsLeftRight(goLeft, moveLeft, moveRight);
                 return collectCoralStation(goToCoords);
             },
-            Set.of(this, this.drivetrain, this.elevator, this.wrist, this.flywheel)
+            Set.of(this, this.drivetrain, this.wrist, this.flywheel)
         );
     }
 

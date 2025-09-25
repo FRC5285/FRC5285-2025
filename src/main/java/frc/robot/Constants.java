@@ -90,9 +90,9 @@ public final class Constants {
 
         public static final double lidarOffset = 0.025; // Distance of lidar measurement - real measurement
 
-        public static final double lidarMaxVelocityMPS = 3.0;
+        public static final double lidarMaxVelocityMPS = 2.0;
 
-        public static final double lidarMaxAccelMPS2 = 2.0;
+        public static final double lidarMaxAccelMPS2 = 0.5;
     }
 
     public static class RobotConstantsMeters {
@@ -110,13 +110,13 @@ public final class Constants {
 
         public static final double cageSafeDist = 0.1;
 
-        public static final double reefSafeDist = 0.225;
+        public static final double reefSafeDist = 0.25; // 0.225
 
         public static final double reefAlgaeSafeDist = -reefSafeDist; // Gets added to reefSafeDist
 
         public static final double coralStationSafeDist = 0.12; // 0.1775
 
-        public static final double reefDistCorrectionL4 = -0.025;
+        public static final double reefDistCorrectionL4 = 0.025; // -0.025
 
         // X-offset from middle of the field to middle of the robot at match start
         public static final double startingPointOffset = 1.614176;

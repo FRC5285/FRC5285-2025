@@ -70,7 +70,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private ProfiledPIDController rPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxSpinRadPS, AutoConstants.maxSpinAccelRadPS2));
     private double invertMult = 1.0;
 
-    private ProfiledPIDController lidarPID = new ProfiledPIDController(8.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.lidarMaxVelocityMPS, AutoConstants.lidarMaxAccelMPS2));
+    private ProfiledPIDController lidarPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.lidarMaxVelocityMPS, AutoConstants.lidarMaxAccelMPS2));
 
     public DrivetrainAligningTo thingAligningTo = DrivetrainAligningTo.NOTHING;
 
