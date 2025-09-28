@@ -82,7 +82,7 @@ public final class Constants {
 
         public static final double fineTuneMaxTime = 3.0;
 
-        public static final double lidarFineTuneMaxTime = 2.0;
+        public static final double lidarFineTuneMaxTime = 1.5;
 
         public static final double pidDistanceTolerance = 0.03;
 
@@ -92,7 +92,9 @@ public final class Constants {
 
         public static final double lidarMaxVelocityMPS = 2.0;
 
-        public static final double lidarMaxAccelMPS2 = 0.5;
+        public static final double lidarMaxAccelMPS2 = 1.5;
+
+        public static final double lidarWaitTime = 0.5;
     }
 
     public static class RobotConstantsMeters {
@@ -116,17 +118,17 @@ public final class Constants {
 
         public static final double coralStationSafeDist = 0.12; // 0.1775
 
-        public static final double reefDistCorrectionL4 = 0.025; // -0.025
+        public static final double reefDistCorrectionL4 = 0.025; // -0.025 // added to reefSafeDist
 
         // X-offset from middle of the field to middle of the robot at match start
         public static final double startingPointOffset = 1.614176;
 
         // Horizontal (from robot perspective) translations
-        public static final double coralStationCorrection = 0.0508; // Gets added onto coralArmOffset
+        public static final double coralStationCorrection = 0.0; // Gets added onto coralArmOffset //0.0508
         
-        public static final double reefBranchCorrection = -0.020; // -0.063
+        public static final double reefBranchCorrection = 0.0; // -0.063
 
-        public static final double reefBranchCorrectionL4 = 0.010;
+        public static final double reefBranchCorrectionL4 = 0.010; // independent from reefBranchCorrection
     }
 
     public static class FieldConstants {
@@ -235,7 +237,7 @@ public final class Constants {
 
         public static final double level1Position = 0.15;
         public static final double level2Position = 0.3625;
-        public static final double level3Position = 0.7827;
+        public static final double level3Position = 0.7727; // 0.7827
         public static final double level4Position = 1.335;
         public static final double intakePosition = 0.14; // 0.21
         public static final double floorAlgaePosition = 0.0;

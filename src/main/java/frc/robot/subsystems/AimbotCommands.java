@@ -85,12 +85,12 @@ public class AimbotCommands extends SubsystemBase {
         )
         .andThen(this.elevator.goToPosition(this.elevator.goingToHeight))
         .andThen(this.wrist.goToHighShootPosition().onlyIf(() -> this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR))
-        .andThen(new WaitCommand(0.5))
+        .andThen(new WaitCommand(0.25))
         .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.REEF, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefSafeDist + RobotConstantsMeters.reefDistCorrectionL4 : RobotConstantsMeters.reefSafeDist))
         .andThen(this.elevator.goToPosition(this.elevator.goingToHeight))
         .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
         .andThen(new WaitUntilCommand(() -> this.wrist.isAtSetpoint()))
-        .andThen(new WaitCommand(0.5))
+        .andThen(new WaitCommand(0.0))
         .andThen(this.flywheel.shootCoral(this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? -1.0 : this.elevator.goingToHeight == elevatorLastSelectedHeight.ONE ? -0.2 : -0.5))
         .andThen(runOnce(() -> {this.getCurrentCommand().cancel();}));
     }
