@@ -96,6 +96,14 @@ public class WristSubsystem extends SubsystemBase {
     return goToPosition(() -> 0.0);
   }
 
+  public Command goToAlgaePosition() {
+    return goToPosition(() -> WristConstants.algaePosition);
+  }
+
+  public Command goToAlgaePosition2() {
+    return goToPosition(() -> WristConstants.algaePosition2);
+  }
+
   public double getCurrentPosition(){
     double position = wristEncoder.get() - wristState.getEncoderOffset();
     return position < 0.0 ? position + 1.0 : position;

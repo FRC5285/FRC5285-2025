@@ -182,13 +182,18 @@ public class RobotContainer {
 
         // Get coral from coral station
         new Trigger(() -> ControllerUtils.dPadDown(m_secondaryController.getHID())).onFalse(
-            elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition()).andThen(ledStrip.toNormal())
+            elevator.goToIntakePosition().alongWith(wrist.goToIntakePosition())
         );
         m_driverController.a().onTrue(
             abcs.collectCoralStation(m_driverController.getHID())
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
 
+        // Algae
+        m_driverController.x().onTrue(
+            abcs.knockAlgaeFromReef()
+            .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
+        );
 
         // Do the deep climb
         new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).onTrue(
@@ -227,8 +232,6 @@ public class RobotContainer {
         m_secondaryController.rightBumper().and(() -> !ControllerUtils.leftTrigger(m_secondaryController.getHID())).and(() -> !ControllerUtils.dPadLeft(m_secondaryController.getHID())).onFalse(
             wrist.moveUp()
         );
-
-        
 
         m_secondaryController.leftStick().onTrue(flywheel.runIntake());
         m_secondaryController.leftStick().onFalse(flywheel.stopIntake());

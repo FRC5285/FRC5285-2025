@@ -147,6 +147,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     return runOnce(() -> elevatorPID.setGoal(Math.min(elevatorPID.getGoal().position + 0.05, ElevatorConstants.maxHeight)));
   }
 
+  public Command elevatorUpAlgae() {
+    return runOnce(() -> elevatorPID.setGoal(Math.min(elevatorPID.getGoal().position + ElevatorConstants.elevatorAlgaeMoveUpAmount, ElevatorConstants.maxHeight)));
+  }
+
   public Command elevatorDown() {
     return runOnce(() -> elevatorPID.setGoal(Math.max(elevatorPID.getGoal().position - 0.05, 0.0)));
   }

@@ -206,9 +206,13 @@ public class Coords {
 
     /** For use before depositing coral, lets cameras adjust pose */
     public Pose2d preDepositCoralCoords(Pose2d goToPose) {
+        return this.preDepositCoralCoords(goToPose, 0.4);
+    }
+
+    public Pose2d preDepositCoralCoords(Pose2d goToPose, double dist) {
         return new Pose2d(
-            goToPose.getX() - goToPose.getRotation().getCos() * 0.4,
-            goToPose.getY() - goToPose.getRotation().getSin() * 0.4,
+            goToPose.getX() - goToPose.getRotation().getCos() * dist,
+            goToPose.getY() - goToPose.getRotation().getSin() * dist,
             goToPose.getRotation()
         );
     }

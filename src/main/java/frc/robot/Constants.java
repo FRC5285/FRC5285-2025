@@ -80,7 +80,7 @@ public final class Constants {
 
         public static final double maxSpinAccelRadPS2 = 2.0 * (2.0 * Math.PI); // Max robot angular acceleration, radians/s/s
 
-        public static final double fineTuneMaxTime = 3.0;
+        public static final double fineTuneMaxTime = 2.0;
 
         public static final double lidarFineTuneMaxTime = 1.5;
 
@@ -92,9 +92,17 @@ public final class Constants {
 
         public static final double lidarMaxVelocityMPS = 2.0;
 
-        public static final double lidarMaxAccelMPS2 = 1.5;
+        public static final double lidarMaxAccelMPS2 = 3.0;
 
-        public static final double lidarWaitTime = 0.5;
+        public static final double lidarWaitTime = 0.0;
+
+        public static final double algaeMoveBackSeconds = 0.4;
+
+        public static final double algaeRotateSeconds = 0.0;
+
+        public static final double algaeMoveBackSpeedMPS = -2.0;
+
+        public static final double algaeRotateSpeed = -1.0;
     }
 
     public static class RobotConstantsMeters {
@@ -194,18 +202,22 @@ public final class Constants {
         public static final int wristMotorID = 15; // CAN
         public static final int wristEncoderID = 0; // DIO
     
-        public static final double intakePosition = 0.14;
+        public static final double intakePosition = 0.12;
         /**L1*/
         public static final double lowShootPosition = 0.26828;
         /**L2/L3*/
         public static final double midShootPosition = 0.2926;
         /**L4*/
         public static final double highShootPosition = 0.28;
+
+        public static final double algaePosition = 0.24;
+        public static final double algaePosition2 = 0.21;
+
         public static final double encoderOffset = 0.09;
     
         public static final double kP = 5.0;
         public static final double kI = 0.1;
-        public static final double kD = 0.1;
+        public static final double kD = 0.5;
         
         public static final double maxV = 2.0; // rotations/s/s
         public static final double maxA = 1.0; // rotations/s
@@ -239,11 +251,12 @@ public final class Constants {
         public static final double level2Position = 0.3625;
         public static final double level3Position = 0.7727; // 0.7827
         public static final double level4Position = 1.335;
-        public static final double intakePosition = 0.14; // 0.21
+        public static final double intakePosition = 0.16; // 0.21
         public static final double floorAlgaePosition = 0.0;
         
-        public static final double L2AlgaeHeight = 0.60; // 0.608
-        public static final double L3AlgaeHeight = 1.0; // 0.956
+        public static final double L2AlgaeHeight = 0.0; // 0.608
+        public static final double L3AlgaeHeight = 0.375; // 0.956
+        public static final double elevatorAlgaeMoveUpAmount = 0.15;
 
         public static final double maxHeight = 1.335;
         public static final double minHeight = 0.0;

@@ -53,7 +53,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    private Rev2mDistanceSensor lidarSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighAccuracy);
+    private Rev2mDistanceSensor lidarSensor = new Rev2mDistanceSensor(Port.kOnboard, Unit.kMillimeters, RangeProfile.kHighSpeed);
     private double lidarGoal = 0.0;
     private boolean lidarOn = false;
 
@@ -112,7 +112,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @param distFromObject distance from bumper to object (set as -1 if not using lidar)
      * @return the command to fine tune with PID
      */
-    public Command fineTunePID(Pose2d goHere, DrivetrainAligningTo whatAligningTo, double distFromObject) {
+    public Command fineTunePID(Pose2d goHere, DrivetrainAligningTo whatAligningTo, double distFromObject, boolean doNormalPid) {
         return runOnce(() -> {
             this.xPID.reset(this.getState().Pose.getX());
             this.yPID.reset(this.getState().Pose.getY());
@@ -133,6 +133,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             })
             .until(() -> this.xPID.atGoal() && this.yPID.atGoal() && this.rPID.atGoal())
             .withTimeout(AutoConstants.fineTuneMaxTime)
+            .onlyIf(() -> doNormalPid)
         )
         .andThen(
             runOnce(() -> {
@@ -143,18 +144,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             })
         )
         .andThen(
-            new WaitCommand(AutoConstants.lidarWaitTime)
-            .andThen(runOnce(() -> {
-                this.lidarPID.reset(this.getLidarMeters());
-                this.lidarPID.setGoal(distFromObject + RobotConstantsMeters.lidarBumperDistance);
-            }))
-            .andThen(run(() -> {
+            run(() -> {
                 this.setControl(
                     lidarDrive.withVelocityX(-this.lidarPID.calculate(this.getLidarMeters()))
                     .withVelocityY(0.0)
                     .withRotationalRate(0.0)
                 );
-            }))
+            })
             .onlyIf(() -> distFromObject >= 0.0 && this.getLidarMeters() >= RobotConstantsMeters.lidarBumperDistance)
             .until(() -> this.getLidarMeters() < RobotConstantsMeters.lidarBumperDistance || this.lidarPID.atGoal())
             .withTimeout(AutoConstants.lidarFineTuneMaxTime + AutoConstants.lidarWaitTime)
@@ -164,6 +160,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this.setControl(lidarDrive.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
             this.lidarOn = false;
         });
+    }
+
+    public Command moveBack() {
+        return runOnce(() -> {
+            this.setControl(
+                lidarDrive.withVelocityX(AutoConstants.algaeMoveBackSpeedMPS).withVelocityY(0).withRotationalRate(0.0)
+            );
+        })
+        .andThen(new WaitCommand(AutoConstants.algaeMoveBackSeconds))
+        .andThen(
+            runOnce(() -> {
+                this.setControl(lidarDrive.withVelocityX(AutoConstants.algaeMoveBackSpeedMPS).withVelocityY(0).withRotationalRate(AutoConstants.algaeRotateSpeed));
+            })
+        )
+        .andThen(new WaitCommand(AutoConstants.algaeRotateSeconds))
+        .andThen(
+            runOnce(() -> {
+                this.setControl(lidarDrive.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
+            })
+        );
     }
 
     public double getLidarMeters() {
@@ -270,6 +286,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Lidar Distance", () -> this.getLidarMeters(), null);
+        builder.addDoubleProperty("X Velocity", () -> this.getState().Speeds.vxMetersPerSecond, null);
+        builder.addDoubleProperty("Y Velocity", () -> this.getState().Speeds.vyMetersPerSecond, null);
         builder.addDoubleProperty("Lidar Goal", () -> this.lidarGoal, null);
         builder.addBooleanProperty("Lidar On", () -> this.lidarOn, null);
     }
