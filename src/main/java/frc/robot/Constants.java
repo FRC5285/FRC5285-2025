@@ -202,7 +202,7 @@ public final class Constants {
         public static final int wristMotorID = 15; // CAN
         public static final int wristEncoderID = 0; // DIO
     
-        public static final double intakePosition = 0.12;
+        public static final double intakePosition = 0.10;
         /**L1*/
         public static final double lowShootPosition = 0.26828;
         /**L2/L3*/
@@ -251,7 +251,7 @@ public final class Constants {
         public static final double level2Position = 0.3625;
         public static final double level3Position = 0.7727; // 0.7827
         public static final double level4Position = 1.335;
-        public static final double intakePosition = 0.16; // 0.21
+        public static final double intakePosition = 0.12; // 0.21
         public static final double floorAlgaePosition = 0.0;
         
         public static final double L2AlgaeHeight = 0.0; // 0.608
