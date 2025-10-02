@@ -110,9 +110,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @param goHere where to go to
      * @param whatAligningTo what to go to
      * @param distFromObject distance from bumper to object (set as -1 if not using lidar)
+     * @param doNormalPid use the position PID
      * @return the command to fine tune with PID
      */
     public Command fineTunePID(Pose2d goHere, DrivetrainAligningTo whatAligningTo, double distFromObject, boolean doNormalPid) {
+        return this.fineTunePID(goHere, whatAligningTo, distFromObject, doNormalPid, AutoConstants.lidarFineTuneMaxTime, AutoConstants.lidarDistanceTolerance);
+    }
+
+    /**
+     * Fine tunes the robot alignment using PID
+     * 
+     * @param goHere where to go to
+     * @param whatAligningTo what to go to
+     * @param distFromObject distance from bumper to object (set as -1 if not using lidar)
+     * @param doNormalPid use the position PID
+     * @param lidarTime how long to use lidar
+     * @return the command to fine tune with PID
+     */
+    public Command fineTunePID(Pose2d goHere, DrivetrainAligningTo whatAligningTo, double distFromObject, boolean doNormalPid, double lidarTime, double lidarTolerance) {
         return runOnce(() -> {
             this.xPID.reset(this.getState().Pose.getX());
             this.yPID.reset(this.getState().Pose.getY());
@@ -138,6 +153,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .andThen(
             runOnce(() -> {
                 this.lidarPID.reset(this.getLidarMeters());
+                this.lidarPID.setTolerance(lidarTolerance);
                 this.lidarPID.setGoal(distFromObject + RobotConstantsMeters.lidarBumperDistance);
                 this.lidarGoal = distFromObject + RobotConstantsMeters.lidarBumperDistance;
                 this.lidarOn = true;
@@ -153,7 +169,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             })
             .onlyIf(() -> distFromObject >= 0.0 && this.getLidarMeters() >= RobotConstantsMeters.lidarBumperDistance)
             .until(() -> this.getLidarMeters() < RobotConstantsMeters.lidarBumperDistance || this.lidarPID.atGoal())
-            .withTimeout(AutoConstants.lidarFineTuneMaxTime + AutoConstants.lidarWaitTime)
+            .withTimeout(lidarTime)
         )
         .andThen(() -> {
             // this.setControl(this.swerveBrake);

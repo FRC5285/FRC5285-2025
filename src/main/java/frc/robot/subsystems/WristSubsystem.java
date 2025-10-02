@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WristConstants;
+import frc.robot.subsystems.ElevatorSubsystem.elevatorLastSelectedHeight;
 
 public class WristSubsystem extends SubsystemBase {
   
@@ -75,6 +76,13 @@ public class WristSubsystem extends SubsystemBase {
   public boolean isAtSetpoint() {
     return wristPIDController.atSetpoint();
   }
+
+  public Command goToElevatorPos(elevatorLastSelectedHeight elevatorSelectedHeight) {
+    if (elevatorSelectedHeight == elevatorLastSelectedHeight.FOUR) return this.goToHighShootPosition();
+    if (elevatorSelectedHeight == elevatorLastSelectedHeight.THREE || elevatorSelectedHeight == elevatorLastSelectedHeight.TWO) return this.goToMidShootPosition();
+    if (elevatorSelectedHeight == elevatorLastSelectedHeight.ONE) return this.goToLowShootPosition();
+    return this.goToHighShootPosition();
+  }
   
   public Command goToIntakePosition(){
     return goToPosition(()-> wristState.getIntakePosition());
@@ -107,6 +115,10 @@ public class WristSubsystem extends SubsystemBase {
   public double getCurrentPosition(){
     double position = wristEncoder.get() - wristState.getEncoderOffset();
     return position < 0.0 ? position + 1.0 : position;
+  }
+
+  public void resetPID() {
+    this.wristPIDController.reset(this.getCurrentPosition());
   }
 
   public class WristState implements Sendable{ //for smartdashboard

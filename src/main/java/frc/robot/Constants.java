@@ -84,9 +84,13 @@ public final class Constants {
 
         public static final double lidarFineTuneMaxTime = 1.5;
 
+        public static final double lidarFineTuneMaxTimeReef = 1.0;
+
         public static final double pidDistanceTolerance = 0.03;
 
         public static final double lidarDistanceTolerance = 0.001;
+
+        public static final double lidarDistanceToleranceReef = 0.02;
 
         public static final double lidarOffset = 0.025; // Distance of lidar measurement - real measurement
 

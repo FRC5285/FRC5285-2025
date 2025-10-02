@@ -164,16 +164,16 @@ public class RobotContainer {
         // flywheel.setDefaultCommand(flywheel.keepRunning());
         // Deposit coral
         m_secondaryController.x().onFalse(
-            elevator.setToLevel1Position().alongWith(wrist.goToLowShootPosition())
+            elevator.setToLevel1Position()
         );
         m_secondaryController.a().onFalse(
-            elevator.setToLevel2Position().alongWith(wrist.goToMidShootPosition())
+            elevator.setToLevel2Position()
         );
         m_secondaryController.b().onFalse(
-            elevator.setToLevel3Position().alongWith(wrist.goToMidShootPosition())
+            elevator.setToLevel3Position()
         );
         m_secondaryController.y().onFalse(
-            elevator.setToLevel4Position().alongWith(wrist.goToHighShootPosition())
+            elevator.setToLevel4Position()
         );
         m_driverController.y().onTrue(
             flywheel.doShootCoral().andThen(abcs.depositReefBranch(m_driverController.getHID()))
@@ -244,6 +244,10 @@ public class RobotContainer {
     public void resetSide() {
         DriverStation.getAlliance().ifPresent(allianceColor -> abcs.updateSide(allianceColor == Alliance.Blue));
         drivetrain.resetSide(abcs.getStartLoc());
+    }
+
+    public void resetPIDs() {
+        this.wrist.resetPID();
     }
 
     /**
