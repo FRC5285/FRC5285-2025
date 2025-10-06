@@ -72,9 +72,9 @@ public final class Constants {
 
     public static class AutoConstants {
         // Used for constraints of pathfinding
-        public static final double maxVelocityMPS = 2.0; // Max robot speed, m/s, 4.73
+        public static final double maxVelocityMPS = 3.5; // Max robot speed, m/s, 4.73 // 2.0
 
-        public static final double maxAccelMPS2 = 1.5; // Max robot accelerations m/s/s
+        public static final double maxAccelMPS2 = 3.0; // Max robot accelerations m/s/s // 1.5
 
         public static final double maxSpinRadPS = 3.0 * (2.0 * Math.PI); // Max robot angular velocity, radians/s
 
@@ -90,9 +90,9 @@ public final class Constants {
 
         public static final double lidarDistanceTolerance = 0.001;
 
-        public static final double lidarDistanceToleranceReef = 0.02;
+        public static final double lidarDistanceToleranceReef = 0.01;
 
-        public static final double lidarOffset = 0.025; // Distance of lidar measurement - real measurement
+        public static final double lidarOffset = 0.0; // Distance of lidar measurement - real measurement //0.025
 
         public static final double lidarMaxVelocityMPS = 2.0;
 
@@ -293,7 +293,7 @@ public final class Constants {
 
         public static final double climbSpeed = 0.70;
 
-        public static final double climbRotations = 65.0;
+        public static final double climbRotations = 73.0;
     }
 
     public static class LEDConstants {

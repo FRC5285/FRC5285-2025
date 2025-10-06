@@ -61,7 +61,7 @@ public class AimbotCommands extends SubsystemBase {
         return new DeferredCommand(
             () -> {
                 Pose2d goToCoords = this.coords.getReefBranchCoords(this.drivetrain.getState().Pose, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, controller.getLeftBumperButton(), controller.getRightBumperButton(), this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
-                return depositReefBranch(goToCoords);
+                return depositReefBranch(goToCoords, false);
             },
             Set.of(this, this.drivetrain, this.flywheel)
         );
@@ -71,13 +71,13 @@ public class AimbotCommands extends SubsystemBase {
         return new DeferredCommand(
             () -> {
                 Pose2d goToCoords = this.coords.getReefBranchCoordsAuto(goToSide, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? 0.000 : RobotConstantsMeters.reefDistCorrectionL4, goLeft, !goLeft, this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? RobotConstantsMeters.reefBranchCorrectionL4 : RobotConstantsMeters.reefBranchCorrection);
-                return depositReefBranch(goToCoords);
+                return depositReefBranch(goToCoords, true);
             },
             Set.of(this, this.drivetrain, this.flywheel)
         );
     }
 
-    public SequentialCommandGroup depositReefBranch(Pose2d goToCoords) {
+    public SequentialCommandGroup depositReefBranch(Pose2d goToCoords, boolean isInAuton) {
         return AutoBuilder.pathfindToPose(
             this.coords.preDepositCoralCoords(goToCoords),
             this.pathfindConstraints,
@@ -90,15 +90,17 @@ public class AimbotCommands extends SubsystemBase {
         .andThen(this.elevator.goToPosition(this.elevator.goingToHeight))
         .andThen(new WaitUntilCommand(() -> this.elevator.reachedGoal()))
         .andThen(new WaitUntilCommand(() -> this.wrist.isAtSetpoint()))
+        .andThen(new WaitCommand(0.25))
         .andThen(this.flywheel.shootCoral(this.elevator.goingToHeight == elevatorLastSelectedHeight.FOUR ? -1.0 : this.elevator.goingToHeight == elevatorLastSelectedHeight.ONE ? -0.2 : -0.5))
-        .andThen(runOnce(() -> {this.getCurrentCommand().cancel();}));
+        .andThen(runOnce(() -> {this.getCurrentCommand().cancel();}).onlyIf(() -> !isInAuton))
+        ;
     }
 
     public Command collectCoralStation(XboxController controller) {
         return new DeferredCommand(
             () -> {
                 Pose2d goToCoords = this.coords.getCoralStationCoords(this.drivetrain.getState().Pose, controller.getLeftBumperButton(), controller.getRightBumperButton());
-                return collectCoralStation(goToCoords);
+                return collectCoralStation(goToCoords, false);
             },
             Set.of(this, this.drivetrain, this.flywheel)
         );
@@ -108,13 +110,13 @@ public class AimbotCommands extends SubsystemBase {
         return new DeferredCommand(
             () -> {
                 Pose2d goToCoords = this.coords.getCoralStationCoordsLeftRight(goLeft, moveLeft, moveRight);
-                return collectCoralStation(goToCoords);
+                return collectCoralStation(goToCoords, true);
             },
             Set.of(this, this.drivetrain, this.flywheel)
         );
     }
 
-    public SequentialCommandGroup collectCoralStation(Pose2d goToCoords) {
+    public SequentialCommandGroup collectCoralStation(Pose2d goToCoords, boolean isInAuton) {
         return AutoBuilder.pathfindToPose(
             this.coords.preDepositCoralCoords(goToCoords, 0.2),
             this.pathfindConstraints,
@@ -125,7 +127,8 @@ public class AimbotCommands extends SubsystemBase {
         .andThen(this.flywheel.stopIntake())
         .andThen(this.flywheel.intakeCoral()
             .alongWith(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION, RobotConstantsMeters.coralStationSafeDist, false)))
-        .andThen(runOnce(() -> {this.getCurrentCommand().cancel();}));
+        .andThen(runOnce(() -> {this.getCurrentCommand().cancel();}).onlyIf(() -> !isInAuton))
+        ;
     }
 
     public Command collectAlgaeFromReef(AlgaeIntakeSubsystem algaeIntake) {
