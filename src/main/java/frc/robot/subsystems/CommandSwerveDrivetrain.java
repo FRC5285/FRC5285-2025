@@ -63,7 +63,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private final SwerveRequest.FieldCentric drivePID = new SwerveRequest.FieldCentric()
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    private final SwerveRequest.SwerveDriveBrake swerveBrake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.RobotCentric lidarDrive = new SwerveRequest.RobotCentric();
     private ProfiledPIDController xPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
     private ProfiledPIDController yPID = new ProfiledPIDController(4.0, 0.0, 0.0, new TrapezoidProfile.Constraints(AutoConstants.maxVelocityMPS, AutoConstants.maxAccelMPS2));
@@ -172,7 +171,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withTimeout(lidarTime)
         )
         .andThen(() -> {
-            // this.setControl(this.swerveBrake);
             this.setControl(lidarDrive.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
             this.lidarOn = false;
         });
