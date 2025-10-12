@@ -118,6 +118,7 @@ public class WristSubsystem extends SubsystemBase {
   }
 
   public void resetPID() {
+    this.wristPIDController.setGoal(this.getCurrentPosition());
     this.wristPIDController.reset(this.getCurrentPosition());
   }
 
