@@ -124,13 +124,13 @@ public final class Constants {
 
         public static final double cageSafeDist = 0.1;
 
-        public static final double reefSafeDist = 0.25; // 0.225
+        public static final double reefSafeDist = 0.2; // 0.25
 
         public static final double reefAlgaeSafeDist = -reefSafeDist; // Gets added to reefSafeDist
 
         public static final double coralStationSafeDist = 0.12; // 0.1775
 
-        public static final double reefDistCorrectionL4 = 0.025; // -0.025 // added to reefSafeDist
+        public static final double reefDistCorrectionL4 = 0.275 - reefSafeDist; // 0.025 // added to reefSafeDist
 
         // X-offset from middle of the field to middle of the robot at match start
         public static final double startingPointOffset = 1.614176;
@@ -252,8 +252,8 @@ public final class Constants {
         public static final double encoderPulseDist = (2.0 * Math.PI * elevatorGearRadius) / 1024;
 
         public static final double level1Position = 0.15;
-        public static final double level2Position = 0.3625;
-        public static final double level3Position = 0.7727; // 0.7827
+        public static final double level3Position = 0.75; // 0.7827
+        public static final double level2Position = level3Position - 0.4; // 0.3625
         public static final double level4Position = 1.335;
         public static final double intakePosition = 0.12; // 0.21
         public static final double floorAlgaePosition = 0.0;
@@ -293,7 +293,7 @@ public final class Constants {
 
         public static final double climbSpeed = 0.70;
 
-        public static final double climbRotations = 73.0;
+        public static final double climbRotations = 61.0;
     }
 
     public static class LEDConstants {
