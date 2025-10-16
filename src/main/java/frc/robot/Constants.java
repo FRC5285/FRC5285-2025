@@ -90,9 +90,9 @@ public final class Constants {
 
         public static final double lidarDistanceTolerance = 0.001;
 
-        public static final double lidarDistanceToleranceReef = 0.01;
+        public static final double lidarDistanceToleranceReef = 0.005;
 
-        public static final double lidarOffset = 0.0; // Distance of lidar measurement - real measurement //0.025
+        public static final double lidarOffset = 0.025; // Distance of lidar measurement - real measurement // 0.0
 
         public static final double lidarMaxVelocityMPS = 2.0;
 
@@ -124,7 +124,7 @@ public final class Constants {
 
         public static final double cageSafeDist = 0.1;
 
-        public static final double reefSafeDist = 0.2; // 0.25
+        public static final double reefSafeDist = 0.2; // 0.2
 
         public static final double reefAlgaeSafeDist = -reefSafeDist; // Gets added to reefSafeDist
 
@@ -217,7 +217,7 @@ public final class Constants {
         public static final double algaePosition = 0.24;
         public static final double algaePosition2 = 0.21;
 
-        public static final double encoderOffset = 0.09;
+        public static final double encoderOffset = 0.75;
     
         public static final double kP = 5.0;
         public static final double kI = 0.1;
@@ -293,7 +293,7 @@ public final class Constants {
 
         public static final double climbSpeed = 0.70;
 
-        public static final double climbRotations = 61.0;
+        public static final double climbRotations = 63.1; // 77
     }
 
     public static class LEDConstants {
