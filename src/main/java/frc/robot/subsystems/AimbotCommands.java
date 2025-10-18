@@ -126,7 +126,9 @@ public class AimbotCommands extends SubsystemBase {
         .alongWith(wrist.goToIntakePosition()) // Failsafe
         .andThen(this.flywheel.stopIntake())
         .andThen(this.flywheel.intakeCoral()
-            .alongWith(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION, RobotConstantsMeters.coralStationSafeDist, false)))
+            .alongWith(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION, RobotConstantsMeters.coralStationSafeDist, false)
+                .andThen(this.drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.CORALSTATION, RobotConstantsMeters.coralStationSafeDist, true)
+                .onlyIf(() -> Math.abs(this.drivetrain.getLidarMeters() - (RobotConstantsMeters.coralStationSafeDist + RobotConstantsMeters.lidarBumperDistance)) > 0.05))))
         .andThen(runOnce(() -> {this.getCurrentCommand().cancel();}).onlyIf(() -> !isInAuton))
         ;
     }

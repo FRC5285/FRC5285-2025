@@ -92,7 +92,7 @@ public final class Constants {
 
         public static final double lidarDistanceToleranceReef = 0.005;
 
-        public static final double lidarOffset = 0.025; // Distance of lidar measurement - real measurement // 0.0
+        public static final double lidarOffset = 0.040; // Distance of lidar measurement - real measurement // 0.025
 
         public static final double lidarMaxVelocityMPS = 2.0;
 
