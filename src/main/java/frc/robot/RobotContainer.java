@@ -197,7 +197,7 @@ public class RobotContainer {
 
         // Do the deep climb
         new Trigger(() -> ControllerUtils.rightTrigger(m_driverController.getHID())).onTrue(
-            abcs.doDeepClimb()
+            abcs.doDeepClimb(m_driverController.getHID())
             .alongWith(ledStrip.toAuton()).andThen(ledStrip.toNormal())
         );
         new Trigger(() -> ControllerUtils.dPadUp(m_driverController.getHID())).onTrue(

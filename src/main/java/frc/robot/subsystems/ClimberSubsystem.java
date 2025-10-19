@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class ClimberSubsystem extends SubsystemBase {
     private final TalonFX climbMotor;
-    private ProfiledPIDController climbPID = new ProfiledPIDController(2.0, 0, 0, new TrapezoidProfile.Constraints(40.0, 40.0));
+    private ProfiledPIDController climbPID = new ProfiledPIDController(2.0, 0.5, 0.2, new TrapezoidProfile.Constraints(40.0, 40.0));
 
     public ClimberSubsystem() {
         climbMotor = new TalonFX(ClimberConstants.motorID);

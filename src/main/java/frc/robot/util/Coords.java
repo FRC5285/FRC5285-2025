@@ -2,7 +2,7 @@ package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
+// import edu.wpi.first.wpilibj.DriverStation;
 
 import frc.robot.Constants.RobotConstantsMeters;
 import frc.robot.Constants.ElevatorConstants;
@@ -32,8 +32,9 @@ public class Coords {
         this.isBlue = isBlue;
         this.sideSign = this.isBlue ? 1.0 : -1.0;
 
-        if (DriverStation.getLocation().isPresent()) this.teamStationNumber = DriverStation.getLocation().getAsInt();
-        else this.teamStationNumber = 1;
+        // if (DriverStation.getLocation().isPresent()) this.teamStationNumber = DriverStation.getLocation().getAsInt();
+        // else this.teamStationNumber = 1;
+        this.teamStationNumber = 2;
 
         double proX, proY, proFarX, proFarY, reefCenterX, reefCenterY, coralStationX;
         if (this.isBlue) {
@@ -163,6 +164,14 @@ public class Coords {
         } else {
             return robotPose.getX() > FieldConstants.bargeCenterX ? this.cagePose : this.cagePoseFar;
         }
+    }
+
+    public Pose2d getClosestCage(boolean goLeft, boolean goRight) {
+        return new Pose2d(
+            this.cagePose.getX(),
+            this.cagePose.getY() + (goLeft || goRight ? this.sideSign * (goLeft ? 1.0 : -1.0) : 0),
+            this.cagePose.getRotation()
+        );
     }
 
     // returns index of coords of closest reef wall

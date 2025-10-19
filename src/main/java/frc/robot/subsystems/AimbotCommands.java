@@ -204,6 +204,20 @@ public class AimbotCommands extends SubsystemBase {
             Set.of(this, this.drivetrain)
         );
     }
+
+    public Command doDeepClimb(XboxController controller) {
+        return new DeferredCommand(() -> {
+                Pose2d goToCoords = this.coords.getClosestCage(controller.getLeftBumperButton(), controller.getRightBumperButton());
+                return AutoBuilder.pathfindToPose(
+                    goToCoords,
+                    this.pathfindConstraints,
+                    0.0
+                )
+                .andThen(drivetrain.fineTunePID(goToCoords, DrivetrainAligningTo.BARGE, -1.0, true));
+            },
+            Set.of(this, this.drivetrain)
+        );
+    }
     
     public Command stopCurrentCommand() {
         return runOnce(() -> {});
